@@ -1,0 +1,171 @@
+import React from "react";
+import BaseLayout from "@/layout/BaseLayout";
+import { Href, Link, Stack, Tabs, useRouter } from "expo-router";
+import XStack from "@/components/stacks/XStack";
+import {
+  Dimensions,
+  SafeAreaView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  Bell,
+  Heart,
+  PuzzleIcon,
+  SearchIcon,
+  ShoppingCart,
+} from "lucide-react-native";
+import Input from "@/components/ui/Input";
+import YStack from "@/components/stacks/YStack";
+import { FlashList } from "@shopify/flash-list";
+import Button from "@/components/ui/Button";
+import Avatar from "@/components/ui/Avatar";
+
+const RootScreen = () => {
+  const router = useRouter();
+  return (
+    <>
+      <BaseLayout>
+        <Stack.Screen
+          options={{
+            title: "",
+            headerRight: () => (
+              <XStack className="space-x-4 px-4">
+                <TouchableOpacity>
+                  <Bell color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <ShoppingCart color="black" />
+                </TouchableOpacity>
+              </XStack>
+            ),
+          }}
+        />
+        <View className="bg-[#EDEDED] mx-2 px-2 border border-gray-300 rounded-md flex-row  items-center">
+          <SearchIcon color="black" size={22} opacity={0.7} />
+          <Input
+            className="border-transparent"
+            placeholder="What are your cravings for today?"
+          />
+        </View>
+
+        <YStack className="px-2 my-4 space-y-2">
+          <View className="flex-row justify-between items-center ">
+            <XStack className="items-center space-x-2">
+              <PuzzleIcon color="black" size={18} />
+              <Text className="text-lg font-semibold">Top Categories</Text>
+            </XStack>
+
+            <Link href="/_sitemap">More</Link>
+          </View>
+
+          <XStack>
+            <FlashList
+              data={[{}, {}, {}]}
+              estimatedItemSize={10000}
+              horizontal
+              renderItem={() => (
+                <View className="w-[200px] h-[90px] border rounded-md p-4 flex justify-center items-center mr-2">
+                  <Text className="text-lg font-bold">Fast Food</Text>
+                </View>
+              )}
+            />
+          </XStack>
+        </YStack>
+
+        <YStack className="px-2 my-4 space-y-2">
+          <View className="flex-row justify-between items-center ">
+            <XStack className="items-center space-x-2">
+              <PuzzleIcon color="black" size={18} />
+              <Text className="text-lg font-semibold">Promotional</Text>
+            </XStack>
+
+            <Link href="/_sitemap">More</Link>
+          </View>
+
+          <XStack>
+            <FlashList
+              data={[{}]}
+              estimatedItemSize={10000}
+              horizontal
+              renderItem={() => (
+                <View
+                  style={{
+                    width: Dimensions.get("screen").width - 16,
+                  }}
+                  className=" h-[200px] border rounded-md p-4 flex justify-center items-center mr-2"
+                >
+                  <Text className="text-lg font-bold">Fast Food</Text>
+                </View>
+              )}
+            />
+          </XStack>
+        </YStack>
+
+        <YStack>
+          <FlashList
+            data={[
+              { title: "All" },
+              { title: "RECOMMENDED" },
+              { title: "POPULAR" },
+              { title: "Nearby" },
+            ]}
+            estimatedItemSize={2000}
+            horizontal
+            renderItem={({ item }) => (
+              <Button variant="ghost">
+                <Text className="text-lg font-bold ">{item.title}</Text>
+              </Button>
+            )}
+          />
+
+          <View className="flex-1 px-2">
+            <FlashList
+              data={[{}, {}, {}, {}, {}]}
+              estimatedItemSize={5000}
+              numColumns={2}
+              renderItem={() => (
+                <TouchableOpacity
+                  className="relative"
+                  onPress={() =>
+                    router.navigate(`/product/details/${123123}` as Href)
+                  }
+                >
+                  <XStack className=" absolute top-1  w-full  p-2 px-3 justify-between items-center flex-1 z-[99px]">
+                    <TouchableOpacity>
+                      <Heart color="black" size={28} />
+                    </TouchableOpacity>
+
+                    <View className="p-2 bg-white rounded-full">
+                      <Text className="text-lg font-bold">4.2</Text>
+                    </View>
+                  </XStack>
+
+                  <View className="bg-[#FCDEDE] relative p-4 flex-2 flex-1   rounded-md m-1 justify-center items-center space-y-4">
+                    <View className="mt-6">
+                      <Avatar size={100} />
+                    </View>
+                    <XStack className="items-center justify-between w-full">
+                      <YStack>
+                        <Text className="font-bold text-[24px]">Burger</Text>
+                        <Text className="text-[16px] font-bold">PHP 72.00</Text>
+                      </YStack>
+
+                      <TouchableOpacity>
+                        <ShoppingCart size={24} color="black" />
+                      </TouchableOpacity>
+                    </XStack>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </YStack>
+      </BaseLayout>
+    </>
+  );
+};
+
+export default RootScreen;
