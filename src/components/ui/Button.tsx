@@ -1,4 +1,8 @@
-import { TouchableOpacityProps, Pressable } from "react-native";
+import {
+  TouchableOpacityProps,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import React, {
   ComponentPropsWithoutRef,
   ElementRef,
@@ -38,13 +42,13 @@ export const buttonVariants = cva(
 );
 
 interface Props
-  extends ComponentPropsWithoutRef<typeof Pressable>,
+  extends ComponentPropsWithoutRef<typeof TouchableOpacity>,
     VariantProps<typeof buttonVariants> {}
 
-const Button = forwardRef<ElementRef<typeof Pressable>, Props>(
+const Button = forwardRef<ElementRef<typeof TouchableOpacity>, Props>(
   ({ children, variant, size, className, ...props }, ref) => {
     return (
-      <Pressable
+      <TouchableOpacity
         {...props}
         ref={ref}
         className={cn(
@@ -53,7 +57,7 @@ const Button = forwardRef<ElementRef<typeof Pressable>, Props>(
         )}
       >
         {children}
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 );
