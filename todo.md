@@ -6,3 +6,5 @@
 10. create a focus hook to make query run when focused
 11. add pagerview
 12. change the button to opacity
+13. use fetch and useMutation
+14. axios interceptors

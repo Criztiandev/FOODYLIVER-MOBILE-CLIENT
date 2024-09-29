@@ -8,13 +8,13 @@ import { MessageSquare, Share2 } from "lucide-react-native";
 const ProductHero = () => {
   return (
     <YStack>
-      <YStack className="justify-center items-center  relative">
+      <YStack className="justify-center items-center relative">
         <View className="  flex-1 absolute top-0 left-0"></View>
 
         <Avatar size={200} />
 
-        <XStack className=" w-full justify-between items-center ">
-          <YStack className="space-y-1">
+        <XStack className=" w-full justify-between items-center px-2 ">
+          <YStack className="space-y-1 justify-center items-center">
             <MessageSquare color="black" />
             <Text className="font-bold text-[16px]">Review</Text>
           </YStack>
@@ -26,7 +26,7 @@ const ProductHero = () => {
             <Text className="font-bold text-[16px]">Rating</Text>
           </YStack>
 
-          <YStack className="space-y-1">
+          <YStack className="space-y-1 justify-center items-center">
             <Share2 color="black" />
             <Text className="font-bold text-[16px]">Share</Text>
           </YStack>
