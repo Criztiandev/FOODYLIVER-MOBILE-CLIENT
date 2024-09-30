@@ -1,3 +1,4 @@
+import ProductCartItem from "@/components/molecules/ProductCartItem";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import Avatar from "@/components/ui/Avatar";
@@ -15,44 +16,13 @@ const CartSelectedProducts = () => {
   return (
     <YStack>
       <XStack className="justify-between items-center">
-        <Text className="text-2xl font-bold">CHECKOUT</Text>
-
-        <Button>
-          <Text className="text-lg font-medium">Select All</Text>
-        </Button>
+        <Text className="text-xl font-bold">CHECKOUT</Text>
       </XStack>
 
       <FlashList
         data={cart.items}
         estimatedItemSize={10000}
-        renderItem={({ item }) => (
-          <XStack className="bg-[#FCDEDE] p-4 rounded-md justify-between items-ce my-4">
-            <XStack className="items-center space-x-4">
-              <Avatar />
-              <YStack>
-                <Text className="text-[24px] font-bold">{item.name}</Text>
-
-                {/* Addons */}
-
-                <Text className="text-[18px] font-bold opacity-70">
-                  PHP {item.price}
-                </Text>
-              </YStack>
-            </XStack>
-
-            <XStack className="items-center">
-              <Button variant="ghost">
-                <Minus color="black" />
-              </Button>
-
-              <Text className="text-2xl">{item.quantity}</Text>
-
-              <Button variant="ghost">
-                <Plus color="black" />
-              </Button>
-            </XStack>
-          </XStack>
-        )}
+        renderItem={({ item }) => <ProductCartItem {...item} />}
       />
     </YStack>
   );
