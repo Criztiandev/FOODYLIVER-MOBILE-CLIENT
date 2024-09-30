@@ -16,6 +16,7 @@ import {
   Plus,
   ShoppingCart,
   User,
+  View,
 } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity } from "react-native";
@@ -25,6 +26,7 @@ import CartCalculation from "./components/CartCalculation";
 import CheckoutButton from "@/components/atoms/CheckoutButton";
 import CartAddons from "./components/CartAddons";
 import CartEmpty from "./components/CartEmpty";
+import PaymentButton from "@/components/atoms/PaymentButton";
 
 const RootScreen = () => {
   const router = useRouter();
@@ -41,19 +43,21 @@ const RootScreen = () => {
 
       {cart.items && cart.items.length > 0 ? (
         <BaseLayout>
-          <YStack className="p-4">
+          <YStack className="px-4 my-4">
             <SelectedProducts />
+            <Button
+              className="flex-row space-x-2 justify-start border-primary"
+              variant="outline"
+              onPress={() => router.push("/")}
+            >
+              <Plus color="black" size={18} />
+              <Text className="text-base ">Add more items</Text>
+            </Button>
+          </YStack>
 
-            <YStack className=" w-full space-y-4 my-4">
-              <Text className="font-bold text-[20px]">
-                DELIVERY INFORMATION
-              </Text>
-              <CustomerDetails />
-              <CartAddons />
-            </YStack>
-
+          <YStack className="px-4">
             <CartCalculation />
-            <CheckoutButton />
+            <PaymentButton />
           </YStack>
         </BaseLayout>
       ) : (
