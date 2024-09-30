@@ -9,6 +9,7 @@ const RootLayout = () => {
     <ProtectedRoute allowedRoles={["user"]}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="list" />
+        <Stack.Screen name="payment" />
       </Stack>
     </ProtectedRoute>
   );
