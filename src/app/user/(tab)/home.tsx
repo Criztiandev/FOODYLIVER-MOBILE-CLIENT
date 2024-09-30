@@ -22,6 +22,8 @@ import YStack from "@/components/stacks/YStack";
 import { FlashList } from "@shopify/flash-list";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
+import CartButton from "@/components/atoms/CartButton";
+import NotificationButton from "@/components/atoms/NotificationButton";
 
 const RootScreen = () => {
   const router = useRouter();
@@ -33,12 +35,8 @@ const RootScreen = () => {
             title: "",
             headerRight: () => (
               <XStack className="space-x-4 px-4">
-                <TouchableOpacity>
-                  <Bell color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <ShoppingCart color="black" />
-                </TouchableOpacity>
+                <NotificationButton />
+                <CartButton />
               </XStack>
             ),
           }}
