@@ -29,7 +29,6 @@ export default function RootLayout() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <AuthProvider>
             <NotificationsProvider>
-              <>
                 <Stack screenOptions={{ headerShown: false }}>
                   <Stack.Screen name="auth" />
                   <Stack.Screen name="user" />
@@ -37,7 +36,6 @@ export default function RootLayout() {
                   <Stack.Screen name="cart" />
                 </Stack>
                 <Toast />
-              </>
             </NotificationsProvider>
           </AuthProvider>
         </GestureHandlerRootView>
