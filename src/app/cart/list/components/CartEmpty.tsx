@@ -1,10 +1,12 @@
 import YStack from "@/components/stacks/YStack";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Text } from "react-native";
 
 const CartEmpty = () => {
+  const router = useRouter();
   return (
     <YStack className="flex-1 justify-center items-center space-y-4     ">
       <Avatar size={120} />
@@ -13,7 +15,7 @@ const CartEmpty = () => {
         <Text className="text-base">
           You have not added anything to your cart
         </Text>
-        <Button className="px-8">
+        <Button className="px-8" onPress={() => router.push("/")}>
           <Text className="text-white font-semibold">Browse</Text>
         </Button>
       </YStack>
