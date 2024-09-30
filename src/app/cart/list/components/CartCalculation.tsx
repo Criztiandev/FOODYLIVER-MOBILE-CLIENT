@@ -8,29 +8,28 @@ import { Text } from "react-native";
 const CartCalculation = () => {
   return (
     <YStack className="space-y-2">
-      <Text className="font-bold text-[20px]">SubTotals</Text>
-      <XStack className="space-x-4">
-        <XStack>
-          <User color="black" />
-          <Text className="text-lg">Order Total</Text>
+      <Text className="font-bold text-lg">Subtotal</Text>
+      <XStack className="space-x-4  justify-between items-center">
+        <XStack className="space-x-2">
+          <User color="black" size={22} />
+          <Text className="">Order Total</Text>
         </XStack>
-        <Text className="text-lg">PHP 568.00</Text>
+        <Text className="">PHP 568.00</Text>
       </XStack>
 
-      <XStack className="space-x-4">
-        <XStack>
-          <User color="black" />
-          <Text className="text-lg">Delivery Fee</Text>
+      <XStack className="space-x-4  justify-between items-center">
+        <XStack className="space-x-2">
+          <User color="black" size={22} />
+          <Text className="">Delivery Fee</Text>
         </XStack>
-        <Text className="text-lg">PHP 48.00</Text>
+        <Text className="">PHP 48.00</Text>
       </XStack>
 
-      <XStack className="space-x-4">
-        <XStack>
-          <User color="black" />
-          <Text className="text-lg">Total</Text>
+      <XStack className="space-x-4  justify-between items-center">
+        <XStack className="space-x-2 items-center">
+          <Text className="font-bold  text-xl">Total</Text>
         </XStack>
-        <Text className="text-lg">0</Text>
+        <Text className="font-bold text-xl">PHP 0.00</Text>
       </XStack>
     </YStack>
   );
