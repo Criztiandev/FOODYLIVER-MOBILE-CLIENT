@@ -1,12 +1,15 @@
 import BackButton from "@/components/atoms/BackButton";
 import CheckoutButton from "@/components/atoms/CheckoutButton";
+import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
+import useGeocoding from "@/hooks/utils/useGeocoding";
+import useLocation from "@/hooks/utils/useLocation";
 import BaseLayout from "@/layout/BaseLayout";
-import useCartStore from "@/state/useCartStore";
-import { Stack, useRouter } from "expo-router";
+
+import { Stack } from "expo-router";
 import {
   MapIcon,
   MapPin,
@@ -14,12 +17,24 @@ import {
   Truck,
   Wallet,
 } from "lucide-react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
 const RootScreen = () => {
-  const router = useRouter();
-  const { cart } = useCartStore();
+  const [address, setAddress] = useState("");
+  const { location } = useLocation(true);
+  const { reverseGeocode } = useGeocoding();
+
+  useEffect(() => {
+    (async () => {
+      if (location?.coords) {
+        const result = await reverseGeocode(
+          location.coords.latitude,
+          location.coords.longitude
+        );
+      }
+    })();
+  }, [location?.coords]);
 
   return (
     <>
@@ -38,16 +53,16 @@ const RootScreen = () => {
               <Text className="text-lg font-bold">Delivery Address</Text>
             </XStack>
 
-            <View className="h-[200px] border rounded-md"></View>
+            <View className="rounded-md border border-primary/70 overflow-hidden h-[200px]">
+              <CurrentLocationMap />
+            </View>
 
             <Button
               variant="outline"
               className="border-primary space-x-2 flex-row"
             >
               <MapIcon color="black" />
-              <Text className="text-base font-semibold">
-                Villa Luisa North, Caloocan City
-              </Text>
+              <Text className="text-base font-semibold">{address}</Text>
             </Button>
           </YStack>
 
