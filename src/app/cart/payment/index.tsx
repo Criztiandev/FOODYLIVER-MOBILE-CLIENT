@@ -32,6 +32,7 @@ const RootScreen = () => {
           location.coords.latitude,
           location.coords.longitude
         );
+        setAddress(result?.address || "");
       }
     })();
   }, [location?.coords]);
@@ -62,7 +63,9 @@ const RootScreen = () => {
               className="border-primary space-x-2 flex-row"
             >
               <MapIcon color="black" />
-              <Text className="text-base font-semibold">{address}</Text>
+              <Text className="text-base font-semibold">
+                {address || "Current Address"}
+              </Text>
             </Button>
           </YStack>
 
