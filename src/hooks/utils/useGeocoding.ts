@@ -25,13 +25,14 @@ const useGeocoding = (): UseGeocodingResult => {
   useEffect(() => {
     const initializeGeocoder = async () => {
       try {
-        const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY;
+        const apiKey = "AIzaSyD2S3-_jyyJJLOJdCzEeGLY31egBsD4i1Y";
+
         if (!apiKey) {
           throw new Error(
             "Google Maps API key is not set in environment variables"
           );
         }
-        await Geocoder.init(apiKey, { language: "en" });
+        Geocoder.init(apiKey);
         setIsInitialized(true);
       } catch (err) {
         setError(
