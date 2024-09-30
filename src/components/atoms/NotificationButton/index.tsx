@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native";
 const NotificationButton = () => {
   const router = useRouter();
   return (
-    <TouchableOpacity onPress={() => router.push("")}>
+    <TouchableOpacity onPress={() => router.push("")} className="mr-3">
       <Bell color="black" />
     </TouchableOpacity>
   );
