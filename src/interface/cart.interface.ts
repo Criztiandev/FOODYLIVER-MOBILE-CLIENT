@@ -14,7 +14,7 @@ export interface CartStore {
   removeProduct: (productId: string, quantity: number) => void;
   updateProductQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  getCartTotal: () => void;
+  getCartTotal: () => number;
   getCartItemCount: () => void;
   getProductDetails: (id: string) => CartItem | null | undefined;
 }

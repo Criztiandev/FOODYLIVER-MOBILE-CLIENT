@@ -1,11 +1,15 @@
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import Button from "@/components/ui/Button";
+import useCartStore from "@/state/useCartStore";
 import { Check, User } from "lucide-react-native";
 import React from "react";
 import { Text } from "react-native";
 
 const CartCalculation = () => {
+  const { getCartTotal } = useCartStore();
+
+  console.log();
   return (
     <YStack className="space-y-2">
       <Text className="font-bold text-lg">Subtotal</Text>
@@ -14,7 +18,7 @@ const CartCalculation = () => {
           <User color="black" size={22} />
           <Text className="">Order Total</Text>
         </XStack>
-        <Text className="">PHP 568.00</Text>
+        <Text className="">PHP {getCartTotal()}</Text>
       </XStack>
 
       <XStack className="space-x-4  justify-between items-center">
@@ -29,7 +33,7 @@ const CartCalculation = () => {
         <XStack className="space-x-2 items-center">
           <Text className="font-bold  text-xl">Total</Text>
         </XStack>
-        <Text className="font-bold text-xl">PHP 0.00</Text>
+        <Text className="font-bold text-xl">PHP {getCartTotal()}.00</Text>
       </XStack>
     </YStack>
   );

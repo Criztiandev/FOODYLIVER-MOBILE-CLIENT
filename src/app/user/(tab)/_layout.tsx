@@ -8,7 +8,8 @@ const RootLayout = () => {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
+          title: "",
+          headerShown: false,
           tabBarIcon: (props) => (
             <Home color={props.focused ? "black" : props.color} />
           ),
@@ -18,7 +19,8 @@ const RootLayout = () => {
       <Tabs.Screen
         name="account"
         options={{
-          title: "Account",
+          title: "",
+          headerShown: false,
           tabBarIcon: (props) => (
             <UserCircle color={props.focused ? "black" : props.color} />
           ),

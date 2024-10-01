@@ -86,9 +86,7 @@ const useCartStore = create<CartStore>((set, get) => ({
       }
 
       const updatedQuantity = state.cart.items.map((item) =>
-        item.id === productId
-          ? { ...item, quantity: item.quantity + quantity }
-          : item
+        item.id === productId ? { ...item, quantity: quantity } : item
       );
 
       return {

@@ -14,7 +14,6 @@ const AddressSearch = () => {
           key: process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY,
           language: "fil",
           components: "country:ph",
-          types: "geocode|establishment",
         }}
         fetchDetails={true}
         enablePoweredByContainer={false}

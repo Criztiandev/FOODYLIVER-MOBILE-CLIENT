@@ -11,8 +11,8 @@ import React from "react";
 import { Text } from "react-native";
 
 const CartSelectedProducts = () => {
-  const router = useRouter();
   const { cart } = useCartStore();
+
   return (
     <YStack>
       <XStack className="justify-between items-center">

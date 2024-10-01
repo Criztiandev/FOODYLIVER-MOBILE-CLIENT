@@ -11,8 +11,6 @@ import FavoriteButton from "@/components/atoms/button/FavoriteButton";
 import BackButton from "@/components/atoms/button/BackButton";
 
 const ProductHeader = () => {
-  const router = useRouter();
-
   return (
     <>
       <Stack.Screen
@@ -21,7 +19,9 @@ const ProductHeader = () => {
           headerLeft: () => <BackButton />,
           headerRight: () => (
             <XStack className="space-x-4">
-              <FavoriteButton />
+              <View className="mr-2">
+                <FavoriteButton />
+              </View>
               <CartButton />
             </XStack>
           ),

@@ -12,6 +12,7 @@ const RootLayout = () => {
         <Stack.Screen name="address" />
         <Stack.Screen name="link" />
         <Stack.Screen name="notification" />
+        <Stack.Screen name="order-history" />
       </Stack>
     </ProtectedRoute>
   );
