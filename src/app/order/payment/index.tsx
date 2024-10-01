@@ -1,5 +1,5 @@
-import BackButton from "@/components/atoms/BackButton";
-import CheckoutButton from "@/components/atoms/CheckoutButton";
+import BackButton from "@/components/atoms/button/BackButton";
+import CheckoutButton from "@/components/atoms/button/CheckoutButton";
 import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";

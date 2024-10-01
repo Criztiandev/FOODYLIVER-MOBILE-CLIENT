@@ -22,8 +22,8 @@ import YStack from "@/components/stacks/YStack";
 import { FlashList } from "@shopify/flash-list";
 import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
-import CartButton from "@/components/atoms/CartButton";
-import NotificationButton from "@/components/atoms/NotificationButton";
+import CartButton from "@/components/atoms/button/CartButton";
+import NotificationButton from "@/components/atoms/button/NotificationButton";
 
 const RootScreen = () => {
   const router = useRouter();

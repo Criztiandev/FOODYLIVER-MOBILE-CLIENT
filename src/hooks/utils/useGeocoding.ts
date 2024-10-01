@@ -25,7 +25,7 @@ const useGeocoding = (): UseGeocodingResult => {
   useEffect(() => {
     const initializeGeocoder = async () => {
       try {
-        const apiKey = "AIzaSyD2S3-_jyyJJLOJdCzEeGLY31egBsD4i1Y";
+        const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY;
 
         if (!apiKey) {
           throw new Error(

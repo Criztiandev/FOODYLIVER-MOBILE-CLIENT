@@ -8,7 +8,7 @@ import { Text } from "react-native";
 const PaymentButton = () => {
   const router = useRouter();
   return (
-    <Button className="my-8" onPress={() => router.push("/cart/payment")}>
+    <Button className="my-8" onPress={() => router.push("/order/payment")}>
       <XStack className="space-x-4 items-center">
         <ShoppingCart color="white" size={22} />
         <Text className="text-white text-base font-semibold">

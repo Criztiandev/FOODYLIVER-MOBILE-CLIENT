@@ -19,7 +19,6 @@ const RootLayout = () => {
         name="account"
         options={{
           title: "Account",
-          headerShown: false,
           tabBarIcon: (props) => (
             <UserCircle color={props.focused ? "black" : props.color} />
           ),

@@ -1,4 +1,5 @@
-import BackButton from "@/components/atoms/BackButton";
+import BackButton from "@/components/atoms/button/BackButton";
+import HomeButton from "@/components/atoms/button/HomeButton";
 import DeliveryMap from "@/components/molecules/Map/DeliveryMap";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
@@ -17,7 +18,7 @@ const RootScreen = () => {
     <>
       <Stack.Screen
         options={{
-          headerLeft: () => <BackButton />,
+          headerLeft: () => <HomeButton />,
           title: "Delivery",
         }}
       />

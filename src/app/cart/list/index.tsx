@@ -1,4 +1,4 @@
-import BackButton from "@/components/atoms/BackButton";
+import BackButton from "@/components/atoms/button/BackButton";
 import YStack from "@/components/stacks/YStack";
 import Button from "@/components/ui/Button";
 import BaseLayout from "@/layout/BaseLayout";
@@ -10,7 +10,7 @@ import { Text } from "react-native";
 import SelectedProducts from "./components/CartSelectedProduct";
 import CartCalculation from "./components/CartCalculation";
 import CartEmpty from "./components/CartEmpty";
-import PaymentButton from "@/components/atoms/PaymentButton";
+import PaymentButton from "@/components/atoms/button/PaymentButton";
 
 const RootScreen = () => {
   const router = useRouter();

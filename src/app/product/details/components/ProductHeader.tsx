@@ -6,9 +6,9 @@ import XStack from "@/components/stacks/XStack";
 import BottomSheet from "@/components/ui/BottomSheet";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import YStack from "@/components/stacks/YStack";
-import CartButton from "@/components/atoms/CartButton";
-import FavoriteButton from "@/components/atoms/FavoriteButton";
-import BackButton from "@/components/atoms/BackButton";
+import CartButton from "@/components/atoms/button/CartButton";
+import FavoriteButton from "@/components/atoms/button/FavoriteButton";
+import BackButton from "@/components/atoms/button/BackButton";
 
 const ProductHeader = () => {
   const router = useRouter();
