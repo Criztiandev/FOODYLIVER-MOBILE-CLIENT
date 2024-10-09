@@ -42,7 +42,7 @@ const RootScreen = () => {
             ),
           }}
         />
-        <View className="bg-[#EDEDED] mx-2 px-2 border border-gray-300 rounded-md flex-row  items-center">
+        <View className="bg-[#EDEDED] mx-2 px-2 border border-gray-300 rounded-md flex-row  items-center my-4">
           <SearchIcon color="black" size={22} opacity={0.7} />
           <Input
             className="border-transparent"
@@ -66,17 +66,25 @@ const RootScreen = () => {
               estimatedItemSize={10000}
               horizontal
               renderItem={() => (
-                <View>
-                  <ImageBackground  resizeMode="cover" source={{uri:"https://legacy.reactjs.org/logo-og.png"}}  className="w-[200px] h-[90px] border rounded-md p-4 flex justify-center items-center mr-2" />
+                <TouchableOpacity
+                  style={{ flexShrink: 1 }}
+                  onPress={() => router.push("/product/list/test")}
+                >
+                  <ImageBackground
+                    resizeMode="cover"
+                    source={{ uri: "https://legacy.reactjs.org/logo-og.png" }}
+                    className="w-[200px]  border rounded-md justify-center items-center mr-2 overflow-hidden"
+                    style={{ height: "100%", minHeight: 100 }}
+                  />
                   <Text className="text-white text-lg">Food</Text>
                   <ImageBackground />
-                </View>
+                </TouchableOpacity>
               )}
             />
           </XStack>
         </YStack>
 
-        <YStack className="px-2 my-4 space-y-2">
+        <YStack className="px-2 mb-4 space-y-2">
           <View className="flex-row justify-between items-center ">
             <XStack className="items-center space-x-2">
               <PuzzleIcon color="black" size={18} />
@@ -92,14 +100,15 @@ const RootScreen = () => {
               estimatedItemSize={10000}
               horizontal
               renderItem={() => (
-                <View
+                <TouchableOpacity
+                  onPress={() => router.push("/product/list/test")}
                   style={{
                     width: Dimensions.get("screen").width - 16,
                   }}
                   className=" h-[200px] border rounded-md p-4 flex justify-center items-center mr-2"
                 >
                   <Text className="text-lg font-bold">Fast Food</Text>
-                </View>
+                </TouchableOpacity>
               )}
             />
           </XStack>

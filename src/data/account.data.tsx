@@ -48,7 +48,7 @@ export const OrderNavigationDataset: IOrderNavigationDataset[] = [
 export const AccountNavivationDataset: IAccountNavigationDataSet[] = [
   {
     title: "Update Profile",
-    path: "/account/details",
+    path: "/account/update-profile",
   },
   {
     title: "My Address",
