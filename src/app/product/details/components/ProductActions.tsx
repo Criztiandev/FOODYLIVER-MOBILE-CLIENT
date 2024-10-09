@@ -1,10 +1,11 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { FC } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import useCartStore from "@/state/useCartStore";
 import { ProductItem } from "@/interface/product.interface";
 import Toast from "react-native-toast-message";
+import { useRouter } from "expo-router";
 
 interface Props {
   product: ProductItem;
@@ -12,7 +13,9 @@ interface Props {
 }
 
 const ProductActions: FC<Props> = ({ product, quantity }) => {
-  const { addProduct } = useCartStore();
+  const router = useRouter();
+  const [totalPrice, setTotalPrice] = useState(0);
+  const { addProduct, getProductDetails } = useCartStore();
 
   const handleAddProduct = () => {
     Toast.show({
@@ -23,12 +26,27 @@ const ProductActions: FC<Props> = ({ product, quantity }) => {
     addProduct(product, quantity);
   };
 
+  const handleBuyProduct = () => {
+    addProduct(product, quantity);
+
+    router.push("/cart/list");
+  };
+
+  useEffect(() => {
+    if (quantity > 0) {
+      setTotalPrice(product.price * quantity);
+    }
+  }, [quantity]);
+
   return (
     <XStack className="space-x-2 ">
-      <TouchableOpacity className="border border-primary bg-[#EAEAEA] px-4 py-2 rounded-md flex-1">
+      <TouchableOpacity
+        className="border border-primary bg-[#EAEAEA] px-4 py-2 rounded-md flex-1"
+        onPress={handleBuyProduct}
+      >
         <YStack className="justify-center items-center">
           <Text className=" font-bold">BUY NOW</Text>
-          <Text className="font-bold opacity-70">PHP 184.00</Text>
+          <Text className="font-bold opacity-70">PHP {totalPrice}</Text>
         </YStack>
       </TouchableOpacity>
 

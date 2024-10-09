@@ -1,4 +1,4 @@
-import { Slot, Stack, useRootNavigationState } from "expo-router";
+import { Stack } from "expo-router";
 import "react-native-reanimated";
 import { lightTheme } from "@/constant/light.theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,8 +8,11 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { createNotifications } from "react-native-notificated";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import AuthProvider from "@/providers/AuthProvider";
-import { AppState } from "react-native";
 import Toast from "react-native-toast-message";
+import useLocalStorage from "@/hooks/utils/useLocalStorage";
+import { useEffect, useState } from "react";
+import SplashScreen from "@/layout/SplashScreen";
+import LoadingScreen from "@/layout/screen/LoadingScreen";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 const client = new QueryClient();

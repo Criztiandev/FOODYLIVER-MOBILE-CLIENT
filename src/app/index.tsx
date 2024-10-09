@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, useRootNavigationState, useRouter } from "expo-router";
+import { Href, Redirect, useRootNavigationState, useRouter } from "expo-router";
 import { useAuth } from "@/providers/AuthProvider";
 
 const privateRoutes = {
@@ -7,7 +7,8 @@ const privateRoutes = {
 };
 
 const RootLayout = () => {
-  const [currentRoute, setCurrentRoute] = useState("");
+  const [currentRoute, setCurrentRoute] =
+    useState<Href<string>>("/auth/sign-in");
   const { user } = useAuth();
   const rootNavigationState = useRootNavigationState();
 
@@ -15,7 +16,7 @@ const RootLayout = () => {
     if (user === null || !user.role?.includes("user")) {
       setCurrentRoute("/auth/sign-in");
     } else {
-      setCurrentRoute(`/${user.role}/home`);
+      setCurrentRoute(`/${user.role}/home` as Href<string>);
     }
   }, [user]);
 

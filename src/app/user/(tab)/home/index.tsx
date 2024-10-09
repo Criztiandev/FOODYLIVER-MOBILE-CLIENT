@@ -4,6 +4,7 @@ import { Href, Link, Stack, Tabs, useRouter } from "expo-router";
 import XStack from "@/components/stacks/XStack";
 import {
   Dimensions,
+  ImageBackground,
   SafeAreaView,
   StatusBar,
   Text,
@@ -65,8 +66,10 @@ const RootScreen = () => {
               estimatedItemSize={10000}
               horizontal
               renderItem={() => (
-                <View className="w-[200px] h-[90px] border rounded-md p-4 flex justify-center items-center mr-2">
-                  <Text className="text-lg font-bold">Fast Food</Text>
+                <View>
+                  <ImageBackground  resizeMode="cover" source={{uri:"https://legacy.reactjs.org/logo-og.png"}}  className="w-[200px] h-[90px] border rounded-md p-4 flex justify-center items-center mr-2" />
+                  <Text className="text-white text-lg">Food</Text>
+                  <ImageBackground />
                 </View>
               )}
             />
