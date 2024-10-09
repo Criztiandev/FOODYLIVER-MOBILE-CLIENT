@@ -8,9 +8,9 @@ const RootLayout = () => {
   return (
     <ProtectedRoute allowedRoles={["user"]}>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="details" />
+        <Stack.Screen name="update-profile" />
         <Stack.Screen name="address" />
-        <Stack.Screen name="link" />
+        <Stack.Screen name="link-gcash" />
         <Stack.Screen name="notification" />
         <Stack.Screen name="order-history" />
       </Stack>

@@ -2,23 +2,28 @@ import { Href } from "expo-router";
 import { Box, History, Map, Star, Wallet } from "lucide-react-native";
 import { ReactElement, ReactNode } from "react";
 
-export interface IAccontNavigationDataSet {
+export interface IAccountNavigationDataSet {
+  title: string;
+  path: Href;
+}
+
+export interface IOrderNavigationDataset extends IAccountNavigationDataSet {
   title: string;
   path: Href;
   icon: ReactElement | ReactNode;
 }
 
-export const AccountNavigationDataSet: IAccontNavigationDataSet[] = [
+export const OrderNavigationDataset: IOrderNavigationDataset[] = [
   {
     title: "To Pay",
     path: "/account/order-history/pay",
-    icon: <Wallet color="black" />,
+    icon: <Wallet color="#0FA958" />,
   },
 
   {
     title: "To Track",
     path: "/account/order-history/track",
-    icon: <Map color="black" />,
+    icon: <Map color="#BC0505" />,
   },
 
   {
@@ -30,7 +35,7 @@ export const AccountNavigationDataSet: IAccontNavigationDataSet[] = [
   {
     title: "To Rate",
     path: "/account/order-history/rate",
-    icon: <Star color="black" />,
+    icon: <Star color="#FFC700" />,
   },
 
   {
@@ -40,3 +45,18 @@ export const AccountNavigationDataSet: IAccontNavigationDataSet[] = [
   },
 ];
 
+export const AccountNavivationDataset: IAccountNavigationDataSet[] = [
+  {
+    title: "Update Profile",
+    path: "/account/details",
+  },
+  {
+    title: "My Address",
+    path: "/account/address",
+  },
+
+  {
+    title: "Link Gcash Account",
+    path: "/account/link-gcash",
+  },
+];

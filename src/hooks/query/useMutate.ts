@@ -3,6 +3,7 @@ import {
   UseMutationResult,
   useQueryClient,
   useMutation,
+  QueryKey,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
@@ -20,7 +21,7 @@ interface MutationConfig<TData, TVariables, TContext = unknown>
     "mutationFn"
   > {
   mutationFn: (variables: TVariables) => Promise<TData>;
-  queryKey?: string;
+  queryKey?: QueryKey;
 }
 
 function useMutate<TData = unknown, TVariables = unknown, TContext = unknown>({

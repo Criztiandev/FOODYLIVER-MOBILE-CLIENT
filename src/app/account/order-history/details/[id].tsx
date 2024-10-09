@@ -18,8 +18,8 @@ const RootScreen = () => {
     <>
       <Stack.Screen
         options={{
-          headerLeft: () => <HomeButton />,
-          title: "Delivery",
+          headerLeft: () => <BackButton />,
+          title: "Order Delivered",
         }}
       />
 

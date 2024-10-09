@@ -5,6 +5,7 @@ import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
+import useReverseGeocode from "@/hooks/maps/useReverseGeocode";
 import useGeocoding from "@/hooks/utils/useGeocoding";
 import useLocation from "@/hooks/utils/useLocation";
 import BaseLayout from "@/layout/BaseLayout";
@@ -21,21 +22,7 @@ import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
 const RootScreen = () => {
-  const [address, setAddress] = useState("");
-  const { location } = useLocation(true);
-  const { reverseGeocode } = useGeocoding();
-
-  useEffect(() => {
-    (async () => {
-      if (location?.coords) {
-        const result = await reverseGeocode(
-          location.coords.latitude,
-          location.coords.longitude
-        );
-        setAddress(result?.address || "");
-      }
-    })();
-  }, [location?.coords]);
+  const { address } = useReverseGeocode();
 
   return (
     <>

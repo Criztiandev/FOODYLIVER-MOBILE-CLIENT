@@ -1,10 +1,8 @@
-import BackButton from "@/components/atoms/button/BackButton";
 import HomeButton from "@/components/atoms/button/HomeButton";
 import DeliveryMap from "@/components/molecules/Map/DeliveryMap";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import BaseLayout from "@/layout/BaseLayout";
-import useCartStore from "@/state/useCartStore";
 import { Stack, useRouter } from "expo-router";
 import { ReceiptIcon, Truck } from "lucide-react-native";
 import React from "react";
@@ -12,7 +10,6 @@ import { Text, View } from "react-native";
 
 const RootScreen = () => {
   const router = useRouter();
-  const { cart } = useCartStore();
 
   return (
     <>

@@ -1,32 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Home, Plus } from "lucide-react-native";
 import BackButton from "@/components/atoms/button/BackButton";
 import AddressSearch from "@/components/atoms/search/AddressSearch";
-import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
 import YStack from "@/components/stacks/YStack";
-import useGeocoding from "@/hooks/utils/useGeocoding";
-import useLocation from "@/hooks/utils/useLocation";
 import BaseLayout from "@/layout/BaseLayout";
 import Button from "@/components/ui/Button";
+import useReverseGeocode from "@/hooks/maps/useReverseGeocode";
+import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
+import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
 
 const RootScreen = () => {
-  const [address, setAddress] = useState("");
-  const { location } = useLocation();
-  const { reverseGeocode } = useGeocoding();
+  const [selectedAddress, setSelectedAddress] =
+    useState<GooglePlaceDetail | null>(null);
+  const router = useRouter();
+  const { address } = useReverseGeocode();
 
-  useEffect(() => {
-    (async () => {
-      if (location?.coords) {
-        const result = await reverseGeocode(
-          location.coords.latitude,
-          location.coords.longitude
-        );
-        setAddress(result?.address || "");
-      }
-    })();
-  }, [location]);
+  const handleSelectAddress = (value: GooglePlaceDetail | null) => {
+    setSelectedAddress(value);
+  };
 
   return (
     <>
@@ -38,7 +31,7 @@ const RootScreen = () => {
       />
       <View className="bg-white flex-1">
         <View className=" px-2 mt-2">
-          <AddressSearch />
+          <AddressSearch onSelect={handleSelectAddress} />
         </View>
 
         <BaseLayout>
@@ -52,7 +45,10 @@ const RootScreen = () => {
               <Text className="flex-1 text-sm">{address || "Loading..."}</Text>
             </View>
 
-            <Button className="flex-row space-x-2 my-4">
+            <Button
+              className="flex-row space-x-2 my-4"
+              onPress={() => router.push("/account/address/new-address")}
+            >
               <Plus color="white" />
               <Text className="text-base font-semibold text-white">
                 Add Address

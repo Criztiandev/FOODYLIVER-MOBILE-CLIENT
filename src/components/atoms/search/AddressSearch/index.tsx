@@ -1,15 +1,20 @@
-import React from "react";
+import React, { FC } from "react";
 import { View } from "react-native";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import {
+  GooglePlaceDetail,
+  GooglePlacesAutocomplete,
+} from "react-native-google-places-autocomplete";
 
-const AddressSearch = () => {
+interface Props {
+  onSelect: (value: GooglePlaceDetail | null) => void;
+}
+
+const AddressSearch: FC<Props> = ({ onSelect }) => {
   return (
     <View className="w-full z-50">
       <GooglePlacesAutocomplete
         placeholder="Search for a place"
-        onPress={(data, details = null) => {
-          console.log(data, details);
-        }}
+        onPress={(_, details = null) => onSelect(details || null)}
         query={{
           key: process.env.EXPO_PUBLIC_GOOGLE_MAP_KEY,
           language: "fil",
