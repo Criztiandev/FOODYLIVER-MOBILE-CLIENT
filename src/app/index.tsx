@@ -1,30 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { Href, Redirect, useRootNavigationState, useRouter } from "expo-router";
-import { useAuth } from "@/providers/AuthProvider";
+import { View, Text } from "react-native";
+import React, { useEffect } from "react";
+import useAccountStore from "@/state/useAccountStore";
+import useLocalStorage from "@/hooks/utils/useLocalStorage";
+import { useRouter } from "expo-router";
 
-const privateRoutes = {
-  user: "/user/home",
-};
-
-const RootLayout = () => {
-  const [currentRoute, setCurrentRoute] =
-    useState<Href<string>>("/auth/sign-in");
-  const { user } = useAuth();
-  const rootNavigationState = useRootNavigationState();
+const RootScreen = () => {
+  const { getItem, setItem } = useLocalStorage();
+  const router = useRouter();
 
   useEffect(() => {
-    if (user === null || !user.role?.includes("user")) {
-      setCurrentRoute("/auth/sign-in");
-    } else {
-      setCurrentRoute(`/${user.role}/home` as Href<string>);
-    }
-  }, [user]);
+    (async () => {
+      const credentials = await getItem("user");
 
-  if (!rootNavigationState.key) {
-    return null;
-  }
+      if (credentials) {
+        setItem("user", credentials);
+        router.navigate("/user/home");
+      } else {
+        router.navigate("/auth/sign-in");
+      }
+    })();
+  }, []);
 
-  return <Redirect href={currentRoute || "/auth/sign-in"} />;
+  return (
+    <View>
+      <Text>Not Found a shit</Text>
+    </View>
+  );
 };
 
-export default RootLayout;
+export default RootScreen;
