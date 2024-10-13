@@ -7,12 +7,7 @@ import useLoadFont from "@/hooks/query/useLoadFont";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { createNotifications } from "react-native-notificated";
 import { ThemeProvider } from "@/providers/ThemeProvider";
-import AuthProvider from "@/providers/AuthProvider";
 import Toast from "react-native-toast-message";
-import useLocalStorage from "@/hooks/utils/useLocalStorage";
-import { useEffect, useState } from "react";
-import SplashScreen from "@/layout/SplashScreen";
-import LoadingScreen from "@/layout/screen/LoadingScreen";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 const client = new QueryClient();
@@ -20,7 +15,7 @@ const client = new QueryClient();
 export default function RootLayout() {
   const { NotificationsProvider } = createNotifications();
 
-  // font
+  // fontz
   useLoadFont();
 
   // States
@@ -30,18 +25,16 @@ export default function RootLayout() {
     <QueryClientProvider client={client}>
       <ThemeProvider initialTheme={lightTheme}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <AuthProvider>
-            <NotificationsProvider>
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="auth" />
-                <Stack.Screen name="user" />
-                <Stack.Screen name="product" />
-                <Stack.Screen name="cart" />
-                <Stack.Screen name="account" />
-              </Stack>
-              <Toast />
-            </NotificationsProvider>
-          </AuthProvider>
+          <NotificationsProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="auth" />
+              <Stack.Screen name="user" />
+              <Stack.Screen name="product" />
+              <Stack.Screen name="cart" />
+              <Stack.Screen name="account" />
+            </Stack>
+            <Toast />
+          </NotificationsProvider>
         </GestureHandlerRootView>
       </ThemeProvider>
     </QueryClientProvider>
