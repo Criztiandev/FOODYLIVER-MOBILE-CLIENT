@@ -25,7 +25,7 @@ const userValidation = z.object({
     .max(100, "Email is too long"),
   password: z
     .string()
-    .min(8, "Password is too short")
+    .min(5, "Password is too short")
     .max(16, "Password is too long"),
 });
 
