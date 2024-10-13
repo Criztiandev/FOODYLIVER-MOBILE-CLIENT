@@ -8,12 +8,7 @@ import {
 import { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
 
-export interface ErrorResponse {
-  error: string;
-  stack?: string;
-}
-
-type MutateError = AxiosError<ErrorResponse>;
+type MutateError = Error;
 
 interface MutationConfig<TData, TVariables, TContext = unknown>
   extends Omit<
@@ -37,42 +32,39 @@ function useMutate<TData = unknown, TVariables = unknown, TContext = unknown>({
   const queryClient = useQueryClient();
 
   return useMutation<TData, MutateError, TVariables, TContext>({
-    mutationFn,
-    ...options,
-    onSuccess: (data, variables, context) => {
-      if (options.onSuccess) {
-        options.onSuccess(data, variables, context);
-      }
-      if (queryKey) {
-        queryClient.invalidateQueries({ queryKey: [queryKey] });
+    mutationFn: async (variables) => {
+      try {
+        return await mutationFn(variables);
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Unknown error occurred");
       }
     },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      if (queryKey) {
+        queryClient.invalidateQueries({ queryKey });
+      }
+      options.onSuccess?.(data, variables, context);
+    },
     onError: (error, variables, context) => {
-      console.log(JSON.stringify(error, null, 2));
+      let errorMessage = error.message || "An unknown error occurred";
 
-      if (error.response) {
-        const errorMessage =
-          (error.response.data as ErrorResponse)?.error ||
-          "Something went wrong";
-        Toast.show({
-          type: "error",
-          text1: errorMessage,
-        });
-      } else if (error.request) {
-        Toast.show({
-          type: "error",
-          text1: "No response received from the server",
-        });
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "An unknown error occurred",
-        });
+      if (error instanceof AxiosError && error.response) {
+        errorMessage =
+          error.response.data?.message ||
+          error.response.data?.error ||
+          errorMessage;
       }
 
-      if (options.onError) {
-        options.onError(error, variables, context);
-      }
+      Toast.show({
+        type: "error",
+        text1: errorMessage,
+      });
+
+      options.onError?.(error, variables, context);
     },
   });
 }
