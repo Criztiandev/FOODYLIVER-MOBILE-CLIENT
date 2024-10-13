@@ -1,7 +1,10 @@
-import userValidation from "@/service/validation/user.validation";
-import { z } from "zod";
-
-export type User = z.infer<typeof userValidation> & {
-  id?: string;
+export interface User {
+  user_id?: string;
+  name: string;
+  email: string;
+  address: string;
+  longitude: string | number | null;
+  latitude: string | number | null;
+  isAuthenticated: boolean;
   role?: string;
-};
+}
