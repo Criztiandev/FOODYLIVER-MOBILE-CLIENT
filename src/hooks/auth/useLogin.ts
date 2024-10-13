@@ -1,27 +1,43 @@
-import { LoginValue } from "@/interface/auth.interface";
+import { LoginResponse, LoginValue } from "@/interface/auth.interface";
+import { PublicAxios } from "@/lib/axios";
 import { LoginValidation } from "@/service/validation/auth.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import useMutate from "../query/useMutate";
+import useLocalStorage from "../utils/useLocalStorage";
+import useAccountStore from "@/state/useAccountStore";
+import Toast from "react-native-toast-message";
+import { useRouter } from "expo-router";
 
 const useLogin = () => {
+  const { setItem, removeItem } = useLocalStorage();
+  const { setCredentials } = useAccountStore();
+  const router = useRouter();
+
   const form = useForm<LoginValue>({
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "string@string.com", password: "string" },
     resolver: zodResolver(LoginValidation),
   });
 
   // Mutation
-  const mutation = useMutation({
-    mutationFn: async () => {},
-    mutationKey: ["login-mutation"],
-
-    onSuccess: (data) => {
-      console.log(data);
+  const mutation = useMutate<LoginResponse, any, LoginValue>({
+    mutationFn: async (value: LoginValue) => {
+      const result = await PublicAxios.post("/login", value);
+      return result.data;
     },
+    mutationKey: ["POST /login"],
 
-    onError: (error) => {
-      console.log(error);
+    onSuccess: (data: LoginResponse) => {
+      const { token, ...rest } = data;
+
+      console.log(token);
+
+      // removeItem("accessToken");
+      // removeItem("user");
+
+      setItem("accessToken", token);
+      setCredentials({ ...rest });
+      router.push("/user/(tab)/home");
     },
   });
 
