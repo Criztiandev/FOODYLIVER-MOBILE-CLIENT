@@ -1,7 +1,6 @@
-import { View, Text, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text } from "react-native";
+import React from "react";
 import { Link, Stack, useRouter } from "expo-router";
-import BaseLayout from "../../layout/BaseLayout";
 import { FormProvider } from "react-hook-form";
 import InputField from "@/components/form/InputField";
 import CheckboxField from "@/components/form/CheckboxField";
@@ -9,14 +8,13 @@ import Button from "@/components/ui/Button";
 import useLogin from "@/hooks/auth/useLogin";
 import { LoginValue } from "@/interface/auth.interface";
 import YStack from "@/components/stacks/YStack";
-import useLocalStorage from "@/hooks/utils/useLocalStorage";
 import SplashScreen from "@/layout/SplashScreen";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import useSplashScreen from "@/hooks/init/useSplashScreen";
 
 const RootScreen = () => {
   const router = useRouter();
-  const { form } = useLogin();
+  const { form, mutation } = useLogin();
   const { isLoading, showSplash, handleSplash } = useSplashScreen();
 
   if (isLoading) return <LoadingScreen />;
@@ -26,7 +24,7 @@ const RootScreen = () => {
   }
 
   const onSubmit = (value: LoginValue) => {
-    router.replace("/");
+    mutation.mutate(value);
   };
 
   return (
@@ -64,8 +62,16 @@ const RootScreen = () => {
               </Link>
             </View>
           </FormProvider>
-          <Button className="w-full" onPress={form.handleSubmit(onSubmit)}>
-            <Text className="text-lg font-bold text-white">LOGIN</Text>
+          <Button
+            disabled={mutation.isPending}
+            className="w-full"
+            onPress={form.handleSubmit(onSubmit)}
+          >
+            {mutation.isPending ? (
+              <Text className="text-lg font-bold text-white">Login in</Text>
+            ) : (
+              <Text className="text-lg font-bold text-white">LOGIN</Text>
+            )}
           </Button>
         </View>
 
