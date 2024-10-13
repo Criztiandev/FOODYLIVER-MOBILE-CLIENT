@@ -7,17 +7,15 @@ import {
 } from "./interceptors";
 
 export const AxiosInstance = axios.create({
-  baseURL: `${process.env.EXPO_BASE_API_URL}/api`,
-  withCredentials: true,
+  baseURL: process.env.EXPO_PUBLIC_BASE_API_URL,
 });
 
 export const PublicAxios = axios.create({
-  baseURL: `${process.env.EXPO_BASE_API_URL}/api`,
-  withCredentials: true,
+  baseURL: process.env.EXPO_PUBLIC_BASE_API_URL,
 });
 
 export const PrivateAxios = axios.create({
-  baseURL: `${process.env.EXPO_BASE_API_URL}/api`,
+  baseURL: process.env.EXPO_PUBLIC_BASE_API_URL,
   withCredentials: true,
 });
 
