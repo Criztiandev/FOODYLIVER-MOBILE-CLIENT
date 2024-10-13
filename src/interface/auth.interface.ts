@@ -7,6 +7,9 @@ import { User } from "./user.interface";
 
 export type LoginValue = z.infer<typeof LoginValidation>;
 export type RegisterValue = z.infer<typeof RegistrationValidation>;
+export interface LoginResponse extends User {
+  token: string;
+}
 
 export interface AuthStore {
   login: (email: string, password: string) => void;
