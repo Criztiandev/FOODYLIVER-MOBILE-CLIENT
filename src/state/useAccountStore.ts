@@ -1,9 +1,6 @@
-import ProtectedRoute from "@/components/routes/ProtectedRoute";
-import useMutate from "@/hooks/query/useMutate";
 import useLocalStorage from "@/hooks/utils/useLocalStorage";
 import { AccountStore } from "@/interface/account.interface";
 import { User } from "@/interface/user.interface";
-import { PrivateAxios } from "@/lib/axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -22,8 +19,11 @@ const useAccountStore = create<AccountStore>((set, get) => ({
     return;
   },
 
-  getCredentials: () => {
-    return;
+  getCredentials: async () => {
+    const { getItem } = useLocalStorage();
+    const result = await getItem("user");
+
+    return result;
   },
 
   setCredentials: (credentials: User) =>
@@ -59,26 +59,6 @@ const useAccountStore = create<AccountStore>((set, get) => ({
 
       return { credentials };
     }),
-
-  deleteAccount: () => {
-    const state = get();
-
-    const credentials = state.credentials;
-
-    if (!credentials?.id) {
-      Toast.show({
-        type: "error",
-        text1: "Cannot delete, Id is not provided",
-      });
-      return state;
-    }
-
-    return useMutate({
-      mutationKey: ["account"],
-      mutationFn: async (id: string) =>
-        await PrivateAxios.delete(`/account/delete/${id}`),
-    });
-  },
 }));
 
 export default useAccountStore;
