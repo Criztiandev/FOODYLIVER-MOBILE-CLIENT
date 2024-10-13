@@ -1,14 +1,13 @@
-import { useAuth } from "@/providers/AuthProvider";
+import useAccountStore from "@/state/useAccountStore";
 import { Redirect, useRootNavigationState } from "expo-router";
 import React, { FC, PropsWithChildren } from "react";
-import Toast from "react-native-toast-message";
 
 interface Props extends PropsWithChildren {
   allowedRoles: string[];
 }
 
 const ProtectedRoute: FC<Props> = ({ allowedRoles, children }) => {
-  const { user: currentUser } = useAuth();
+  const { credentials: currentUser } = useAccountStore();
   const rootState = useRootNavigationState();
 
   if (!rootState.key) return null;
