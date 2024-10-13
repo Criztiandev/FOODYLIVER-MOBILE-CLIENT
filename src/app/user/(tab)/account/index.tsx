@@ -14,12 +14,17 @@ import NavigationBlob from "./components/NavigationBlob";
 import {
   AccountNavivationDataset,
   OrderNavigationDataset,
-} from "../../../../data/account.data";
+} from "@/data/account.data";
 import useLogout from "@/hooks/account/useLogout";
 
 const RootScreen = () => {
-  const { mutate } = useLogout();
+  const { mutate, isPending } = useLogout();
   const router = useRouter();
+
+  const handleLogout = () => {
+    mutate("");
+  };
+
   return (
     <BaseLayout>
       <Stack.Screen
@@ -77,10 +82,17 @@ const RootScreen = () => {
           />
 
           <Button
+            disabled={isPending}
             className=" flex-row justify-between items-center"
-            onPress={() => mutate("")}
+            onPress={handleLogout}
           >
-            <Text className="text-white text-base font-semibold">Logout</Text>
+            {isPending ? (
+              <Text className="text-white text-base font-semibold">
+                Processing
+              </Text>
+            ) : (
+              <Text className="text-white text-base font-semibold">Logout</Text>
+            )}
           </Button>
         </YStack>
       </YStack>
