@@ -7,14 +7,9 @@ export const requestInterceptorFulfill = async (
   config: InternalAxiosRequestConfig
 ) => {
   const accessToken = await storage.getItem<string>("accessToken");
-  const refreshToken = await storage.getItem<string>("refreshToken");
 
   if (accessToken) {
     config.headers["Authorization"] = `Bearer ${accessToken}`;
-  }
-
-  if (refreshToken) {
-    config.headers["x-refresh-token"] = refreshToken;
   }
 
   return config;
