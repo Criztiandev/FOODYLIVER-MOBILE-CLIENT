@@ -6,8 +6,6 @@ import YStack from "@/components/stacks/YStack";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import useReverseGeocode from "@/hooks/maps/useReverseGeocode";
-import useGeocoding from "@/hooks/utils/useGeocoding";
-import useLocation from "@/hooks/utils/useLocation";
 import BaseLayout from "@/layout/BaseLayout";
 
 import { Stack } from "expo-router";
@@ -18,7 +16,7 @@ import {
   Truck,
   Wallet,
 } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Text, View } from "react-native";
 
 const RootScreen = () => {
