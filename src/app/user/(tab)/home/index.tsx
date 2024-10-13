@@ -25,6 +25,8 @@ import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import CartButton from "@/components/atoms/button/CartButton";
 import NotificationButton from "@/components/atoms/button/NotificationButton";
+import CategoriesCard from "@/components/molecules/card/CategoriesCard";
+import PromotionalCard from "@/components/molecules/card/PromotionalCard";
 
 const RootScreen = () => {
   const router = useRouter();
@@ -60,26 +62,12 @@ const RootScreen = () => {
             <Link href="/_sitemap">More</Link>
           </View>
 
-          <XStack>
+          <XStack className="">
             <FlashList
               data={[{}, {}, {}]}
               estimatedItemSize={10000}
               horizontal
-              renderItem={() => (
-                <TouchableOpacity
-                  style={{ flexShrink: 1 }}
-                  onPress={() => router.push("/product/list/test")}
-                >
-                  <ImageBackground
-                    resizeMode="cover"
-                    source={{ uri: "https://legacy.reactjs.org/logo-og.png" }}
-                    className="w-[200px]  border rounded-md justify-center items-center mr-2 overflow-hidden"
-                    style={{ height: "100%", minHeight: 100 }}
-                  />
-                  <Text className="text-white text-lg">Food</Text>
-                  <ImageBackground />
-                </TouchableOpacity>
-              )}
+              renderItem={() => <CategoriesCard />}
             />
           </XStack>
         </YStack>
@@ -99,17 +87,7 @@ const RootScreen = () => {
               data={[{}]}
               estimatedItemSize={10000}
               horizontal
-              renderItem={() => (
-                <TouchableOpacity
-                  onPress={() => router.push("/product/list/test")}
-                  style={{
-                    width: Dimensions.get("screen").width - 16,
-                  }}
-                  className=" h-[200px] border rounded-md p-4 flex justify-center items-center mr-2"
-                >
-                  <Text className="text-lg font-bold">Fast Food</Text>
-                </TouchableOpacity>
-              )}
+              renderItem={() => <PromotionalCard />}
             />
           </XStack>
         </YStack>
