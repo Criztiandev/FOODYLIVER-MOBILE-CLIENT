@@ -12,7 +12,7 @@ const RootScreen = () => {
     (async () => {
       const credentials = await getItem("user");
 
-      if (credentials) {
+      if (!credentials) {
         setItem("user", credentials);
         router.navigate("/user/home");
       } else {

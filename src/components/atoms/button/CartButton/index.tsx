@@ -7,7 +7,7 @@ const CartButton = () => {
   const router = useRouter();
   return (
     <TouchableOpacity onPress={() => router.push("/cart/list")}>
-      <ShoppingCart color="black" />
+      <ShoppingCart className="text-primary" />
     </TouchableOpacity>
   );
 };

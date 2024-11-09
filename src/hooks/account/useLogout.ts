@@ -1,6 +1,5 @@
 import useMutate from "../query/useMutate";
 import { PrivateAxios } from "@/lib/axios";
-import useAccountStore from "@/state/useAccountStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import useLocalStorage from "../utils/useLocalStorage";

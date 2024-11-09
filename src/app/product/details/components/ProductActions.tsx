@@ -39,7 +39,7 @@ const ProductActions: FC<Props> = ({ product, quantity }) => {
   }, [quantity]);
 
   return (
-    <XStack className="space-x-2 ">
+    <XStack className="space-x-2 px-2 py-4 ">
       <TouchableOpacity
         className="border border-primary bg-[#EAEAEA] px-4 py-2 rounded-md flex-1"
         onPress={handleBuyProduct}

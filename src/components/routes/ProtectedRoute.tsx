@@ -1,3 +1,4 @@
+import NotFoundScreen from "@/app/+not-found";
 import useAccountStore from "@/state/useAccountStore";
 import { Redirect, useRootNavigationState } from "expo-router";
 import React, { FC, PropsWithChildren } from "react";
@@ -16,7 +17,7 @@ const ProtectedRoute: FC<Props> = ({ allowedRoles, children }) => {
     currentUser === null ||
     !allowedRoles.includes(currentUser?.role as unknown as string)
   ) {
-    return <Redirect href="/auth/sign-in" />;
+    return <NotFoundScreen />;
   }
 
   return children;

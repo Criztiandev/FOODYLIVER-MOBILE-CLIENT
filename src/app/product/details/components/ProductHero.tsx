@@ -4,8 +4,11 @@ import YStack from "@/components/stacks/YStack";
 import Avatar from "@/components/ui/Avatar";
 import XStack from "@/components/stacks/XStack";
 import { MessageSquare, Share2 } from "lucide-react-native";
+import { ProductItem } from "@/interface/product.interface";
 
-const ProductHero = () => {
+interface Props extends Pick<ProductItem, "name" | "price" | "rating"> {}
+
+const ProductHero = ({ name, price, rating }: Props) => {
   return (
     <YStack className="relative">
       <View
@@ -26,7 +29,7 @@ const ProductHero = () => {
 
           <YStack className="space-y-1 justify-center items-center mt-[64px]">
             <Text className="text-[18px] text-white font-bold p-2 text-center  bg-primary rounded-full border-2 border-white">
-              4.1
+              {rating || "0.0"}
             </Text>
             <Text className="font-bold text-[16px]">Rating</Text>
           </YStack>
@@ -39,8 +42,12 @@ const ProductHero = () => {
       </YStack>
 
       <YStack className="jsutify-center items-center">
-        <Text className="text-[52px] font-bold">Burger</Text>
-        <Text className="text-xl font-bold opacity-50">PHP 900</Text>
+        <Text className="text-[48px] font-bold text-center">
+          {name || "Name"}
+        </Text>
+        <Text className="text-xl font-bold opacity-50">
+          PHP {price || "0.00"}
+        </Text>
       </YStack>
     </YStack>
   );

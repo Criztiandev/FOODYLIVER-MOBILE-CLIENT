@@ -9,35 +9,58 @@ import ProductHeader from "./components/ProductHeader";
 import useCartStore from "@/state/useCartStore";
 import useProductStore from "@/state/useProductStore";
 import { View } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { useFetchProductById } from "@/hooks/product/query";
+import LoadingScreen from "@/layout/screen/LoadingScreen";
+import ErrorScreen from "@/layout/screen/ErrorScreen";
+import Toast from "react-native-toast-message";
 
 const RootScreen = () => {
+  const { id } = useLocalSearchParams();
   const [quantity, setQuantity] = useState<number>(1);
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+
+  const {
+    isLoading,
+    isError,
+    error,
+    data: result,
+  } = useFetchProductById(id as string);
+
+  if (isLoading) return <LoadingScreen />;
+  if (isError) {
+    console.log(error);
+    return <ErrorScreen />;
+  }
+  const product = result.data;
+
+  const handleSelectAddons = (name: string) => {
+    setSelectedAddons((prev) => {
+      if (prev.includes(name)) {
+        const filtered = prev.filter((filter) => filter !== name);
+        return filtered;
+      }
+      return [...prev, name];
+    });
+  };
 
   return (
     <>
       <BaseLayout>
-        <YStack className="flex-1 h-[90vh] space-y-4  relative justify-between items-center">
+        <YStack className="flex-1  space-y-4  relative justify-between items-center">
           <ProductHeader />
 
           <YStack className=" px-2 mb-4">
-            <ProductHero />
-            <ProductAddons />
+            <ProductHero {...product} />
+            <ProductAddons
+              selected={selectedAddons}
+              onSelect={handleSelectAddons}
+              {...product}
+            />
             <ProductQuantity quantity={quantity} setQuantity={setQuantity} />
           </YStack>
 
-          <View className="absolute w-full bottom-0 px-2">
-            <ProductActions
-              product={{
-                id: "123123",
-                name: "Product 1",
-                price: 3000,
-                rating: 5.0,
-                thumbnailUrl: "12312312312",
-                addons: [],
-              }}
-              quantity={quantity}
-            />
-          </View>
+          <ProductActions product={result.data} quantity={quantity} />
         </YStack>
       </BaseLayout>
     </>

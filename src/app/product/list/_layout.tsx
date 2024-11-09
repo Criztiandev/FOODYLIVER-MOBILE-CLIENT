@@ -4,11 +4,9 @@ import React from "react";
 
 const RootScreen = () => {
   return (
-    <ProtectedRoute allowedRoles={["user"]}>
-      <Stack>
-        <Stack.Screen name="[status]" />
-      </Stack>
-    </ProtectedRoute>
+    <Stack>
+      <Stack.Screen name="[status]" />
+    </Stack>
   );
 };
 

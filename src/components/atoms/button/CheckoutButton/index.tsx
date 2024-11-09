@@ -10,7 +10,7 @@ const CheckoutButton = () => {
   return (
     <Button className="my-8" onPress={() => router.replace("/order/delivery")}>
       <XStack className="space-x-4">
-        <ShoppingCart color="white" />
+        <ShoppingCart className="text-primary" />
         <Text className="text-white text-lg">Checkout Order</Text>
       </XStack>
     </Button>

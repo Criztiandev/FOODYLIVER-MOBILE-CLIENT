@@ -12,6 +12,7 @@ const ProductHeader = () => {
       <Stack.Screen
         options={{
           title: "",
+          headerShadowVisible: false,
           headerLeft: () => <BackButton />,
           headerRight: () => (
             <XStack className="space-x-4">

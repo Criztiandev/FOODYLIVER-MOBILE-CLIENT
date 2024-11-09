@@ -3,10 +3,14 @@ import { QueryClient, UseQueryResult } from "@tanstack/react-query";
 export interface ProductItem {
   id?: string;
   thumbnailUrl: string;
+  category_id: string;
   name: string;
   price: number;
+  description: string;
   rating: number;
-  addons: Array<string>;
+  addons: string;
+  stocks: number;
+  is_available: boolean;
 }
 
 export interface ProductStore {
