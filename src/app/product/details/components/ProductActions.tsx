@@ -13,13 +13,18 @@ interface Props extends ProductItem {}
 
 const ProductActions: FC<Props> = (props) => {
   const router = useRouter();
-  const { calculateSubtotal, items } = useCartStore();
+
+  // Cart Store
+  const { calculateSubtotal, items, addProduct } = useCartStore();
+
+  // Memoize quantity payload
   const quantity = useMemo(() => {
     return items.find((cardItem) => cardItem.id === props.id)?.quantity;
   }, [items]);
 
   const disabledBtn = !props.is_available || (quantity && quantity >= 99);
 
+  // Handle add to cart
   const handleAddToCart = () => {
     if (quantity === undefined || (quantity && quantity <= 0)) {
       Toast.show({
@@ -28,8 +33,17 @@ const ProductActions: FC<Props> = (props) => {
       });
       return;
     }
-
     router.push("/cart/list");
+  };
+
+  // Handle checkoiut
+  const handleProductCheckout = () => {
+    if (quantity === undefined || quantity === null || quantity <= 0) {
+      addProduct(props, 1);
+      router.push("/order/payment");
+      return;
+    }
+    router.push("/order/payment");
   };
 
   return (
@@ -45,7 +59,11 @@ const ProductActions: FC<Props> = (props) => {
         </Text>
       </Button>
 
-      <Button className="flex-1 bg-primary" disabled={disabledBtn || false}>
+      <Button
+        className="flex-1 bg-primary"
+        disabled={disabledBtn || false}
+        onPress={handleProductCheckout}
+      >
         <XStack className="items-center space-x-2">
           <Wallet color="white" size={18} />
           {quantity && quantity > 0 ? (

@@ -24,12 +24,9 @@ const RootScreen = () => {
 
       <BaseLayout>
         <YStack className="p-2 space-y-4">
-          <XStack>
-            <Text className="text-lg">Order Updates</Text>
-          </XStack>
-          <YStack className="rounded-md border border-[#bc0505] p-2 space-y-2 ">
+          <YStack className="rounded-md border border-[#F4891F] p-2 space-y-2 my-2">
             <XStack className="space-x-2">
-              <Truck color="#bc0505" />
+              <Truck color="#F4891F" />
               <Text className="text-base font-semibold text-primary">
                 Your Order is on the Way
               </Text>

@@ -10,6 +10,7 @@ import React, { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import PaymentMap from "../../../components/molecules/Map/PaymentMap";
 import PaymentCheckoutDetails from "../../../components/molecules/overview/PaymentCheckoutDetails";
+import useCartStore from "@/state/useCartStore";
 
 const SHIPPING_FEE = 50;
 
@@ -28,7 +29,7 @@ const paymentMethod = [
 
 const RootScreen = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("COD");
-
+  const { clearCart } = useCartStore();
   const handleSelectPaymentMethod = (method: string) => {
     setSelectedPaymentMethod(method);
   };
@@ -39,7 +40,7 @@ const RootScreen = () => {
       router.push("/order/payment/gcash");
       return;
     }
-
+    clearCart();
     router.push("/order/delivery");
   };
 

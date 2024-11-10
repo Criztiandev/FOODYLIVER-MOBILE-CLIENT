@@ -1,11 +1,9 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import MapView, { Region } from "react-native-maps";
 import useLocation from "@/hooks/utils/useLocation";
-import BaseLayout from "@/layout/BaseLayout";
 import { Stack } from "expo-router";
 import DeliveryMap from "@/components/molecules/Map/DeliveryMap";
 import { Text, View } from "react-native";
-import BackButton from "@/components/atoms/button/BackButton";
 import Button from "@/components/ui/Button";
 import * as Linking from "expo-linking";
 import XStack from "@/components/stacks/XStack";
@@ -26,11 +24,6 @@ const RootScreen: FC<Props> = () => {
   const mapRef = useRef<MapView | null>(null);
   const { location, error } = useLocation(true); // Using watch mode
   const [initialRegion, setInitialRegion] = useState<Region | null>(null);
-
-  const targetRegion = {
-    latitude: 37.44964795610058,
-    longitude: -122.15490521863103,
-  };
 
   useEffect(() => {
     if (location) {

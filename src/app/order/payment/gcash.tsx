@@ -6,10 +6,14 @@ import Button from "@/components/ui/Button";
 import XStack from "@/components/stacks/XStack";
 import { ShoppingBag } from "lucide-react-native";
 import { WebView } from "react-native-webview";
+import useCartStore from "@/state/useCartStore";
 
 const RootScreen = () => {
   const router = useRouter();
+  const { clearCart } = useCartStore();
+
   const handlePlaceOrder = () => {
+    clearCart();
     router.replace("/order/delivery");
   };
 
