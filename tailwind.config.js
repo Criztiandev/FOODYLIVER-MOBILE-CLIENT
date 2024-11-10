@@ -5,14 +5,14 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#BC0505",
+          DEFAULT: "#F4891F",
         },
         secondary: {},
         accent: {},
       },
       textColor: {
         primary: {
-          DEFAULT: "#BC0505",
+          DEFAULT: "#F4891F",
           white: "#ffffff",
         },
         secondary: "#e0e0e0",

@@ -40,29 +40,21 @@ const OrderHistoryCard = () => {
         </XStack>
       </YStack>
 
-      <TouchableOpacity
-        className="border border-primary px-4 py-2 rounded-md justify-center items-center"
-        onPress={() =>
-          handleAddtoCart({
-            id: "123123123",
-            name: "Product",
-            addons: [],
-            rating: 5,
-            price: 200,
-            thumbnailUrl: "123",
-          })
-        }
-      >
-        <Text className="text-base text-black">Select item to reorder</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="bg-[#C60505] px-4 py-2 rounded-md justify-center items-center"
-        onPress={() =>
-          router.push(`/account/order-history/details/${123123123}`)
-        }
-      >
-        <Text className="text-base text-white">View Details</Text>
-      </TouchableOpacity>
+      <XStack className="justify-end">
+        <View className="flex-row space-x-2">
+          <TouchableOpacity className="border border-primary px-4 py-2 rounded-md justify-center items-center">
+            <Text className="text-base text-black">Order Again</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="bg-[#C60505] px-4 py-2 rounded-md justify-center items-center"
+            onPress={() =>
+              router.push(`/account/order-history/details/${123123123}`)
+            }
+          >
+            <Text className="text-base text-white">View Details</Text>
+          </TouchableOpacity>
+        </View>
+      </XStack>
     </YStack>
   );
 };

@@ -1,42 +1,56 @@
-import { View, Text } from "react-native";
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useMemo,
+} from "react";
 import YStack from "@/components/stacks/YStack";
-import XStack from "@/components/stacks/XStack";
 import Button from "@/components/ui/Button";
-import { Minus, Plus } from "lucide-react-native";
+import { Text } from "react-native";
+import { PlusIcon, MinusIcon } from "lucide-react-native";
+import XStack from "@/components/stacks/XStack";
 import useProductStore from "@/state/useProductStore";
 import useCartStore from "@/state/useCartStore";
 import { ProductItem } from "@/interface/product.interface";
+interface Props extends ProductItem {}
 
-interface Props {
-  quantity: number;
-  setQuantity: Dispatch<SetStateAction<number>>;
-}
+const ProductQuantity: FC<Props> = (props) => {
+  const { id } = props;
+  const { addProduct, removeProduct, incrementQuantity, items } =
+    useCartStore();
+  const cartItem = items.find((item) => item.id === props.id);
+  const quantity = cartItem?.quantity || 0;
 
-const ProductQuantity: FC<Props> = ({ quantity, setQuantity }) => {
-  const handleIncrement = () =>
-    setQuantity((prev) => (prev >= 99 ? prev : (prev += 1)));
+  const handleIncrementQuantity = () => {
+    if (!cartItem) {
+      addProduct({ id, ...props }, 1);
+    } else {
+      incrementQuantity(id || "");
+    }
+  };
 
-  const handleDecrement = () =>
-    setQuantity((prev) => (prev <= 0 ? prev : (prev -= 1)));
+  const handleDecrementQuantity = () => {
+    if (quantity > 0) {
+      removeProduct(id || "", 0);
+    }
+  };
 
   return (
-    <YStack className=" mb-4">
-      <Text className="font-bold text-[24px]">Quantity</Text>
-      <XStack className="space-x-4 items-center  justify-between ">
-        <XStack className="space-x-4 items-center">
-          <Text className=" opacity-70 text-xl">{quantity || 0}</Text>
-        </XStack>
+    <YStack className="justify-end items-start">
+      <Text className="text-lg font-semibold mb-2">Quantity</Text>
+      <XStack className="space-x-4 items-cemter">
+        <Button size="icon" onPress={handleIncrementQuantity}>
+          <PlusIcon color="white" />
+        </Button>
 
-        <XStack className="space-x-2">
-          <Button size="icon" variant="outline" onPress={handleIncrement}>
-            <Plus color="black" />
-          </Button>
+        <Button size="icon" variant="outline" className="bg-stone-200">
+          <Text>{quantity || 0}</Text>
+        </Button>
 
-          <Button size="icon" variant="outline" onPress={handleDecrement}>
-            <Minus color="black" />
-          </Button>
-        </XStack>
+        <Button size="icon" onPress={handleDecrementQuantity}>
+          <MinusIcon color="white" />
+        </Button>
       </XStack>
     </YStack>
   );

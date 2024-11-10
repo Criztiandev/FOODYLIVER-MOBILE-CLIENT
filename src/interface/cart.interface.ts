@@ -9,12 +9,14 @@ export interface Cart {
 }
 
 export interface CartStore {
-  cart: Cart;
+  items: CartItem[];
+  subtotal: number;
+  itemCount: number;
   addProduct: (product: ProductItem, quantity: number) => void;
   removeProduct: (productId: string, quantity: number) => void;
-  updateProductQuantity: (productId: string, quantity: number) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  getCartTotal: () => number;
-  getCartItemCount: () => void;
-  getProductDetails: (id: string) => CartItem | null | undefined;
+  incrementQuantity: (productId: string) => void;
+  calculateSubtotal: () => number;
+  calculateItemCount: () => number;
 }

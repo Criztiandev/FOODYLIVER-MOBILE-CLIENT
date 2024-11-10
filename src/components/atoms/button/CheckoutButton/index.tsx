@@ -11,7 +11,7 @@ const CheckoutButton = () => {
     <Button className="my-8" onPress={() => router.replace("/order/delivery")}>
       <XStack className="space-x-4">
         <ShoppingCart className="text-primary" />
-        <Text className="text-white text-lg">Checkout Order</Text>
+        <Text className="text-white font-semibold text-lg">Place Order</Text>
       </XStack>
     </Button>
   );

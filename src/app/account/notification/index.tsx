@@ -14,6 +14,11 @@ const RootScreen = () => {
         options={{
           headerLeft: () => <BackButton />,
           title: "Notification",
+          headerTitleStyle: { color: "white" },
+          headerStyle: {
+            backgroundColor: "#f4891f",
+          },
+          headerTitleAlign: "center",
         }}
       />
 

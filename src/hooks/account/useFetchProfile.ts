@@ -1,8 +1,10 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const useFetchProfile = () => {
-  return {};
+  return useQuery({
+    queryKey: ["/GET /accout/profile"],
+    queryFn: async () => Promise.reject("HAHA"),
+  });
 };
 
 export default useFetchProfile;

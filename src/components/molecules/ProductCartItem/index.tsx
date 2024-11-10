@@ -4,71 +4,69 @@ import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import { CartItem } from "@/interface/cart.interface";
 import useCartStore from "@/state/useCartStore";
-import { Minus, Plus, View } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Box, DollarSign, Minus, Plus, Star, Tag } from "lucide-react-native";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 
-const ProductCartItem = ({ id, name, price, quantity }: CartItem) => {
-  const [_quantity, setQuantity] = useState(quantity);
-  const { updateProductQuantity, removeProduct } = useCartStore();
+const ProductCartItem = (props: CartItem) => {
+  const { id, name, price, rating, stocks } = props;
+  const {
+    items,
+    calculateSubtotal,
+    incrementQuantity,
+    addProduct,
+    removeProduct,
+  } = useCartStore();
+  const cartItem = items.find((item) => item.id === id);
+  const quantity = cartItem?.quantity || 0;
 
-  const handleIncrement = () => {
-    setQuantity((prev) => (prev >= 99 ? prev : (prev += 1)));
-  };
-
-  const handleDecrement = () => {
-    setQuantity((prev) => (prev <= 0 ? prev : (prev -= 1)));
-  };
-
-  useEffect(() => {
-    if (_quantity) {
-      updateProductQuantity(id || "", _quantity);
+  const handleIncrementQuantity = () => {
+    if (!cartItem) {
+      addProduct({ id, ...props }, 1);
+    } else {
+      incrementQuantity(id || "");
     }
+  };
 
-    if (_quantity <= 0) {
+  const handleDecrementQuantity = () => {
+    if (quantity > 0) {
       removeProduct(id || "", 0);
     }
-  }, [_quantity]);
+  };
 
   return (
-    <YStack className="bg-[#FCDEDE] p-4 rounded-md justify-between items-ce my-4 space-y-4">
-      <XStack className="justify-between items-center">
-        <XStack className="items-center space-x-4">
-          <Avatar />
+    <YStack className="bg-primary/30 p-4 rounded-md justify-between items-ce my-4 space-y-4 ">
+      <XStack className="space-x-4 justify-between items-center">
+        <XStack className="space-x-4">
+          <Avatar size={64} />
+
           <YStack>
-            <Text className="text-xl font-bold">{name}</Text>
+            <Text className="text-lg font-semibold">{name || "Prodict"}</Text>
 
-            {/* Addons */}
-
-            <Text className="font-bold text-base opacity-70">PHP {price}</Text>
+            <XStack className="space-x-4 items-center">
+              <XStack className="items-center space-x-1">
+                <DollarSign color="#EA9937" />
+                <Text className="text-sm font-semibold text-stone-600 underline">
+                  {calculateSubtotal()}
+                </Text>
+              </XStack>
+            </XStack>
           </YStack>
         </XStack>
 
-        <XStack className="items-center ">
-          <TouchableOpacity
-            className="border px-2 py-[5px]  border-primary/70 rounded-l-lg border-r-0"
-            onPress={handleDecrement}
-          >
-            <Minus color="black" size={18} />
+        <XStack className="items-center spacex-2">
+          <TouchableOpacity onPress={handleIncrementQuantity}>
+            <Plus color="#F4891F" />
           </TouchableOpacity>
 
-          <Text className="text-xl px-2 border text-center border-primary/70">
-            {_quantity}
-          </Text>
+          <Button size="icon" variant="ghost">
+            <Text className="text-lg font-bold">{quantity}</Text>
+          </Button>
 
-          <TouchableOpacity
-            className="border px-2 py-[5px] border-primary/70 rounded-r-lg border-l-0"
-            onPress={handleIncrement}
-          >
-            <Plus color="black" size={18} />
+          <TouchableOpacity onPress={handleDecrementQuantity}>
+            <Minus color="#F4891F" />
           </TouchableOpacity>
         </XStack>
-      </XStack>
-
-      <XStack>
-        <Text className="px-2 py-1 border rounded-md border-primary">
-          Addons
-        </Text>
       </XStack>
     </YStack>
   );

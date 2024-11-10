@@ -72,7 +72,7 @@ const DeliveryMap: FC<Props> = ({ targetRegion }) => {
           latitude: targetRegion.latitude,
           longitude: targetRegion.longitude,
         }}
-        apikey={"AIzaSyD2S3-_jyyJJLOJdCzEeGLY31egBsD4i1Y"}
+        apikey="AIzaSyACcQI_2ajppwlgGZ_9kD_YHGcuM0f7AEo"
         strokeWidth={4}
         strokeColor="#FF7C02"
         optimizeWaypoints={true}

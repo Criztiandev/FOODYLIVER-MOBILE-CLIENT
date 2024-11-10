@@ -6,7 +6,7 @@ const PromotionalCard = () => {
   const router = useRouter();
   return (
     <TouchableOpacity
-      onPress={() => router.push("/product/list/test")}
+      onPress={() => router.push("/product/list/promotional")}
       style={{
         width: Dimensions.get("screen").width - 16,
       }}

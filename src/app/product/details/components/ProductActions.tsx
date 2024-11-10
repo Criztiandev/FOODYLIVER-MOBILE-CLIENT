@@ -1,61 +1,64 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { Text } from "react-native";
+import React, { FC, useMemo, useState } from "react";
 import XStack from "@/components/stacks/XStack";
+import { ProductItem } from "@/interface/product.interface";
+import { useRouter } from "expo-router";
+import Button from "@/components/ui/Button";
 import YStack from "@/components/stacks/YStack";
 import useCartStore from "@/state/useCartStore";
-import { ProductItem } from "@/interface/product.interface";
 import Toast from "react-native-toast-message";
-import { useRouter } from "expo-router";
+import { ShoppingCart, Wallet } from "lucide-react-native";
 
-interface Props {
-  product: ProductItem;
-  quantity: number;
-}
+interface Props extends ProductItem {}
 
-const ProductActions: FC<Props> = ({ product, quantity }) => {
+const ProductActions: FC<Props> = (props) => {
   const router = useRouter();
-  const [totalPrice, setTotalPrice] = useState(0);
-  const { addProduct, getProductDetails } = useCartStore();
+  const { calculateSubtotal, items } = useCartStore();
+  const quantity = useMemo(() => {
+    return items.find((cardItem) => cardItem.id === props.id)?.quantity;
+  }, [items]);
 
-  const handleAddProduct = () => {
-    Toast.show({
-      type: "success",
-      text1: "Product Added to the cart",
-    });
+  const disabledBtn = !props.is_available || (quantity && quantity >= 99);
 
-    addProduct(product, quantity);
-  };
-
-  const handleBuyProduct = () => {
-    addProduct(product, quantity);
+  const handleAddToCart = () => {
+    if (quantity === undefined || (quantity && quantity <= 0)) {
+      Toast.show({
+        type: "info",
+        text1: "Invalid Action, Add Quantity before proceeding",
+      });
+      return;
+    }
 
     router.push("/cart/list");
   };
 
-  useEffect(() => {
-    if (quantity > 0) {
-      setTotalPrice(product.price * quantity);
-    }
-  }, [quantity]);
-
   return (
-    <XStack className="space-x-2 px-2 py-4 ">
-      <TouchableOpacity
-        className="border border-primary bg-[#EAEAEA] px-4 py-2 rounded-md flex-1"
-        onPress={handleBuyProduct}
+    <XStack className="space-x-4 my-4">
+      <Button
+        disabled={disabledBtn || false}
+        className="bg-stone-400/30 border border-stone-400 flex-1 flex-row space-x-2"
+        onPress={handleAddToCart}
       >
-        <YStack className="justify-center items-center">
-          <Text className=" font-bold">BUY NOW</Text>
-          <Text className="font-bold opacity-70">PHP {totalPrice}</Text>
-        </YStack>
-      </TouchableOpacity>
+        <ShoppingCart color="black" size={18} />
+        <Text className="text-base text-black uppercase font-semibold">
+          Add to cart
+        </Text>
+      </Button>
 
-      <TouchableOpacity
-        className="bg-primary  px-4 py-2 rounded-md flex-1 justify-center items-center"
-        onPress={handleAddProduct}
-      >
-        <Text className=" font-bold text-white">ADD TO CART</Text>
-      </TouchableOpacity>
+      <Button className="flex-1 bg-primary" disabled={disabledBtn || false}>
+        <XStack className="items-center space-x-2">
+          <Wallet color="white" size={18} />
+          {quantity && quantity > 0 ? (
+            <Text className="text-white text-base ">
+              P {calculateSubtotal()}
+            </Text>
+          ) : (
+            <Text className="text-base text-white uppercase font-semibold">
+              Buy Now
+            </Text>
+          )}
+        </XStack>
+      </Button>
     </XStack>
   );
 };

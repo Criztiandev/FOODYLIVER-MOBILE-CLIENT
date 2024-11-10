@@ -1,119 +1,110 @@
 import BackButton from "@/components/atoms/button/BackButton";
-import CheckoutButton from "@/components/atoms/button/CheckoutButton";
-import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
-import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
-import useReverseGeocode from "@/hooks/maps/useReverseGeocode";
 import BaseLayout from "@/layout/BaseLayout";
 
-import { Stack } from "expo-router";
-import {
-  MapIcon,
-  MapPin,
-  ReceiptText,
-  Truck,
-  Wallet,
-} from "lucide-react-native";
-import React from "react";
+import { router, Stack } from "expo-router";
+import { ShoppingBag, Truck, Wallet } from "lucide-react-native";
+import React, { useMemo, useState } from "react";
 import { Text, View } from "react-native";
+import PaymentMap from "../../../components/molecules/Map/PaymentMap";
+import PaymentCheckoutDetails from "../../../components/molecules/overview/PaymentCheckoutDetails";
+
+const SHIPPING_FEE = 50;
+
+const paymentMethod = [
+  {
+    id: 0,
+    title: "Cash on delivery",
+    keyword: "COD",
+  },
+  {
+    id: 1,
+    title: "G Cash",
+    keyword: "gcash",
+  },
+];
 
 const RootScreen = () => {
-  const { address } = useReverseGeocode();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("COD");
+
+  const handleSelectPaymentMethod = (method: string) => {
+    setSelectedPaymentMethod(method);
+  };
+
+  const handlePlaceOrder = () => {
+    // check the method first before navigating for placing
+    if (selectedPaymentMethod === "gcash") {
+      router.push("/order/payment/gcash");
+      return;
+    }
+
+    router.push("/order/delivery");
+  };
 
   return (
     <>
       <Stack.Screen
         options={{
           headerLeft: () => <BackButton />,
-          title: "Checkout",
+          title: "Payment",
+          headerTitleStyle: { color: "white" },
+          headerStyle: {
+            backgroundColor: "#f4891f",
+          },
+          headerTitleAlign: "center",
+          headerShadowVisible: false,
         }}
       />
 
       <BaseLayout>
-        <YStack className="p-4 space-y-8">
-          <YStack className="space-y-3">
-            <XStack className="items-center space-x-2">
-              <MapPin color="black" />
-              <Text className="text-lg font-bold">Delivery Address</Text>
-            </XStack>
-
-            <View className="rounded-md border border-primary/70 overflow-hidden h-[200px]">
-              <CurrentLocationMap />
-            </View>
-
-            <Button
-              variant="outline"
-              className="border-primary space-x-2 flex-row"
-            >
-              <MapIcon color="black" />
-              <Text className="text-base font-semibold">
-                {address || "Current Address"}
-              </Text>
-            </Button>
-          </YStack>
+        <YStack className="p-4 space-y-4">
+          <PaymentMap />
 
           <YStack className="space-y-4">
             <XStack className="items-center space-x-2">
-              <Wallet color="black" />
+              <Wallet color="#F4891F" />
               <Text className="text-lg font-bold">Payment Method</Text>
             </XStack>
 
             <XStack className="space-x-4">
-              <Button
-                variant="outline"
-                className="border-primary space-x-2 flex-row"
-              >
-                <Truck color="black" />
-                <Text className="text-base font-semibold">
-                  Cash on Delivery
-                </Text>
-              </Button>
-
-              <Button
-                variant="outline"
-                className="border-primary flex-row space-x-2"
-              >
-                <Avatar size={24} />
-                <Text className="text-base">Gcash</Text>
-              </Button>
+              {paymentMethod.map(({ keyword, title }) => {
+                const isSelectedMethod = selectedPaymentMethod === keyword;
+                return (
+                  <Button
+                    key={keyword}
+                    variant={isSelectedMethod ? "default" : "outline"}
+                    className=" space-x-2 flex-row border-stone-400 "
+                    onPress={() => handleSelectPaymentMethod(keyword)}
+                  >
+                    <Truck color={isSelectedMethod ? "white" : "#F4891F"} />
+                    <Text
+                      className={`text-base font-semibold ${
+                        isSelectedMethod ? "text-white" : "text-primary"
+                      }`}
+                    >
+                      {title}
+                    </Text>
+                  </Button>
+                );
+              })}
             </XStack>
           </YStack>
-
-          <YStack className="border p-2 rounded-md border-primary/70 space-y-2">
-            <XStack className="items-center space-x-2">
-              <ReceiptText color="black" />
-              <Text className="text-[18px] font-bold">Order Summary</Text>
-            </XStack>
-
-            <YStack className="space-y-2">
-              <XStack className="space-x-4  justify-between items-center">
-                <XStack className="space-x-2">
-                  <Text className="">Subtotal</Text>
-                </XStack>
-                <Text className="">PHP 568.00</Text>
-              </XStack>
-
-              <XStack className="space-x-4  justify-between items-center">
-                <XStack className="space-x-2">
-                  <Text className="">Delivery Fee</Text>
-                </XStack>
-                <Text className="">PHP 48.00</Text>
-              </XStack>
-
-              <XStack className="space-x-4  justify-between items-center">
-                <XStack className="space-x-2">
-                  <Text className="">Total</Text>
-                </XStack>
-                <Text className="">PHP 568.00</Text>
-              </XStack>
-            </YStack>
-          </YStack>
-
-          <CheckoutButton />
         </YStack>
       </BaseLayout>
+
+      <View className="p-4 absolute bottom-0 w-full space-y-4">
+        <PaymentCheckoutDetails />
+        <Button onPress={handlePlaceOrder}>
+          <XStack className="space-x-2 items-center">
+            <ShoppingBag color="white" size={18} />
+            <Text className="text-lg font-semibold text-white">
+              Place order
+            </Text>
+          </XStack>
+        </Button>
+      </View>
     </>
   );
 };

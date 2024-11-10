@@ -7,7 +7,7 @@ const BackButton = () => {
   const router = useRouter();
   return (
     <TouchableOpacity onPress={() => router.back()} className="mr-4">
-      <ChevronLeft color="black" />
+      <ChevronLeft color="white" />
     </TouchableOpacity>
   );
 };

@@ -19,7 +19,7 @@ interface Props {
 const BaseLayout: FC<Props> = ({ children, ...props }) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      <StatusBar barStyle="light-content" backgroundColor="#F4891F" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}

@@ -1,9 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { Image } from "expo-image";
 
 const ErrorScreen = () => {
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className="flex-1 justify-center items-center bg-black">
       <Text>Error...</Text>
     </View>
   );

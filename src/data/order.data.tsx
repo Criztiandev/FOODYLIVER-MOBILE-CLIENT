@@ -9,22 +9,22 @@ export interface IOrderDataSet {
 
 export const OrderDataSet: IOrderDataSet[] = [
   {
-    title: "To Pay",
+    title: "Pay",
     icon: <Wallet color="black" />,
   },
 
   {
-    title: "To Track",
+    title: "Track",
     icon: <Map color="black" />,
   },
 
   {
-    title: "To Recieve",
+    title: "Recieve",
     icon: <Box color="black" />,
   },
 
   {
-    title: "To Rate",
+    title: "Rate",
     icon: <Star color="black" />,
   },
 ];

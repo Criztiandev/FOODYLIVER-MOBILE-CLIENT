@@ -1,18 +1,16 @@
 import { View, Text } from "react-native";
 import React, { useEffect } from "react";
 import { Stack, Tabs } from "expo-router";
-import { useAuth } from "@/providers/AuthProvider";
 import ProtectedRoute from "@/components/routes/ProtectedRoute";
 
 const RootLayout = () => {
   return (
-    <ProtectedRoute allowedRoles={["user"]}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="list" />
-        <Stack.Screen name="payment" />
-        <Stack.Screen name="delivery" />
-      </Stack>
-    </ProtectedRoute>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="list" />
+      <Stack.Screen name="payment" />
+      <Stack.Screen name="delivery" />
+      <Stack.Screen name="track" />
+    </Stack>
   );
 };
 

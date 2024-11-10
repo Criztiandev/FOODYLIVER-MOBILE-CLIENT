@@ -1,68 +1,77 @@
 import YStack from "@/components/stacks/YStack";
-import BaseLayout from "@/layout/BaseLayout";
 import React, { useState } from "react";
-import ProductHero from "./components/ProductHero";
-import ProductAddons from "./components/ProductAddons";
-import ProductQuantity from "./components/ProductQuantity";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { ProductItem } from "@/interface/product.interface";
+import { Image } from "expo-image";
+import XStack from "@/components/stacks/XStack";
+import { Box, MinusIcon, Plus, PlusIcon, Star, Tag } from "lucide-react-native";
+import Button from "@/components/ui/Button";
 import ProductActions from "./components/ProductActions";
-import ProductHeader from "./components/ProductHeader";
+import ProductQuantity from "./components/ProductQuantity";
+import ProductAddons from "./components/ProductAddons";
+import ProductHero from "./components/ProductHero";
+import BackButton from "@/components/atoms/button/BackButton";
+import CartButton from "@/components/atoms/button/CartButton";
 import useCartStore from "@/state/useCartStore";
-import useProductStore from "@/state/useProductStore";
-import { View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { useFetchProductById } from "@/hooks/product/query";
-import LoadingScreen from "@/layout/screen/LoadingScreen";
-import ErrorScreen from "@/layout/screen/ErrorScreen";
-import Toast from "react-native-toast-message";
-
 const RootScreen = () => {
   const { id } = useLocalSearchParams();
-  const [quantity, setQuantity] = useState<number>(1);
-  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
 
-  const {
-    isLoading,
-    isError,
-    error,
-    data: result,
-  } = useFetchProductById(id as string);
+  // const {
+  //   isLoading,
+  //   isError,
+  //   error,
+  //   data: result,
+  // } = useFetchProductById(id as string);
 
-  if (isLoading) return <LoadingScreen />;
-  if (isError) {
-    console.log(error);
-    return <ErrorScreen />;
-  }
-  const product = result.data;
-
-  const handleSelectAddons = (name: string) => {
-    setSelectedAddons((prev) => {
-      if (prev.includes(name)) {
-        const filtered = prev.filter((filter) => filter !== name);
-        return filtered;
-      }
-      return [...prev, name];
-    });
+  // if (isLoading) return <LoadingScreen />;
+  // if (isError) {
+  //   console.log(error);
+  //   return <ErrorScreen />;
+  // }
+  const product: ProductItem = {
+    name: "Product 1",
+    price: 1000,
+    description:
+      "When the Text component doesn't support changing default fonts out of the box, this solution becomes much better. I would much rather add a global control in one place and use the native components than make a wrapper component for every detail that true native apps provide.",
+    rating: 1,
+    category_id: "1",
+    addons: [],
+    stocks: 2,
+    is_available: true,
+    thumbnailUrl: "123123123",
+    id: "1",
   };
 
   return (
     <>
-      <BaseLayout>
-        <YStack className="flex-1  space-y-4  relative justify-between items-center">
-          <ProductHeader />
-
-          <YStack className=" px-2 mb-4">
+      <Stack.Screen
+        options={{
+          title: "",
+          headerTitleStyle: { color: "white" },
+          headerStyle: {
+            backgroundColor: "#f4891f",
+          },
+          headerTitleAlign: "center",
+          headerShadowVisible: false,
+          headerLeft: () => <BackButton />,
+          headerRight: () => (
+            <XStack className="space-x-4">
+              <CartButton />
+            </XStack>
+          ),
+        }}
+      />
+      <SafeAreaView className="flex-1 bg-white">
+        <ScrollView className="flex-1">
+          <View className="px-2">
             <ProductHero {...product} />
-            <ProductAddons
-              selected={selectedAddons}
-              onSelect={handleSelectAddons}
-              {...product}
-            />
-            <ProductQuantity quantity={quantity} setQuantity={setQuantity} />
-          </YStack>
-
-          <ProductActions product={result.data} quantity={quantity} />
-        </YStack>
-      </BaseLayout>
+            <ProductAddons />
+            <ProductQuantity {...product} />
+            <ProductActions {...product} />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </>
   );
 };

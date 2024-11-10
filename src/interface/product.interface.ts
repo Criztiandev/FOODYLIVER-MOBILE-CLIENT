@@ -8,7 +8,7 @@ export interface ProductItem {
   price: number;
   description: string;
   rating: number;
-  addons: string;
+  addons: any;
   stocks: number;
   is_available: boolean;
 }

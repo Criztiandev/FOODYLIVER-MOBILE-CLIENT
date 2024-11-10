@@ -3,24 +3,36 @@ import InputField from "@/components/form/InputField";
 import SelectField from "@/components/form/SelectField";
 import YStack from "@/components/stacks/YStack";
 import Button from "@/components/ui/Button";
+import useFetchProfile from "@/hooks/account/useFetchProfile";
 import BaseLayout from "@/layout/BaseLayout";
+import LoadingScreen from "@/layout/screen/LoadingScreen";
+import NotFoundScreen from "@/layout/screen/NotFoundScreen";
 import { Stack } from "expo-router";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Text } from "react-native";
+import { SafeAreaView, Text, View } from "react-native";
 
 const RootScreen = () => {
+  const { data, isLoading, isError } = useFetchProfile();
   const form = useForm();
+
+  if (isLoading) return <LoadingScreen />;
+  if (isError) return <NotFoundScreen />;
+
   return (
     <>
       <Stack.Screen
         options={{
           headerLeft: () => <BackButton />,
-          title: "Account Details",
+          title: "Update Profile",
+          headerTitleStyle: {
+            fontWeight: "600",
+          },
+          headerTitleAlign: "center",
         }}
       />
 
-      <BaseLayout>
+      <SafeAreaView className="bg-white flex-1 justify-between ">
         <FormProvider {...form}>
           <YStack className="px-4 py-2">
             <InputField
@@ -58,13 +70,14 @@ const RootScreen = () => {
               name="password"
               placeholder="Enter your password"
             />
-
-            <Button>
-              <Text className="text-lg font-semibold text-white">Update</Text>
-            </Button>
           </YStack>
         </FormProvider>
-      </BaseLayout>
+        <View className="p-4">
+          <Button>
+            <Text className="text-lg font-semibold text-white">Update</Text>
+          </Button>
+        </View>
+      </SafeAreaView>
     </>
   );
 };

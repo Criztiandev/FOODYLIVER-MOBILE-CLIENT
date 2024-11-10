@@ -7,7 +7,7 @@ const HomeButton = () => {
   const router = useRouter();
   return (
     <TouchableOpacity onPress={() => router.push("/")} className="mr-4">
-      <ChevronLeft color="black" />
+      <ChevronLeft color="white" />
     </TouchableOpacity>
   );
 };

@@ -36,7 +36,7 @@ const AddressSearch: FC<Props> = ({ onSelect }) => {
             backgroundColor: "white",
           },
           textInput: {
-            height: 38,
+            height: 32,
             color: "#000",
             fontSize: 16,
             backgroundColor: "transparent",

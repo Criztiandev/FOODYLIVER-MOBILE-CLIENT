@@ -1,125 +1,102 @@
-import { CartItem, CartStore } from "@/interface/cart.interface";
+import { CartStore } from "@/interface/cart.interface";
 import { ProductItem } from "@/interface/product.interface";
-import Toast from "react-native-toast-message";
 import { create } from "zustand";
 
-const useCartStore = create<CartStore>((set, get) => ({
-  cart: { items: [] },
+const useCartStore = create<CartStore>()((set, get) => ({
+  items: [],
+  subtotal: 0,
+  itemCount: 0,
 
-  /**
-   * Tthis state is used to add product inside the cart
-   * @param product a product item
-   * @param quantity a number for quantity of product
-   * @returns
-   */
-  addProduct: (product: ProductItem, quantity: number = 1) =>
-    set((state) => {
-      // check if the product exist
-      const existingProduct = state.cart.items.find(
-        (items) => items.id === product.id
-      );
+  addProduct: (product: ProductItem, quantity: number = 1) => {
+    const items = [...get().items];
+    const existingItem = items.find((item) => item.id === product.id);
 
-      if (existingProduct) {
-        // increment the quantity
-        const updatedProductQuantity = state.cart.items.map((items) =>
-          items.id === product.id
-            ? { ...items, quantity: items.quantity + quantity }
-            : items
-        );
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      items.push({ ...product, quantity });
+    }
 
-        return {
-          cart: {
-            items: updatedProductQuantity,
-          },
-        };
-      }
-
-      return {
-        cart: {
-          items: [...state.cart.items, { ...product, quantity }],
-        },
-      };
-    }),
-
-  /**
-   * This function helps to remove the item insidet the cart
-   * @param productId a unique string used to identifity the product id
-   * @returns
-   */
-  removeProduct: (productId: string) =>
-    set((state) => {
-      const existingProductg = state.cart.items.find(
-        (item) => item.id === productId
-      );
-
-      if (!existingProductg) {
-        Toast.show({
-          type: "error",
-          text1: "Product does'nt exist, Please try again later",
-        });
-        return state;
-      }
-
-      const removedProductCart = state.cart.items.filter(
-        (item) => item.id !== productId
-      );
-
-      return {
-        cart: {
-          items: removedProductCart,
-        },
-      };
-    }),
-
-  updateProductQuantity: (productId: string, quantity: number) =>
-    set((state) => {
-      const existingProductg = state.cart.items.find(
-        (item) => item.id === productId
-      );
-
-      if (!existingProductg) {
-        Toast.show({
-          type: "error",
-          text1: "Product does'nt exist, Please try again later",
-        });
-        return state;
-      }
-
-      const updatedQuantity = state.cart.items.map((item) =>
-        item.id === productId ? { ...item, quantity: quantity } : item
-      );
-
-      return {
-        cart: {
-          items: updatedQuantity,
-        },
-      };
-    }),
-
-  clearCart: () => set(() => ({ cart: { items: [] } })),
-
-  getCartTotal: () => {
-    const state = get();
-
-    return state.cart.items.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    set((state) => ({
+      items,
+      subtotal: state.calculateSubtotal(),
+      itemCount: state.calculateItemCount(),
+    }));
   },
 
-  getCartItemCount: () => {
-    const state = get();
-    return state.cart.items.reduce((count, item) => count + item.quantity, 0);
+  incrementQuantity: (productId: string) => {
+    const items = [...get().items];
+    const existingItem = items.find((item) => item.id === productId);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    }
+
+    set((state) => ({
+      items,
+      subtotal: state.calculateSubtotal(),
+      itemCount: state.calculateItemCount(),
+    }));
   },
 
-  getProductDetails: (productId: string): CartItem | undefined => {
-    const state = get();
+  removeProduct: (productId: string) => {
+    const items = [...get().items];
+    const existingItemIndex = items.findIndex((item) => item.id === productId);
 
-    const existingProduct = state.cart.items.find(
-      (item) => item.id === productId
-    );
+    if (existingItemIndex !== -1) {
+      const item = items[existingItemIndex];
+      if (item.quantity > 1) {
+        item.quantity -= 1;
+      } else {
+        items.splice(existingItemIndex, 1);
+      }
+    }
 
-    return existingProduct;
+    set((state) => ({
+      items,
+      subtotal: state.calculateSubtotal(),
+      itemCount: state.calculateItemCount(),
+    }));
+  },
+
+  updateQuantity: (productId: string, quantity: number) => {
+    const items = [...get().items];
+    const existingItem = items.find((item) => item.id === productId);
+
+    if (existingItem) {
+      if (quantity <= 0) {
+        const index = items.indexOf(existingItem);
+        items.splice(index, 1);
+      } else {
+        existingItem.quantity = quantity;
+      }
+    }
+
+    set((state) => ({
+      items,
+      subtotal: state.calculateSubtotal(),
+      itemCount: state.calculateItemCount(),
+    }));
+  },
+
+  clearCart: () => {
+    set({
+      items: [],
+      subtotal: 0,
+      itemCount: 0,
+    });
+  },
+
+  calculateSubtotal: () => {
+    return get().items.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+  },
+
+  calculateItemCount: () => {
+    return get().items.reduce((count, item) => {
+      return count + item.quantity;
+    }, 0);
   },
 }));
 

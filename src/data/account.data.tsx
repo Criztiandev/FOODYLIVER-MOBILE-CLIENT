@@ -40,7 +40,7 @@ export const OrderNavigationDataset: IOrderNavigationDataset[] = [
 
   {
     title: "History",
-    path: "/account/order-history/",
+    path: "/account/order-history/history",
     icon: <History color="black" />,
   },
 ];

@@ -3,8 +3,10 @@ import HomeButton from "@/components/atoms/button/HomeButton";
 import DeliveryMap from "@/components/molecules/Map/DeliveryMap";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
+import Button from "@/components/ui/Button";
 import BaseLayout from "@/layout/BaseLayout";
 import useCartStore from "@/state/useCartStore";
+import { Image } from "expo-image";
 import { Stack, useRouter } from "expo-router";
 import { ReceiptIcon, Truck } from "lucide-react-native";
 import React from "react";
@@ -12,35 +14,37 @@ import { Text, View } from "react-native";
 
 const RootScreen = () => {
   const router = useRouter();
-  const { cart } = useCartStore();
 
   return (
     <>
       <Stack.Screen
         options={{
           headerLeft: () => <BackButton />,
+          headerTitleStyle: { color: "white" },
+          headerStyle: {
+            backgroundColor: "#f4891f",
+          },
           title: "Order Delivered",
+          headerTitleAlign: "center",
         }}
       />
 
       <BaseLayout>
         <YStack className="px-2">
-          <View className="h-[300px] border border-primary rounded-md overflow-hidden "></View>
+          <View className="h-[300px]  rounded-md overflow-hidden ">
+            <Image
+              source={require("@/assets/images/order-delivered.png")}
+              className="w-full h-full"
+            />
+          </View>
 
-          <YStack className="my-4">
+          <XStack className="my-4 space-x-2 justify-center items-center ">
             <Text className="font-bold text-2xl text-center">
-              Your order has been Delivered!
+              Yey! Order has been
             </Text>
-          </YStack>
-
-          <XStack className="border p-2 rounded-md border-primary/70 space-x-2 mb-4 items-center">
             <XStack className="items-center space-x-2">
-              <Truck color="black" />
-              <Text className="text-[18px] font-bold">Status:</Text>
-            </XStack>
-
-            <XStack className="items-center space-x-2">
-              <Text className="text-[18px] font-bold">Delivered</Text>
+              <Text className="font-bold text-2xl text-center">Delivered</Text>
+              <Truck className="text-primary" size={32} />
             </XStack>
           </XStack>
 
@@ -99,6 +103,12 @@ const RootScreen = () => {
               </XStack>
             </YStack>
           </YStack>
+        </YStack>
+
+        <YStack className="p-4">
+          <Button>
+            <Text className="font-bold text-white text-lg">Order again</Text>
+          </Button>
         </YStack>
       </BaseLayout>
     </>

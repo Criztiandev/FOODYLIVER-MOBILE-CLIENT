@@ -9,7 +9,7 @@ import PromotionalCard from "@/components/molecules/card/PromotionalCard";
 
 const PromotionalList = () => {
   const result = {
-    data: [],
+    data: [{}],
   };
   return (
     <YStack className="px-2 mb-4 space-y-2">
