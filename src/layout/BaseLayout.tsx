@@ -24,7 +24,7 @@ const BaseLayout: FC<Props> = ({ children, ...props }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <ScrollView style={{ flexGrow: 1 }}>{children}</ScrollView>
+        <View className="flex-1">{children}</View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

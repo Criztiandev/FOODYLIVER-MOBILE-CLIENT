@@ -7,10 +7,18 @@ const AccountInfoStep = () => {
   return (
     <>
       <InputField label="Email" name="email" placeholder="Enter your email" />
+
       <InputField
+        secureTextEntry={true}
         label="Password"
         name="password"
         placeholder="Enter your password"
+      />
+
+      <InputField
+        label="Phone number"
+        name="phone_number"
+        placeholder="Enter your Phone number"
       />
     </>
   );

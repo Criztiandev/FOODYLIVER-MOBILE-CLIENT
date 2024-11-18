@@ -3,7 +3,7 @@ import React, { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
-const inputVariant = cva(
+export const inputVariant = cva(
   "border rounded-md h-12 w-full rounded-md border border-input bg-background px-3 web:py-2 text-base lg:text-sm text-foreground placeholder:text-muted-foreground file:border-0 file:bg-transparent file:font-medium",
   {
     variants: {
@@ -20,8 +20,6 @@ const inputVariant = cva(
     },
   }
 );
-
-
 
 interface Props
   extends ComponentPropsWithoutRef<typeof TextInput>,

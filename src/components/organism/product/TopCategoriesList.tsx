@@ -30,7 +30,20 @@ const TopCategoriesList = () => {
       </View>
     );
   if (isError) {
-    console.log(error);
+    return (
+      <View className="px-2 space-y-3 my-4 ">
+        <XStack className="items-center space-x-2">
+          <PuzzleIcon color="black" size={18} />
+          <Text className="text-lg font-semibold">Top Categories</Text>
+        </XStack>
+
+        <View className="h-[200px] bg-stone-200">
+          <View className=" h-full flex-1 justify-center items-center border border-stone-400 w-full rounded-md opcity-70 ">
+            <Text className="font-semibold text-lg">Something went wrong</Text>
+          </View>
+        </View>
+      </View>
+    );
   }
 
   return (

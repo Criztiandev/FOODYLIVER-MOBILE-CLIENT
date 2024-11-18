@@ -1,28 +1,40 @@
 import { z } from "zod";
 
 const userValidation = z.object({
-  firstName: z
+  username: z
+    .string()
+    .min(3, "Username is too short")
+    .max(255, "Username is too long"),
+  first_name: z
     .string()
     .min(3, "First name is too short")
     .max(255, "First name is too long"),
-  middleName: z
-    .string()
-    .min(3, "Middle name is too short")
-    .max(255, "Middle name is too long")
-    .optional(),
-  lastName: z
+  last_name: z
     .string()
     .min(3, "Last name is too short")
     .max(255, "Last name is too long"),
-  suffix: z
+
+  address: z.any(),
+
+  city: z.string().min(3, "City is too short").max(255, "City is too long"),
+  postal_code: z
     .string()
-    .min(1, "Suffix is too short")
-    .max(255, "Suffix is too long"),
+    .min(3, "Postal Code is too short")
+    .max(255, "Postal Code is too long"),
+
+  // Fullname
+  name: z.string().min(1, "Name is too short").max(255, "Name is too long"),
   email: z
     .string()
     .email("Invalid email")
     .min(5, "Email is too short")
     .max(100, "Email is too long"),
+
+  phone_number: z
+    .string()
+    .min(5, "Phone number is too short")
+    .max(100, "Phone number is too long"),
+
   password: z
     .string()
     .min(5, "Password is too short")

@@ -15,7 +15,7 @@ const RootScreen = () => {
         setIsLoading(true);
         const credentials = await getItem("user");
 
-        if (!credentials) {
+        if (credentials) {
           // User exists, navigate to home
           await setItem("user", credentials); // Refresh storage
           router.replace("/user/home");
@@ -36,7 +36,6 @@ const RootScreen = () => {
   }, []);
 
   if (error) {
-    // You might want to add a proper error boundary or error screen here
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#0000ff" />

@@ -11,11 +11,23 @@ export const RegistrationValidation = userValidation.extend({
 });
 
 export const PersonalInfoStepValidation = userValidation.pick({
-  firstName: true,
-  lastName: true,
+  first_name: true,
+  username: true,
+  last_name: true,
 });
+
+export const AddressInfoValidation = userValidation
+  .pick({
+    address: true,
+    postal_code: true,
+  })
+  .extend({
+    blk: z.string().min(0, "Too short").max(32, "Too long"),
+    lot: z.string().min(0, "Too short").max(32, "Too long"),
+  });
 
 export const AccountInfoStepValidation = userValidation.pick({
   email: true,
   password: true,
+  phone_number: true,
 });

@@ -6,6 +6,8 @@ import {
   responseInterceptorReject,
 } from "./interceptors";
 
+console.log(process.env.EXPO_PUBLIC_BASE_API_URL);
+
 export const AxiosInstance = axios.create({
   baseURL: process.env.EXPO_PUBLIC_BASE_API_URL,
 });

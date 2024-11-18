@@ -29,10 +29,13 @@ const AddressSearch: FC<Props> = ({ onSelect }) => {
             zIndex: 1,
           },
           textInputContainer: {
+            justifyContent: "center",
+            alignItems: "center",
             borderWidth: 1,
-            borderColor: "#8F9098", // primary color
+            borderColor: "#1e1e1e",
             borderRadius: 6,
             paddingHorizontal: 8,
+            height: 44,
             backgroundColor: "white",
           },
           textInput: {

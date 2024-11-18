@@ -15,7 +15,7 @@ const useLogin = () => {
   const router = useRouter();
 
   const form = useForm<LoginValue>({
-    defaultValues: { email: "string@string.com", password: "string" },
+    defaultValues: { email: "criztian@gmail.com", password: "password" },
     resolver: zodResolver(LoginValidation),
   });
 
