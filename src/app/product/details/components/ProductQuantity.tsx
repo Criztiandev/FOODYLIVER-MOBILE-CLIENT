@@ -37,7 +37,7 @@ const ProductQuantity: FC<Props> = (props) => {
   };
 
   return (
-    <YStack className="justify-end items-start">
+    <YStack className="justify-end items-start px-2">
       <Text className="text-lg font-semibold mb-2">Quantity</Text>
       <XStack className="space-x-4 items-cemter">
         <Button size="icon" onPress={handleIncrementQuantity}>

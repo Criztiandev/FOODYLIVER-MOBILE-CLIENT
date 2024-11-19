@@ -30,12 +30,8 @@ const useLogin = () => {
     onSuccess: (data: LoginResponse) => {
       const { token, ...rest } = data;
 
-      console.log(token);
-
-      // removeItem("accessToken");
-      // removeItem("user");
-
       setItem("accessToken", token);
+      setItem("user", rest);
       setCredentials({ ...rest });
       router.push("/user/(tab)/home");
     },

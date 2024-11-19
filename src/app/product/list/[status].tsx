@@ -11,11 +11,17 @@ import BackButton from "@/components/atoms/button/BackButton";
 import useCartStore from "@/state/useCartStore";
 import { CartItem } from "@/interface/cart.interface";
 import { ProductItem } from "@/interface/product.interface";
+import { useFetchProductList } from "@/hooks/product/query";
+import LoadingScreen from "@/layout/screen/LoadingScreen";
 
 const RootScreen = () => {
   const { status } = useLocalSearchParams();
   const { addProduct } = useCartStore();
   const router = useRouter();
+
+  const { isLoading, isError, data: result, error } = useFetchProductList();
+
+  if (isLoading) return <LoadingScreen />;
 
   const handleViewDetails = (item: ProductItem) => {
     router.navigate(`/product/details/${item.id}` as Href);
@@ -41,21 +47,7 @@ const RootScreen = () => {
       <BaseLayout>
         <View className="flex-1 px-2 pt-4">
           <FlashList
-            data={[
-              {
-                name: "Product 1",
-                price: 1000,
-                description:
-                  "When the Text component doesn't support changing default fonts out of the box, this solution becomes much better. I would much rather add a global control in one place and use the native components than make a wrapper component for every detail that true native apps provide.",
-                rating: 1,
-                category_id: "1",
-                addons: [],
-                stocks: 2,
-                is_available: true,
-                thumbnailUrl: "123123123",
-                id: "1",
-              },
-            ]}
+            data={result.data}
             estimatedItemSize={5000}
             numColumns={2}
             renderItem={({ item }: { item: ProductItem }) => (
@@ -69,9 +61,7 @@ const RootScreen = () => {
                   </TouchableOpacity>
 
                   <View className="w-[32px] h-[32px] rounded-full bg-primary flex justify-center items-center ">
-                    <Text className="text-sm font-bold text-white">
-                      {item.rating || 0}
-                    </Text>
+                    <Text className="text-sm font-bold text-white">{5}</Text>
                   </View>
                 </XStack>
 

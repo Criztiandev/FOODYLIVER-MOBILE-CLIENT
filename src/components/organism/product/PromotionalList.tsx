@@ -49,8 +49,6 @@ const PromotionalList = () => {
           <PuzzleIcon color="black" size={18} />
           <Text className="text-lg font-semibold">Promotional</Text>
         </XStack>
-
-        <Link href="/_sitemap">More</Link>
       </View>
 
       <XStack>

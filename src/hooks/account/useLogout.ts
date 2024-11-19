@@ -10,7 +10,9 @@ const useLogout = () => {
   const queryClient = useQueryClient();
   return useMutate({
     mutationKey: ["POST /logout"],
-    mutationFn: () => PrivateAxios.post("/logout"),
+    mutationFn: async () => {
+      return true;
+    },
     onSuccess: (data) => {
       removeItem("user");
       removeItem("accessToken");

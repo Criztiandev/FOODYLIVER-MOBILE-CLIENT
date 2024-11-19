@@ -8,9 +8,6 @@ export const useFetchCategories = () => {
     queryKey: ["/GET categories"],
     queryFn: async () => {
       const result = await PrivateAxios.get("/categories");
-
-      console.log(result);
-
       return result.data;
     },
   });

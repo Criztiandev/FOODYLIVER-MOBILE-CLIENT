@@ -8,8 +8,6 @@ export const requestInterceptorFulfill = async (
 ) => {
   const accessToken = await storage.getItem<string>("accessToken");
 
-  console.log(accessToken);
-
   if (accessToken) {
     config.headers["Authorization"] = `Bearer ${accessToken}`;
   }

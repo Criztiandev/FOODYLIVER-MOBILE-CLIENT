@@ -18,7 +18,6 @@ import ProductCard from "@/components/atoms/card/ProductCard";
 
 const ProductList = () => {
   const [selectCategory, setSelectedCategory] = useState("All");
-  const router = useRouter();
   const { isLoading, isError, data: result, error } = useFetchProductList();
 
   const categories = [

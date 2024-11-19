@@ -14,7 +14,7 @@ interface Props
 
 const ProductHero = ({ name, price, rating, stocks, description }: Props) => {
   return (
-    <View className=" w-full  mb-4">
+    <View className=" w-full  mb-4 px-2">
       <Image
         source={require("@/assets/images/cooking-img.png")}
         className="w-full h-[300px]"
@@ -26,7 +26,7 @@ const ProductHero = ({ name, price, rating, stocks, description }: Props) => {
           <XStack className="items-center space-x-2">
             <Star color="#EA9937" />
             <Text className="text-sm font-semibold text-stone-500">
-              {rating} Ratings
+              5 Ratings
             </Text>
           </XStack>
 

@@ -1,14 +1,10 @@
-import { cn } from "@/lib/utils";
-import React, { FC, ReactNode, Suspense } from "react";
+import React, { FC, ReactNode } from "react";
 import {
   SafeAreaView,
   StatusBar,
   View,
   Platform,
   KeyboardAvoidingView,
-  ViewProps,
-  Text,
-  ScrollView,
 } from "react-native";
 
 interface Props {

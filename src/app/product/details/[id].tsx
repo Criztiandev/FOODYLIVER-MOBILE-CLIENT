@@ -1,6 +1,6 @@
 import YStack from "@/components/stacks/YStack";
 import React, { useState } from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Dimensions, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { ProductItem } from "@/interface/product.interface";
 import { Image } from "expo-image";
@@ -14,21 +14,24 @@ import ProductHero from "./components/ProductHero";
 import BackButton from "@/components/atoms/button/BackButton";
 import CartButton from "@/components/atoms/button/CartButton";
 import useCartStore from "@/state/useCartStore";
+import { useFetchProductById } from "@/hooks/product/query";
+import LoadingScreen from "@/layout/screen/LoadingScreen";
+import ErrorScreen from "@/layout/screen/ErrorScreen";
 const RootScreen = () => {
   const { id } = useLocalSearchParams();
 
-  // const {
-  //   isLoading,
-  //   isError,
-  //   error,
-  //   data: result,
-  // } = useFetchProductById(id as string);
+  const {
+    isLoading,
+    isError,
+    error,
+    data: result,
+  } = useFetchProductById(id as string);
 
-  // if (isLoading) return <LoadingScreen />;
-  // if (isError) {
-  //   console.log(error);
-  //   return <ErrorScreen />;
-  // }
+  if (isLoading) return <LoadingScreen />;
+  if (isError) {
+    console.log(error);
+    return <ErrorScreen />;
+  }
   const product: ProductItem = {
     name: "Product 1",
     price: 1000,
@@ -64,11 +67,16 @@ const RootScreen = () => {
       />
       <SafeAreaView className="flex-1 bg-white">
         <ScrollView className="flex-1">
-          <View className="px-2">
-            <ProductHero {...product} />
+          <View
+            className="border"
+            style={{
+              height: Dimensions.get("screen").height,
+            }}
+          >
+            <ProductHero {...result?.data} />
             <ProductAddons />
-            <ProductQuantity {...product} />
-            <ProductActions {...product} />
+            <ProductQuantity {...result?.data} />
+            <ProductActions {...result?.data} />
           </View>
         </ScrollView>
       </SafeAreaView>

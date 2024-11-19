@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import React, { FC, useMemo, useState } from "react";
 import XStack from "@/components/stacks/XStack";
 import { ProductItem } from "@/interface/product.interface";
@@ -47,37 +47,39 @@ const ProductActions: FC<Props> = (props) => {
   };
 
   return (
-    <XStack className="space-x-4 my-4">
-      <Button
-        disabled={disabledBtn || false}
-        className="bg-stone-400/30 border border-stone-400 flex-1 flex-row space-x-2"
-        onPress={handleAddToCart}
-      >
-        <ShoppingCart color="black" size={18} />
-        <Text className="text-base text-black uppercase font-semibold">
-          Add to cart
-        </Text>
-      </Button>
+    <View className="absolute bottom-0 left-0 h-[300px] w-full flex justify-center items-center px-2">
+      <XStack className="space-x-4">
+        <Button
+          disabled={disabledBtn || false}
+          className="bg-stone-400/30 border border-stone-400 flex-1 flex-row space-x-2"
+          onPress={handleAddToCart}
+        >
+          <ShoppingCart color="black" size={18} />
+          <Text className="text-base text-black uppercase font-semibold">
+            Add to cart
+          </Text>
+        </Button>
 
-      <Button
-        className="flex-1 bg-primary"
-        disabled={disabledBtn || false}
-        onPress={handleProductCheckout}
-      >
-        <XStack className="items-center space-x-2">
-          <Wallet color="white" size={18} />
-          {quantity && quantity > 0 ? (
-            <Text className="text-white text-base ">
-              P {calculateSubtotal()}
-            </Text>
-          ) : (
-            <Text className="text-base text-white uppercase font-semibold">
-              Buy Now
-            </Text>
-          )}
-        </XStack>
-      </Button>
-    </XStack>
+        <Button
+          className="flex-1 bg-primary"
+          disabled={disabledBtn || false}
+          onPress={handleProductCheckout}
+        >
+          <XStack className="items-center space-x-2">
+            <Wallet color="white" size={18} />
+            {quantity && quantity > 0 ? (
+              <Text className="text-white text-base ">
+                P {calculateSubtotal()}
+              </Text>
+            ) : (
+              <Text className="text-base text-white uppercase font-semibold">
+                Buy Now
+              </Text>
+            )}
+          </XStack>
+        </Button>
+      </XStack>
+    </View>
   );
 };
 

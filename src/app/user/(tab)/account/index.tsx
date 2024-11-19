@@ -57,7 +57,7 @@ const RootScreen = () => {
             </YStack>
           </XStack>
 
-          <YStack className="px-2">
+          <YStack className="px-2 ">
             <XStack className="items-center justify-between mb-4 ">
               <Text className="text-xl font-bold">My Order</Text>
             </XStack>
@@ -76,7 +76,7 @@ const RootScreen = () => {
               estimatedItemSize={200}
               ItemSeparatorComponent={() => <View className="mb-2"></View>}
               renderItem={({ item, index }) => (
-                <View>
+                <View className="h-[100px]">
                   <Button
                     className="bg-[#D9D9D9]/50 flex-row justify-between items-center"
                     onPress={() => router.push(item.path)}

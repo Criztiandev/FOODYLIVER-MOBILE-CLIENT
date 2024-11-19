@@ -1,18 +1,31 @@
 import { Text, TouchableOpacity, Dimensions } from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
+import { ImageBackground } from "react-native";
 
-const PromotionalCard = () => {
+const PromotionalCard = (props: any) => {
   const router = useRouter();
+
   return (
     <TouchableOpacity
-      onPress={() => router.push("/product/list/promotional")}
-      style={{
-        width: Dimensions.get("screen").width - 16,
-      }}
-      className=" h-[200px] border rounded-md p-4 flex justify-center items-center mr-2"
+      style={{ flexShrink: 1, width: Dimensions.get("screen").width - 16 }}
+      onPress={() => router.push(`/product/list/${props.name}`)}
+      className="h-[200px]  mr-2"
     >
-      <Text className="text-lg font-bold">Fast Food</Text>
+      <ImageBackground
+        resizeMode="cover"
+        source={{ uri: "https://legacy.reactjs.org/logo-og.png" }}
+        className=" rounded-md  overflow-hidden"
+        style={{
+          flex: 1,
+          borderWidth: 1,
+          borderColor: "white",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text className="text-white text-lg font-bold ">{props.name}</Text>
+      </ImageBackground>
     </TouchableOpacity>
   );
 };

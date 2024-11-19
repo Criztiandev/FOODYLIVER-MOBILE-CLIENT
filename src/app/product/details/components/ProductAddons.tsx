@@ -31,9 +31,9 @@ interface RawData {
 const ProductAddons = () => {
   return (
     <YStack className="justify-end items-start mb-4">
-      <Text className="text-lg font-semibold mb-2">Addons</Text>
+      {/* <Text className="text-lg font-semibold mb-2">Addons</Text> */}
       <XStack className="space-x-4 items-cemter">
-        <Button
+        {/* <Button
           variant="outline"
           className="py-2 px-4 border border-[#F4891F] "
         >
@@ -50,7 +50,7 @@ const ProductAddons = () => {
           <XStack className="space-x-2 items-center">
             <Text className="font-semibold">Extra Patty</Text>
           </XStack>
-        </Button>
+        </Button> */}
       </XStack>
     </YStack>
   );

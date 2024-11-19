@@ -2,7 +2,7 @@ import React from "react";
 import BaseLayout from "@/layout/BaseLayout";
 import { Stack, useRouter } from "expo-router";
 import XStack from "@/components/stacks/XStack";
-import { TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SearchIcon } from "lucide-react-native";
 import Input from "@/components/ui/Input";
 import CartButton from "@/components/atoms/button/CartButton";
@@ -37,19 +37,21 @@ const RootScreen = () => {
         }}
       />
       <BaseLayout>
-        <View className=" bg-primary">
-          <View className="bg-[#EDEDED] mx-2 border border-gray-300  flex-row  items-center my-4 rounded-full px-4">
-            <SearchIcon color="black" size={22} opacity={0.7} />
-            <Input
-              className="border-transparent"
-              placeholder="What are your cravings for today?"
-            />
+        <ScrollView style={{ flexGrow: 1, marginBottom: 48 }}>
+          <View className=" bg-primary">
+            <View className="bg-[#EDEDED] mx-2 border border-gray-300  flex-row  items-center my-4 rounded-full px-4">
+              <SearchIcon color="black" size={22} opacity={0.7} />
+              <Input
+                className="border-transparent"
+                placeholder="What are your cravings for today?"
+              />
+            </View>
           </View>
-        </View>
 
-        <TopCategoriesList />
-        <PromotionalList />
-        <ProductList />
+          <TopCategoriesList />
+          <PromotionalList />
+          <ProductList />
+        </ScrollView>
       </BaseLayout>
     </>
   );
