@@ -1,5 +1,3 @@
-import { View, Text } from "react-native";
-import React from "react";
 import useFetch from "../query/useFetch";
 import { PrivateAxios } from "@/lib/axios";
 

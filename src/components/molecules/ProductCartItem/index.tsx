@@ -9,45 +9,47 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 const ProductCartItem = (props: CartItem) => {
-  const { id, name, price, rating, stocks } = props;
-  const {
-    items,
-    calculateSubtotal,
-    incrementQuantity,
-    addProduct,
-    removeProduct,
-  } = useCartStore();
+  const { id, name, price } = props;
+  const { items, incrementQuantity, addProduct, removeProduct } =
+    useCartStore();
   const cartItem = items.find((item) => item.id === id);
   const quantity = cartItem?.quantity || 0;
 
+  console.log(cartItem?.id);
+
   const handleIncrementQuantity = () => {
+    if (!id) return;
+
     if (!cartItem) {
       addProduct({ id, ...props }, 1);
     } else {
-      incrementQuantity(id || "");
+      incrementQuantity(id);
     }
   };
 
   const handleDecrementQuantity = () => {
+    if (!id) return;
     if (quantity > 0) {
-      removeProduct(id || "", 0);
+      removeProduct(id, 0);
     }
   };
 
   return (
-    <YStack className="bg-primary/30 p-4 rounded-md justify-between items-ce my-4 space-y-4 ">
+    <YStack className="bg-primary/30 p-4 rounded-md justify-between items-ce mb-2 space-y-4 ">
       <XStack className="space-x-4 justify-between items-center">
         <XStack className="space-x-4">
           <Avatar size={64} />
 
           <YStack>
-            <Text className="text-lg font-semibold">{name || "Prodict"}</Text>
+            <Text className="text-lg font-semibold break-words max-w-[200px]">
+              {name || "Prodict"}
+            </Text>
 
             <XStack className="space-x-4 items-center">
               <XStack className="items-center space-x-1">
                 <DollarSign color="#EA9937" />
                 <Text className="text-sm font-semibold text-stone-600 underline">
-                  {calculateSubtotal()}
+                  {price}
                 </Text>
               </XStack>
             </XStack>

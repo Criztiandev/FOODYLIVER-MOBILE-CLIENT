@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BaseLayout from "@/layout/BaseLayout";
 import { ChevronRight } from "lucide-react-native";
 import { Stack, useRouter } from "expo-router";
@@ -16,14 +16,27 @@ import {
   OrderNavigationDataset,
 } from "@/data/account.data";
 import useLogout from "@/hooks/account/useLogout";
+import useLocalStorage from "@/hooks/utils/useLocalStorage";
+import { User } from "@/interface/user.interface";
 
 const RootScreen = () => {
+  const [credentials, setCredentials] = useState<User | any>([]);
   const { mutate, isPending } = useLogout();
+  const { getItem } = useLocalStorage();
   const router = useRouter();
 
   const handleLogout = () => {
     mutate("");
   };
+
+  useEffect(() => {
+    (async () => {
+      const credentials = await getItem("user");
+      if (credentials) {
+        setCredentials(credentials);
+      }
+    })();
+  }, []);
 
   return (
     <>
@@ -48,8 +61,8 @@ const RootScreen = () => {
             />
 
             <YStack className="items-start">
-              <Text className="text-xl font-bold text-white ">
-                Yen Timmango{" "}
+              <Text className="text-xl font-bold text-white capitalize">
+                {credentials?.name}
               </Text>
               <Text className="text-md font-semibold  text-white/50 ">
                 Customer
@@ -70,13 +83,13 @@ const RootScreen = () => {
             />
           </YStack>
 
-          <YStack className="space-y-2 px-2">
+          <View className="h-[175px] px-2">
             <FlashList
               data={AccountNavivationDataset}
               estimatedItemSize={200}
               ItemSeparatorComponent={() => <View className="mb-2"></View>}
               renderItem={({ item, index }) => (
-                <View className="h-[100px]">
+                <View className="">
                   <Button
                     className="bg-[#D9D9D9]/50 flex-row justify-between items-center"
                     onPress={() => router.push(item.path)}
@@ -89,7 +102,9 @@ const RootScreen = () => {
                 </View>
               )}
             />
+          </View>
 
+          <View className="px-2">
             <Button
               disabled={isPending}
               className=" flex-row justify-between items-center"
@@ -105,7 +120,7 @@ const RootScreen = () => {
                 </Text>
               )}
             </Button>
-          </YStack>
+          </View>
         </YStack>
       </BaseLayout>
     </>

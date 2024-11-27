@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import useMutate from "../query/useMutate";
 import useLocalStorage from "../utils/useLocalStorage";
 import useAccountStore from "@/state/useAccountStore";
-import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
 
 const useLogin = () => {
@@ -28,6 +27,8 @@ const useLogin = () => {
     mutationKey: ["POST /login"],
 
     onSuccess: (data: LoginResponse) => {
+      console.log(data);
+
       const { token, ...rest } = data;
 
       setItem("accessToken", token);

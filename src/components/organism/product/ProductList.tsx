@@ -4,17 +4,10 @@ import YStack from "@/components/stacks/YStack";
 import XStack from "@/components/stacks/XStack";
 import { FlashList } from "@shopify/flash-list";
 import Button from "@/components/ui/Button";
-import { TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import { Heart, ShoppingCart } from "lucide-react-native";
-import { Href } from "expo-router";
-import Avatar from "@/components/ui/Avatar";
-import { useFetchProductList } from "@/hooks/product/query";
-import LoadingScreen from "@/layout/screen/LoadingScreen";
-import ErrorScreen from "@/layout/screen/ErrorScreen";
 import { ProductItem } from "@/interface/product.interface";
 import SectionLoadingScreen from "@/layout/screen/SectionLoadingScreen";
 import ProductCard from "@/components/atoms/card/ProductCard";
+import { useFetchProductList } from "@/hooks/product/query";
 
 const ProductList = () => {
   const [selectCategory, setSelectedCategory] = useState("All");

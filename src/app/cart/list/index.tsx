@@ -65,7 +65,8 @@ const RootScreen = () => {
               className="flex-1"
               contentContainerStyle={{ paddingBottom: 80 }}
             >
-              <YStack className="px-2">
+              <YStack className="mt-2">
+                {/* Selected Prodcuts */}
                 <CartSelectedProducts />
                 <View className="h-4" />
               </YStack>

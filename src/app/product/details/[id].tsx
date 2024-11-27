@@ -1,22 +1,18 @@
-import YStack from "@/components/stacks/YStack";
-import React, { useState } from "react";
-import { Dimensions, SafeAreaView, ScrollView, Text, View } from "react-native";
+import React from "react";
+import { Dimensions, SafeAreaView, ScrollView, View } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { ProductItem } from "@/interface/product.interface";
-import { Image } from "expo-image";
 import XStack from "@/components/stacks/XStack";
-import { Box, MinusIcon, Plus, PlusIcon, Star, Tag } from "lucide-react-native";
-import Button from "@/components/ui/Button";
 import ProductActions from "./components/ProductActions";
 import ProductQuantity from "./components/ProductQuantity";
 import ProductAddons from "./components/ProductAddons";
 import ProductHero from "./components/ProductHero";
 import BackButton from "@/components/atoms/button/BackButton";
 import CartButton from "@/components/atoms/button/CartButton";
-import useCartStore from "@/state/useCartStore";
-import { useFetchProductById } from "@/hooks/product/query";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import ErrorScreen from "@/layout/screen/ErrorScreen";
+import { useFetchProductById } from "@/hooks/product/query";
+
 const RootScreen = () => {
   const { id } = useLocalSearchParams();
 

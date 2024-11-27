@@ -11,8 +11,8 @@ import BackButton from "@/components/atoms/button/BackButton";
 import useCartStore from "@/state/useCartStore";
 import { CartItem } from "@/interface/cart.interface";
 import { ProductItem } from "@/interface/product.interface";
-import { useFetchProductList } from "@/hooks/product/query";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
+import { useFetchProductList } from "@/hooks/product/query";
 
 const RootScreen = () => {
   const { status } = useLocalSearchParams();

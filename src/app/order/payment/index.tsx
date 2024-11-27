@@ -11,6 +11,12 @@ import { Text, View } from "react-native";
 import PaymentMap from "../../../components/molecules/Map/PaymentMap";
 import PaymentCheckoutDetails from "../../../components/molecules/overview/PaymentCheckoutDetails";
 import useCartStore from "@/state/useCartStore";
+import {
+  CashonDeliverRequest,
+  useCashOnDeliveryMutation,
+} from "@/hooks/product/mutation";
+import useAccountStore from "@/state/useAccountStore";
+import { User } from "@/interface/user.interface";
 
 const SHIPPING_FEE = 50;
 
@@ -29,19 +35,43 @@ const paymentMethod = [
 
 const RootScreen = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("COD");
-  const { clearCart } = useCartStore();
+  const { items } = useCartStore();
+  const { mutate, isPending } = useCashOnDeliveryMutation();
+  const currentDate = new Date();
+  const { getCredentials } = useAccountStore();
+
   const handleSelectPaymentMethod = (method: string) => {
     setSelectedPaymentMethod(method);
   };
 
-  const handlePlaceOrder = () => {
-    // check the method first before navigating for placing
+  const handlePlaceOrder = async () => {
+    const crendentials = (await getCredentials()) as User;
+
     if (selectedPaymentMethod === "gcash") {
       router.push("/order/payment/gcash");
       return;
     }
-    clearCart();
-    router.push("/order/delivery");
+
+    const payload: CashonDeliverRequest[] = items.map((product) => ({
+      customer_id: Number(crendentials.user_id),
+      item_id: Number(product.id),
+      delivery_fee: 50,
+      transaction_id: null,
+      total_amount: Number(`${product.price * product.quantity}`),
+      quantity: Number(`${product.quantity}`),
+      delivery_date: "11-19-2024",
+      delivery_time: "1:00",
+      order_type: "pickup",
+      payment_method: "COD",
+      is_order_accepted_by_driver: null,
+      driver_id: 1,
+      status: "PENDING",
+    }));
+
+    mutate(payload);
+
+    // clearCart();
+    // router.push("/order/delivery");
   };
 
   return (
@@ -97,7 +127,7 @@ const RootScreen = () => {
 
       <View className="p-4 absolute bottom-0 w-full space-y-4">
         <PaymentCheckoutDetails />
-        <Button onPress={handlePlaceOrder}>
+        <Button onPress={handlePlaceOrder} disabled={isPending}>
           <XStack className="space-x-2 items-center">
             <ShoppingBag color="white" size={18} />
             <Text className="text-lg font-semibold text-white">

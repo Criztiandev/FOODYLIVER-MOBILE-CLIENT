@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import useMultiForm from "@/hooks/useMultiForm";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { PrivateAxios } from "@/lib/axios";
 import Toast from "react-native-toast-message";
@@ -28,6 +28,8 @@ const useRegister = ({ defaultValues, steps }: Props) => {
   const mutation = useMutation({
     mutationFn: async (value: any) => {
       try {
+        console.log(value);
+
         const result = await PrivateAxios.post("/register", value);
         return result.data;
       } catch (e) {
@@ -37,11 +39,23 @@ const useRegister = ({ defaultValues, steps }: Props) => {
     mutationKey: ["register-mutation"],
 
     onSuccess: (data) => {
+      if (data instanceof Error) {
+        const { message } = data;
+        Toast.show({
+          type: "error",
+          text1: message,
+        });
+
+        console.log(data);
+        return;
+      }
+
       const { message } = data;
       Toast.show({
         type: "success",
         text1: message,
       });
+
       form.reset();
       router.push("/auth/sign-in");
     },
