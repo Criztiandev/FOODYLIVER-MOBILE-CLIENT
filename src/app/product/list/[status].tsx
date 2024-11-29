@@ -74,7 +74,7 @@ const RootScreen = () => {
                   </View>
                   <XStack className="items-center justify-between w-full">
                     <YStack>
-                      <Text className="font-bold text-[24px]">
+                      <Text className="font-bold text-[24px] capitalize">
                         {item.name || "Burger"}
                       </Text>
                       <XStack className="items-center">

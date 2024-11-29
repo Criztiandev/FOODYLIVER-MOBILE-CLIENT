@@ -52,23 +52,21 @@ const RootScreen = () => {
       return;
     }
 
-    const payload: CashonDeliverRequest[] = items.map((product) => ({
+    mutate({
       customer_id: Number(crendentials.user_id),
-      item_id: Number(product.id),
+      item_id: Number(items[0].id),
       delivery_fee: 50,
       transaction_id: null,
-      total_amount: Number(`${product.price * product.quantity}`),
-      quantity: Number(`${product.quantity}`),
+      total_amount: Number(`${items[0].price * items[0].quantity}`),
+      quantity: Number(`${items[0].quantity}`),
       delivery_date: "11-19-2024",
       delivery_time: "1:00",
       order_type: "pickup",
       payment_method: "COD",
-      is_order_accepted_by_driver: null,
+      is_order_accepted_by_driver: false,
       driver_id: 1,
       status: "PENDING",
-    }));
-
-    mutate(payload);
+    });
 
     // clearCart();
     // router.push("/order/delivery");

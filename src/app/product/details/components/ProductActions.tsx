@@ -47,7 +47,7 @@ const ProductActions: FC<Props> = (props) => {
   };
 
   return (
-    <View className="absolute bottom-0 left-0 h-[300px] w-full flex justify-center items-center px-2">
+    <View className=" w-full flex justify-center items-center px-2 ">
       <XStack className="space-x-4">
         <Button
           disabled={disabledBtn || false}

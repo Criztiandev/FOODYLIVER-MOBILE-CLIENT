@@ -15,8 +15,6 @@ const ProductCartItem = (props: CartItem) => {
   const cartItem = items.find((item) => item.id === id);
   const quantity = cartItem?.quantity || 0;
 
-  console.log(cartItem?.id);
-
   const handleIncrementQuantity = () => {
     if (!id) return;
 

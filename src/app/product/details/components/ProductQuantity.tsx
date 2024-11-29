@@ -44,8 +44,8 @@ const ProductQuantity: FC<Props> = (props) => {
           <PlusIcon color="white" />
         </Button>
 
-        <Button size="icon" variant="outline" className="bg-stone-200">
-          <Text>{quantity || 0}</Text>
+        <Button size="icon" variant="ghost" className="bg-stone-200/50">
+          <Text className="font-bold">{quantity || 0}</Text>
         </Button>
 
         <Button size="icon" onPress={handleDecrementQuantity}>

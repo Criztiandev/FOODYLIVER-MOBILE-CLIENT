@@ -21,7 +21,9 @@ const ProductHero = ({ name, price, rating, stocks, description }: Props) => {
       />
 
       <YStack className="py-4 space-y-4">
-        <Text className="text-3xl font-bold">{name || "Burger"}</Text>
+        <Text className="text-3xl font-bold capitalize">
+          {name || "Burger"}
+        </Text>
         <XStack className="space-x-4 items-center">
           <XStack className="items-center space-x-2">
             <Star color="#EA9937" />

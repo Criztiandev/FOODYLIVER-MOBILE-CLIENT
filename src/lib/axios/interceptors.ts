@@ -12,8 +12,6 @@ export const requestInterceptorFulfill = async (
     config.headers["Authorization"] = `Bearer ${accessToken}`;
   }
 
-  console.log(config.data);
-
   return config;
 };
 

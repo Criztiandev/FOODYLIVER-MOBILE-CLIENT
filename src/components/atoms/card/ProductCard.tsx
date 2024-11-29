@@ -26,7 +26,10 @@ const ProductCard = (props: ProductItem) => {
 
       <View className="bg-primary/20 relative p-4 flex-2 flex-1   rounded-md m-1 justify-center items-center space-y-4">
         <View className="mt-6">
-          <Avatar size={100} source="https://legacy.reactjs.org/logo-og.png" />
+          <Avatar
+            size={100}
+            source={require("@/assets/images/cooking-img.png")}
+          />
         </View>
         <XStack className="items-start justify-between w-full">
           <YStack>

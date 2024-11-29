@@ -28,8 +28,6 @@ const useRegister = ({ defaultValues, steps }: Props) => {
   const mutation = useMutation({
     mutationFn: async (value: any) => {
       try {
-        console.log(value);
-
         const result = await PrivateAxios.post("/register", value);
         return result.data;
       } catch (e) {
@@ -46,7 +44,6 @@ const useRegister = ({ defaultValues, steps }: Props) => {
           text1: message,
         });
 
-        console.log(data);
         return;
       }
 

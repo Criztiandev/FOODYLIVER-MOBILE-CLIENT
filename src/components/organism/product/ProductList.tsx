@@ -10,14 +10,10 @@ import ProductCard from "@/components/atoms/card/ProductCard";
 import { useFetchProductList } from "@/hooks/product/query";
 
 const ProductList = () => {
-  const [selectCategory, setSelectedCategory] = useState("All");
+  const [selectCategory, setSelectedCategory] = useState("All Products");
   const { isLoading, isError, data: result, error } = useFetchProductList();
 
-  const categories = [
-    { title: "All" },
-    { title: "RECOMMENDED" },
-    { title: "POPULAR" },
-  ];
+  const categories = [{ title: "All Products" }];
 
   if (isLoading)
     return (

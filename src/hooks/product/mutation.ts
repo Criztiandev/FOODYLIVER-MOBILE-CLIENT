@@ -14,15 +14,16 @@ export interface CashonDeliverRequest {
   delivery_date: string;
   delivery_time: string;
   order_type: string;
-  is_order_accepted_by_driver: number | null;
+  is_order_accepted_by_driver: boolean;
   status: string;
 }
 
 export const useCashOnDeliveryMutation = () => {
   return useMutate({
     mutationKey: ["cashon-deliver"],
-    mutationFn: async (value: CashonDeliverRequest[]) => {
-      console.log(value);
+    mutationFn: async (value: CashonDeliverRequest) => {
+      console.log();
+
       const result = await PrivateAxios.post("/orders", value);
       return result.data;
     },

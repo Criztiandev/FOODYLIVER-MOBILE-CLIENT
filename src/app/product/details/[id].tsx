@@ -61,18 +61,20 @@ const RootScreen = () => {
           ),
         }}
       />
-      <SafeAreaView className="flex-1 bg-white">
-        <ScrollView className="flex-1">
-          <View
-            className="border"
-            style={{
-              height: Dimensions.get("screen").height,
-            }}
-          >
-            <ProductHero {...result?.data} />
-            <ProductAddons />
-            <ProductQuantity {...result?.data} />
-            <ProductActions {...result?.data} />
+      <SafeAreaView className="flex-1 bg-white relative ">
+        <ScrollView className="flex-grow  relative">
+          <View style={{ height: Dimensions.get("screen").height - 120 }}>
+            <View>
+              <ProductHero {...result?.data} />
+            </View>
+            <View>
+              <ProductAddons />
+              <ProductQuantity {...result?.data} />
+            </View>
+
+            <View className="absolute bottom-0 left-0 w-full">
+              <ProductActions {...result?.data} />
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
