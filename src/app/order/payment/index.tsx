@@ -45,17 +45,16 @@ const RootScreen = () => {
   // State Management
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     React.useState<PaymentMethod["keyword"]>("COD");
-  const { items, clearCart } = useCartStore();
+  const { items } = useCartStore();
   const { getCredentials } = useAccountStore();
 
   // Mutations
-  const {
-    mutate: cashOnDeliveryMutate,
-    isPending,
-    isSuccess,
-  } = useCashOnDeliveryMutation();
+  const { mutate: cashOnDeliveryMutate, isPending } =
+    useCashOnDeliveryMutation();
 
-  const { mutate: gcashMutate } = useGCashMutation(getCredentials as any);
+  const { mutate: gcashMutate, isPending: gcashIsPending } = useGCashMutation(
+    getCredentials as any
+  );
 
   // Order Payload Creators
   const createBaseOrderPayload = async () => {
@@ -95,19 +94,23 @@ const RootScreen = () => {
         order_type: "COD",
         payment_method: "GCASH",
       }));
+
       gcashMutate(gcashPayload);
       return;
     }
-    cashOnDeliveryMutate(payload);
-  };
 
-  // Navigation Effect
-  useEffect(() => {
-    if (isSuccess) {
-      clearCart();
-      router.push("/order/delivery");
+    let finalPayload;
+
+    if (payload.length > 1) {
+      finalPayload = payload.map((item) => ({
+        ...item,
+      }));
+    } else {
+      finalPayload = payload[0];
     }
-  }, [isSuccess, clearCart]);
+
+    cashOnDeliveryMutate(finalPayload as any);
+  };
 
   // UI Rendering
   const renderPaymentMethod = ({ keyword, title }: PaymentMethod) => {
@@ -154,7 +157,10 @@ const RootScreen = () => {
 
       <View className="p-4 absolute bottom-0 w-full space-y-4">
         <PaymentCheckoutDetails />
-        <Button onPress={handlePlaceOrder} disabled={isPending}>
+        <Button
+          onPress={handlePlaceOrder}
+          disabled={isPending || gcashIsPending}
+        >
           <XStack className="space-x-2 items-center">
             <ShoppingBag color="white" size={18} />
             <Text className="text-lg font-semibold text-white">

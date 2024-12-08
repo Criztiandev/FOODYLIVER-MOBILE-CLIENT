@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -7,7 +7,6 @@ import {
   Platform,
 } from "react-native";
 import { Stack, useLocalSearchParams, router } from "expo-router";
-import { ProductItem } from "@/interface/product.interface";
 import XStack from "@/components/stacks/XStack";
 import ProductActions from "./components/ProductActions";
 import ProductQuantity from "./components/ProductQuantity";
@@ -28,30 +27,21 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   maxQuantity = 99,
 }) => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const { items } = useCartStore();
+  const { items, updateQuantity, addProduct } = useCartStore();
 
-  const {
-    isLoading,
-    isError,
-    error,
-    data: result,
-    refetch,
-  } = useFetchProductById(id);
-
-  // Sync with cart quantity when component mounts or cart items change
-  useEffect(() => {
-    if (id) {
-      const cartItem = items.find((item) => item.id === id);
-      if (cartItem) {
-        setSelectedQuantity(cartItem.quantity);
-      }
-    }
-  }, [id, items]);
+  const { isLoading, isError, error, data: result } = useFetchProductById(id);
 
   const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity >= 1 && newQuantity <= maxQuantity) {
-      setSelectedQuantity(newQuantity);
+    if (!id || !result?.data) return;
+
+    // Validate quantity at component level
+    const validatedQuantity = Math.max(1, Math.min(newQuantity, maxQuantity));
+
+    const existingItem = items.find((item) => item.id === id);
+    if (existingItem) {
+      updateQuantity(id, validatedQuantity);
+    } else {
+      addProduct(result.data, validatedQuantity);
     }
   };
 
@@ -70,6 +60,9 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
 
   const product = result?.data;
   if (!product) return handleError();
+
+  const currentItem = items.find((item) => item.id === id);
+  const currentQuantity = currentItem?.quantity || 0;
 
   return (
     <View style={styles.container}>
@@ -102,16 +95,18 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
             <ProductAddons />
             <ProductQuantity
               id={product.id}
-              quantity={selectedQuantity}
-              onQuantityChange={handleQuantityChange}
               maxQuantity={maxQuantity}
-              selectedQuantity={selectedQuantity}
+              {...product}
             />
           </View>
         </ScrollView>
 
         <SafeAreaView style={styles.bottomActions}>
-          <ProductActions quantity={selectedQuantity} {...product} />
+          <ProductActions
+            quantity={currentQuantity}
+            onQuantityChange={handleQuantityChange}
+            {...product}
+          />
         </SafeAreaView>
       </SafeAreaView>
     </View>

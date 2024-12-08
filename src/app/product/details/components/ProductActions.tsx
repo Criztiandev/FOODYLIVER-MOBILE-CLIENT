@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 import XStack from "@/components/stacks/XStack";
 import { ProductItem } from "@/interface/product.interface";
 import { useRouter } from "expo-router";
@@ -8,9 +8,7 @@ import useCartStore from "@/state/useCartStore";
 import { ShoppingCart, Wallet } from "lucide-react-native";
 import Toast from "react-native-toast-message";
 
-interface Props extends ProductItem {
-  quantity: number;
-}
+type Props = ProductItem;
 
 const ProductActions: FC<Props> = (props) => {
   const router = useRouter();
@@ -18,44 +16,29 @@ const ProductActions: FC<Props> = (props) => {
   const { calculateSubtotal, items, addProduct, updateQuantity } =
     useCartStore();
 
-  // Find existing cart item
-  const cartItem = items.find((item) => item.id === props.id);
+  const cartItem = items.find((item) => item.id === id);
+  const currentQuantity = cartItem?.quantity || 0;
+  const disabledBtn = !props.is_available || currentQuantity >= 99;
 
-  // Get cart quantity
-  const cartQuantity = useMemo(() => {
-    return items.find((cartItem) => cartItem.id === props.id)?.quantity || 0;
-  }, [items, id]);
-
-  const disabledBtn = !props.is_available || cartQuantity >= 99;
-
-  // Handle add to cart
   const handleAddToCart = () => {
     if (!cartItem) {
-      // Add new product with selected quantity
-      addProduct({ id, ...props }, props.quantity);
+      addProduct(props, 1);
     } else {
-      // Update existing product with new total quantity
-      // Make sure not to exceed maximum quantity
-
-      const newQuantity = Math.min(cartQuantity + props.quantity, 99);
+      const newQuantity = Math.min(currentQuantity + 1, 99);
       updateQuantity(id as any, newQuantity);
     }
+
     Toast.show({
       type: "info",
       text1: "Product Added to cart",
     });
   };
 
-  // Handle checkout
   const handleProductCheckout = () => {
-    if (!cartItem) {
-      // If not in cart, add with selected quantity
-      addProduct(props, props.quantity);
-    } else if (cartQuantity !== props.quantity) {
-      // Update cart quantity to match selected quantity
-      updateQuantity(id as any, props.quantity);
+    if (!cartItem || cartItem.quantity <= 0) {
+      addProduct(props, 1);
     }
-    router.push("/order/payment");
+    router.push("/cart/list");
   };
 
   return (
@@ -79,7 +62,7 @@ const ProductActions: FC<Props> = (props) => {
         >
           <XStack className="items-center space-x-2">
             <Wallet color="white" size={18} />
-            {cartQuantity > 0 ? (
+            {currentQuantity > 0 ? (
               <Text className="text-white text-base">
                 P {calculateSubtotal()}
               </Text>

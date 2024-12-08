@@ -8,23 +8,37 @@ import YStack from "@/components/stacks/YStack";
 import CartSelectedProducts from "./components/CartSelectedProduct";
 import Button from "@/components/ui/Button";
 import { Coins, Ship, ShoppingBag, Truck, Wallet } from "lucide-react-native";
-import XStack from "@/components/stacks/XStack";
 import Avatar from "@/components/ui/Avatar";
 import useAccountStore from "@/state/useAccountStore";
+import useFetchProfile from "@/hooks/account/useFetchProfile";
+import LoadingScreen from "@/layout/screen/LoadingScreen";
+import ErrorScreen from "@/layout/screen/ErrorScreen";
+import useLocalStorage from "@/hooks/utils/useLocalStorage";
+import { User } from "@/interface/user.interface";
 
 const SHIPPING_FEE = 50;
 
 const RootScreen = () => {
-  const { credentials } = useAccountStore();
+  const [credentials, setCredentials] = useState<User | any>([]);
   const { items, calculateSubtotal } = useCartStore();
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
+  const { getItem } = useLocalStorage();
 
   useEffect(() => {
     const currentSubtotal = calculateSubtotal();
     setSubtotal(currentSubtotal);
     setTotal(currentSubtotal + SHIPPING_FEE);
   }, [items, calculateSubtotal]);
+
+  useEffect(() => {
+    (async () => {
+      const credentials = await getItem("user");
+      if (credentials) {
+        setCredentials(credentials);
+      }
+    })();
+  }, []);
 
   const renderCheckoutItem = (
     icon: React.ReactNode,

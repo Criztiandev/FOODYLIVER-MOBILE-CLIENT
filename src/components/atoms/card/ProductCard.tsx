@@ -6,7 +6,7 @@ import {
 } from "react-native";
 import React from "react";
 import XStack from "@/components/stacks/XStack";
-import { Heart, ShoppingCart } from "lucide-react-native";
+import { ShoppingCart } from "lucide-react-native";
 import { Href, useRouter } from "expo-router";
 import Avatar from "@/components/ui/Avatar";
 import YStack from "@/components/stacks/YStack";
@@ -18,8 +18,7 @@ const ProductCard = (props: ProductItem) => {
   const { addProduct } = useCartStore();
 
   const handleAdd = () => {
-    addProduct(props || "", 1);
-    router.push("/cart/list");
+    addProduct(props, 1);
   };
 
   return (

@@ -46,14 +46,15 @@ const ProductCartItem = (props: CartItem) => {
           />
 
           <YStack>
-            <Text className=" text-lg font-semibold break-words max-w-[200px]">
+            <Text className=" text-lg font-semibold break-words max-w-[200px] capitalize">
               {name || "Products"}
             </Text>
 
             <XStack className="space-x-4 items-center">
               <XStack className="items-center space-x-1">
-                <DollarSign color="#EA9937" />
-                <Text className="text-sm font-semibold text-stone-600 underline">
+                {/* <DollarSign color="#EA9937" /> */}
+                <Text className="text-stone-500">₱</Text>
+                <Text className="text-sm font-semibold text-stone-500 underline">
                   {price}
                 </Text>
               </XStack>

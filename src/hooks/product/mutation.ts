@@ -4,7 +4,8 @@ import axios, { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
 import useAccountStore from "@/state/useAccountStore";
 import { User } from "@/interface/user.interface";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
+import useCartStore from "@/state/useCartStore";
 
 export interface CashonDeliverRequest {
   item_id: number;
@@ -23,22 +24,24 @@ export interface CashonDeliverRequest {
 }
 
 export const useCashOnDeliveryMutation = () => {
+  const { clearCart } = useCartStore();
+  const router = useRouter();
   return useMutate({
     mutationKey: ["cashon-deliver"],
     mutationFn: async (values: any[]) => {
       const { data: result } = await PrivateAxios.post("/orders", values);
 
-      console.log(result);
-
-      return result?.data;
+      return result;
     },
     onSuccess: (data) => {
-      const { message } = data;
-
+      const { transaction_id } = data;
       Toast.show({
         type: "success",
         text1: "Orders created successfully",
       });
+
+      clearCart();
+      router.replace(`/order/delivery?transaction_id=${transaction_id}`);
     },
     onError: (error: Error, variables: any[], context: unknown) => {
       // Type check if it's an AxiosError
@@ -108,6 +111,42 @@ export const useGCashMutation = (getCredentials: () => Promise<User>) => {
       Toast.show({
         type: "error",
         text1: "Payment processing failed",
+      });
+    },
+  });
+};
+
+export const useGcashOrderMutation = () => {
+  const { clearCart } = useCartStore();
+  return useMutate({
+    mutationKey: ["gcash-order"],
+    mutationFn: async (values: any[]) => {
+      const { data: result } = await PrivateAxios.post("/orders", values);
+
+      console.log("Gcash Order Mutation");
+      return values[0];
+    },
+
+    onSuccess: (data) => {
+      const { transaction_id } = data;
+
+      Toast.show({
+        type: "success",
+        text1: "Orders created successfully",
+      });
+
+      clearCart();
+      router.replace(`/order/delivery?transaction_id=${transaction_id}`);
+    },
+    onError: (error: Error, variables: any[], context: unknown) => {
+      // Type check if it's an AxiosError
+      if (axios.isAxiosError(error)) {
+        console.log(error.response);
+      }
+
+      Toast.show({
+        type: "error",
+        text1: "Failed to process orders",
       });
     },
   });

@@ -7,25 +7,35 @@ import Button from "@/components/ui/Button";
 import useCartStore from "@/state/useCartStore";
 import { ProductItem } from "@/interface/product.interface";
 
-interface ProductQuantityProps extends Pick<ProductItem, "id"> {
-  quantity: number;
-  minQuantity?: number;
+interface ProductQuantityProps extends ProductItem {
   maxQuantity?: number;
-  onQuantityChange: (newQuantity: number) => void;
-  selectedQuantity: number;
 }
 
 const ProductQuantity = ({
   id,
-  minQuantity = 0,
   maxQuantity = 99,
-  onQuantityChange,
-  selectedQuantity,
+  ...props
 }: ProductQuantityProps) => {
-  const handleQuantityChange = (change: number) => {
-    const newQuantity = selectedQuantity + change;
-    if (newQuantity >= minQuantity && newQuantity <= maxQuantity) {
-      onQuantityChange(newQuantity);
+  const { items, incrementQuantity, decrementQuantity, addProduct } =
+    useCartStore();
+
+  const currentItem = items.find((item) => item.id === id);
+  const currentQuantity = currentItem?.quantity || 0;
+
+  const handleIncrement = () => {
+    if (!currentItem) {
+      addProduct({ id, ...props }, 1);
+      return;
+    }
+
+    if (currentQuantity < maxQuantity) {
+      incrementQuantity(id as string);
+    }
+  };
+
+  const handleDecrement = () => {
+    if (currentQuantity > 0) {
+      decrementQuantity(id as string);
     }
   };
 
@@ -35,33 +45,29 @@ const ProductQuantity = ({
       <XStack className="space-x-4 items-center">
         <Button
           size="icon"
-          onPress={() => handleQuantityChange(-1)}
-          disabled={selectedQuantity <= minQuantity}
+          onPress={handleDecrement}
+          disabled={currentQuantity <= 0}
           aria-label="Decrease quantity"
         >
-          <MinusIcon
-            color={selectedQuantity <= minQuantity ? "gray" : "white"}
-          />
+          <MinusIcon color={currentQuantity <= 0 ? "gray" : "white"} />
         </Button>
 
         <Button
           size="icon"
           variant="ghost"
           className="bg-stone-200/50 w-12"
-          aria-label={`Current quantity is ${selectedQuantity}`}
+          aria-label={`Current quantity is ${currentQuantity}`}
         >
-          <Text className="font-bold">{selectedQuantity || 0}</Text>
+          <Text className="font-bold">{currentQuantity}</Text>
         </Button>
 
         <Button
           size="icon"
-          onPress={() => handleQuantityChange(1)}
-          disabled={selectedQuantity >= maxQuantity}
+          onPress={handleIncrement}
+          disabled={currentQuantity >= maxQuantity}
           aria-label="Increase quantity"
         >
-          <PlusIcon
-            color={selectedQuantity >= maxQuantity ? "gray" : "white"}
-          />
+          <PlusIcon color={currentQuantity >= maxQuantity ? "gray" : "white"} />
         </Button>
       </XStack>
     </YStack>

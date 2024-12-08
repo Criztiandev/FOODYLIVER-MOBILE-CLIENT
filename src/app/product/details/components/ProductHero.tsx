@@ -9,15 +9,23 @@ import { Image } from "expo-image";
 interface Props
   extends Pick<
     ProductItem,
-    "name" | "price" | "rating" | "stocks" | "description"
+    "name" | "price" | "rating" | "stocks" | "description" | "thumbnail"
   > {}
 
-const ProductHero = ({ name, price, rating, stocks, description }: Props) => {
+const ProductHero = ({
+  name,
+  price,
+  stocks,
+  description,
+  thumbnail,
+}: Props) => {
   return (
     <View className=" w-full  mb-4 px-2">
       <Image
-        source={require("@/assets/images/cooking-img.png")}
-        className="w-full h-[300px]"
+        source={{
+          uri: `${process.env.EXPO_PUBLIC_BASE_IMAGE_URL}/${thumbnail}`,
+        }}
+        className="w-full h-[300px] rounded-md mt-2"
       />
 
       <YStack className="py-4 space-y-4">
