@@ -1,43 +1,49 @@
 import { View, Text } from "react-native";
-import React, { FC, useState } from "react";
+import React from "react";
 import { Image, ImageProps } from "expo-image";
 import { cn } from "@/lib/utils";
 
-const blurhash =
-  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
-
-interface Props extends ImageProps {
+interface AvatarProps extends ImageProps {
   fallback?: string;
-  imageClass?: string;
   size?: number;
+  imageClass?: string;
 }
 
-const Avatar: FC<Props> = ({
-  fallback,
-  source = "https://picsum.photos/seed/696/3000/2000",
+const Avatar = ({
+  fallback = "",
   size = 64,
+  className,
+  imageClass,
   ...props
-}) => {
-  const [imageFailed, setImageFailed] = useState(false);
+}: AvatarProps) => {
+  const [imageFailed, setImageFailed] = React.useState(false);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
     <View
       className={cn(
         "border border-gray-300 rounded-full overflow-hidden justify-center items-center",
-        props.className
+        className
       )}
       style={{ width: size, height: size }}
-      {...props}
     >
       {imageFailed ? (
         <View className="w-full h-full justify-center items-center bg-slate-200">
-          <Text className="text-xl font-bold ">T</Text>
+          <Text className="font-bold" style={{ fontSize: size * 0.3 }}>
+            ?
+          </Text>
         </View>
       ) : (
         <Image
           {...props}
-          source={source}
-          className={cn("flex-1 w-full bg-[#0553]", props.imageClass)}
-          placeholder={{ blurhash }}
+          className={cn("w-full h-full", imageClass)}
           contentFit="cover"
           transition={1000}
           onError={() => setImageFailed(true)}

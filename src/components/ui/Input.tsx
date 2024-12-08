@@ -8,7 +8,7 @@ export const inputVariant = cva(
   {
     variants: {
       variant: {
-        default: "border border-gray-300",
+        default: "border border-stone-300",
       },
       size: {
         default: "",

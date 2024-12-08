@@ -5,7 +5,7 @@ const _layout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" />
-      <Stack.Screen name="gcash" />
+      <Stack.Screen name="gcash" options={{ headerShown: false }} />
     </Stack>
   );
 };

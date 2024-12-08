@@ -1,19 +1,42 @@
 import React from "react";
+import {
+  ActivityIndicator,
+  Text,
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+} from "react-native";
 import { Link, Stack } from "expo-router";
-import BaseLayout from "../../layout/BaseLayout";
-import { ScrollView, Text, View } from "react-native";
-import Button from "@/components/ui/Button";
 import { FormProvider } from "react-hook-form";
+import BaseLayout from "../../layout/BaseLayout";
+import Button from "@/components/ui/Button";
 import useRegister from "../../hooks/auth/useRegister";
 import PersonalInfoStep from "./partials/steps/PersonalInfoStep";
-
 import AccountInfoStep from "./partials/steps/AccountInfoStep";
+import AddressInfoStep from "./partials/steps/AddressStep";
 import {
   AccountInfoStepValidation,
   AddressInfoValidation,
   PersonalInfoStepValidation,
 } from "@/service/validation/auth.validation";
-import AddressInfoStep from "./partials/steps/AddressStep";
+
+// Utility functions (can be moved to separate file)
+const cleanAddress = (formattedAddress: string): string => {
+  const cleaned = formattedAddress
+    .replace(/\bBlk\.?\s*\d*\s*|\bLot\s*\d*\s*/gi, "")
+    .trim();
+  return cleaned.replace(/\s+/g, " ");
+};
+
+const extractCity = (formattedAddress: string): string | null => {
+  const cleaned = formattedAddress
+    .replace(/\bBlk\.?\s*\d*\s*|\bLot\s*\d*\s*/gi, "")
+    .trim();
+  const addressParts = cleaned.split(",");
+  return addressParts.length >= 2 ? addressParts[1].trim() : null;
+};
 
 const RootScreen = () => {
   const { multiform, form, mutation } = useRegister({
@@ -27,31 +50,29 @@ const RootScreen = () => {
         component: <AddressInfoStep />,
         validation: AddressInfoValidation,
       },
-      { component: <AccountInfoStep />, validation: AccountInfoStepValidation },
+      {
+        component: <AccountInfoStep />,
+        validation: AccountInfoStepValidation,
+      },
     ],
   });
 
-  const { element, isFistStep, isLastStep, nextStep, prevStep, currentStep } =
-    multiform;
+  const { element, isFistStep, isLastStep, nextStep, prevStep } = multiform;
 
   const onSubmit = () => {
     if (!isLastStep) {
       nextStep();
       return;
     }
+
     const payload = form.getValues();
-
     const fullName = `${payload.first_name} ${payload.last_name}`;
-
-    // format addess
     const { formatted_address, coordinates } = payload.address;
-
     const block = `Blk. ${payload.blk}`;
     const lot = `Lot ${payload.lot}`;
     const currentAddress = cleanAddress(formatted_address);
     const city = extractCity(formatted_address);
     const postalCode = payload.postal_code;
-
     const address = `${block} ${lot} ${currentAddress} ${postalCode}`;
 
     delete payload.blk;
@@ -60,8 +81,8 @@ const RootScreen = () => {
     const requestPayload = {
       ...payload,
       name: fullName,
-      address: address,
-      city: city,
+      address,
+      city,
       longitude: coordinates.lng,
       latitude: coordinates.lat,
       vehicle_type: "N/A",
@@ -72,75 +93,122 @@ const RootScreen = () => {
 
     mutation.mutate(requestPayload);
   };
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <BaseLayout>
-        <View className="flex-1 p-2 justify-center  border">
-          <View className=" flex-1 justify-center items-center">
-            <Text className="text-[32px] mb-12 text-center font-bold">
-              Sign Up Your Account
-            </Text>
+        <SafeAreaView style={styles.container}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={styles.keyboardView}
+          >
+            {/* Main Content */}
+            <View style={styles.mainContent}>
+              <Text style={styles.title}>Sign Up Your Account</Text>
 
-            <FormProvider {...form}>{element}</FormProvider>
-          </View>
+              <FormProvider {...form}>{element}</FormProvider>
+            </View>
 
-          <View>
-            <Button
-              className="w-full mb-3"
-              onPress={form.handleSubmit(onSubmit)}
-            >
-              <Text className="text-white font-semibold">
-                {isLastStep ? "Sign up" : "Next"}
-              </Text>
-            </Button>
-
-            {!isFistStep && (
+            {/* Bottom Section */}
+            <View style={styles.bottomSection}>
               <Button
-                className="w-full bg-white border border-[#ccc] "
-                onPress={prevStep}
+                style={styles.primaryButton}
+                onPress={form.handleSubmit(onSubmit)}
+                disabled={mutation.isPending}
               >
-                <Text className="text-base font-semibold">Back</Text>
+                {mutation.isPending ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text style={styles.buttonText}>
+                    {isLastStep ? "Sign up" : "Next"}
+                  </Text>
+                )}
               </Button>
-            )}
-          </View>
 
-          {isFistStep && (
-            <Text className="text-base text-center p-4 ">
-              Already have an account ?{" "}
-              <Link href="/auth/sign-in" className="text-blue-500">
-                Sign in
-              </Link>
-            </Text>
-          )}
-        </View>
+              {!isFistStep && (
+                <Button style={styles.secondaryButton} onPress={prevStep}>
+                  <Text style={styles.backButtonText}>Back</Text>
+                </Button>
+              )}
+
+              {isFistStep && (
+                <Text style={styles.footerText}>
+                  Already have an account?{" "}
+                  <Link href="/auth/sign-in" style={styles.link}>
+                    Sign in
+                  </Link>
+                </Text>
+              )}
+            </View>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </BaseLayout>
     </>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  mainContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
+    marginBottom: 48,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  bottomSection: {
+    padding: 16,
+    backgroundColor: "white",
+    // Optional: Add shadow
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -3 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  primaryButton: {
+    width: "100%",
+    marginBottom: 12,
+  },
+  secondaryButton: {
+    width: "100%",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "600",
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  footerText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 16,
+  },
+  link: {
+    color: "#3b82f6", // blue-500
+  },
+});
+
 export default RootScreen;
-
-function cleanAddress(formattedAddress: string): string {
-  // Use a regular expression to remove 'Blk' and 'Lot' along with their respective numbers
-  const cleanedAddress = formattedAddress
-    .replace(/\bBlk\.?\s*\d*\s*|\bLot\s*\d*\s*/gi, "")
-    .trim();
-
-  // Replace multiple spaces with a single space
-  return cleanedAddress.replace(/\s+/g, " ");
-}
-
-function extractCity(formattedAddress: string): string | null {
-  const cleanedAddress = formattedAddress
-    .replace(/\bBlk\.?\s*\d*\s*|\bLot\s*\d*\s*/gi, "")
-    .trim();
-
-  const addressParts = cleanedAddress.split(",");
-
-  if (addressParts.length >= 2) {
-    return addressParts[1].trim();
-  }
-
-  return null;
-}

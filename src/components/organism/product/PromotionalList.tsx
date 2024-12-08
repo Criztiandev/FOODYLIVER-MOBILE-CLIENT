@@ -3,22 +3,39 @@ import React from "react";
 import YStack from "@/components/stacks/YStack";
 import XStack from "@/components/stacks/XStack";
 import { PuzzleIcon } from "lucide-react-native";
-import { Link } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import PromotionalCard from "@/components/molecules/card/PromotionalCard";
 import { useFetchPromotional } from "@/hooks/promotional/query";
 import SectionLoadingScreen from "@/layout/screen/SectionLoadingScreen";
 
 const PromotionalList = () => {
-  const { isLoading, isError, error, data: result } = useFetchPromotional();
+  const { isLoading, isError, data: result } = useFetchPromotional();
 
+  const shufflePromotional = (data: any[], count: number = 3) => {
+    if (!data) return;
+    // Make sure count isn't larger than available data
+    const safeCount = Math.min(count, data?.length);
+
+    // Create a copy of the array
+    const shuffled = [...data];
+
+    // Fisher-Yates shuffle algorithm
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    // Return the first 'count' items
+    return shuffled.slice(0, safeCount);
+  };
+  const randomizedPromotions = shufflePromotional(result?.data);
   if (isLoading)
     return (
       <View className="px-2 mb-4 space-y-2">
         <View className="flex-row justify-between items-center mb-2 ">
           <XStack className="items-center space-x-2">
             <PuzzleIcon color="black" size={18} />
-            <Text className="text-lg font-semibold">Promotional</Text>
+            <Text className="text-lg font-bold text-primary">Promotional</Text>
           </XStack>
         </View>
 
@@ -30,7 +47,9 @@ const PromotionalList = () => {
       <View className="px-2 space-y-3">
         <XStack className="items-center space-x-2">
           <PuzzleIcon color="black" size={18} />
-          <Text className="text-lg font-semibold">Promotional</Text>
+          <Text className="text-lg font-semibold text-primary">
+            Promotional
+          </Text>
         </XStack>
 
         <View className="h-[200px] bg-stone-200">
@@ -46,8 +65,10 @@ const PromotionalList = () => {
     <YStack className="px-2 mb-4 space-y-2">
       <View className="flex-row justify-between items-center ">
         <XStack className="items-center space-x-2">
-          <PuzzleIcon color="black" size={18} />
-          <Text className="text-lg font-semibold">Promotional</Text>
+          <PuzzleIcon size={18} className="text-primary" />
+          <Text className="text-lg font-semibold text-primary">
+            Promotional
+          </Text>
         </XStack>
       </View>
 
@@ -55,7 +76,7 @@ const PromotionalList = () => {
         {result?.data?.length > 0 ? (
           <XStack className="">
             <FlashList
-              data={result.data}
+              data={randomizedPromotions}
               estimatedItemSize={10000}
               horizontal
               renderItem={({ item }: { item: any }) => (

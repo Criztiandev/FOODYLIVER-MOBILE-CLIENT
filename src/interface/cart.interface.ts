@@ -17,6 +17,7 @@ export interface CartStore {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   incrementQuantity: (productId: string) => void;
+  decrementQuantity: (productId: string) => void;
   calculateSubtotal: () => number;
   calculateItemCount: () => number;
 }

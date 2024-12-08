@@ -1,6 +1,5 @@
 import HomeButton from "@/components/atoms/button/HomeButton";
 import DeliveryMap from "@/components/molecules/Map/DeliveryMap";
-import PaymentCheckoutDetails from "@/components/molecules/overview/PaymentCheckoutDetails";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import Avatar from "@/components/ui/Avatar";
@@ -12,7 +11,6 @@ import {
   Coins,
   MapPin,
   Phone,
-  ReceiptIcon,
   ReceiptText,
   Truck,
   Wallet,
@@ -20,9 +18,15 @@ import {
 import React from "react";
 import { Text, View } from "react-native";
 import BackButton from "@/components/atoms/button/BackButton";
+import useAccountStore from "@/state/useAccountStore";
+import useCartStore from "@/state/useCartStore";
 
 const RootScreen = () => {
   const router = useRouter();
+  const { getCredentials } = useAccountStore();
+  const { subtotal } = useCartStore();
+
+  // fetch rider here
 
   return (
     <>
@@ -61,7 +65,7 @@ const RootScreen = () => {
           </XStack>
 
           <View className="p-2">
-            <View className="h-[300px] border border-primary rounded-md overflow-hidden ">
+            <View className="h-[200px] border border-primary rounded-md overflow-hidden ">
               <DeliveryMap
                 targetRegion={{
                   latitude: 37.44964795610058,
@@ -104,7 +108,7 @@ const RootScreen = () => {
                     </Text>
                   </XStack>
                   <Text className="text-sm font-semibold text-gray-600">
-                    ₱ {0}
+                    ₱ 50
                   </Text>
                 </XStack>
 
@@ -116,7 +120,7 @@ const RootScreen = () => {
                     </Text>
                   </XStack>
                   <Text className="text-sm font-semibold text-gray-600">
-                    ₱ {0}
+                    ₱ {subtotal}
                   </Text>
                 </XStack>
 
@@ -128,7 +132,7 @@ const RootScreen = () => {
                     </Text>
                   </XStack>
                   <Text className="text-sm font-semibold text-gray-600">
-                    ₱ {0}
+                    ₱ {subtotal + 50}
                   </Text>
                 </XStack>
               </View>
@@ -136,7 +140,7 @@ const RootScreen = () => {
           </View>
 
           <View className="p-2 space-y-2">
-            <Button onPress={() => router.replace(`/order/track/${123123}`)}>
+            <Button onPress={() => router.replace(`/order/track/${or}`)}>
               <XStack className="items-center space-x-2">
                 <MapPin color="white" size={24} />
                 <Text className="text-lg text-white font-semibold">

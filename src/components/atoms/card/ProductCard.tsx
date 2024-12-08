@@ -1,4 +1,9 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ImageSourcePropType,
+} from "react-native";
 import React from "react";
 import XStack from "@/components/stacks/XStack";
 import { Heart, ShoppingCart } from "lucide-react-native";
@@ -6,21 +11,25 @@ import { Href, useRouter } from "expo-router";
 import Avatar from "@/components/ui/Avatar";
 import YStack from "@/components/stacks/YStack";
 import { ProductItem } from "@/interface/product.interface";
+import useCartStore from "@/state/useCartStore";
 
 const ProductCard = (props: ProductItem) => {
   const router = useRouter();
+  const { addProduct } = useCartStore();
+
+  const handleAdd = () => {
+    addProduct(props || "", 1);
+    router.push("/cart/list");
+  };
+
   return (
     <TouchableOpacity
       className="relative"
       onPress={() => router.navigate(`/product/details/${props.id}` as Href)}
     >
       <XStack className=" absolute top-1  w-full  p-2 px-3 justify-between items-center flex-1 z-[99px]">
-        <TouchableOpacity>
-          <Heart color="black" size={28} />
-        </TouchableOpacity>
-
         <View className="p-2 bg-white rounded-full">
-          <Text className="text-lg font-bold">4.2</Text>
+          <Text className="text-lg font-bold">{props?.rating || 4.2}</Text>
         </View>
       </XStack>
 
@@ -28,20 +37,24 @@ const ProductCard = (props: ProductItem) => {
         <View className="mt-6">
           <Avatar
             size={100}
-            source={require("@/assets/images/cooking-img.png")}
+            source={{
+              uri: props.thumbnail
+                ? `${process.env.EXPO_PUBLIC_BASE_IMAGE_URL}/${props.thumbnail}`
+                : `https://picsum.photos/seed/696/3000/2000`,
+            }}
           />
         </View>
         <XStack className="items-start justify-between w-full">
           <YStack>
-            <Text className="font-bold text-xl">
-              {props?.name?.length < 12
+            <Text className="font-bold text-xl capitalize">
+              {props?.name?.length < 10
                 ? props.name
-                : `${props?.name?.substring(0, 12)}..`}
+                : `${props?.name?.substring(0, 10)}..`}
             </Text>
-            <Text className="text-[16px] font-bold">PHP {props.price}</Text>
+            <Text className="text-[16px] font-bold">₱ {props.price}</Text>
           </YStack>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleAdd}>
             <ShoppingCart size={24} color="black" />
           </TouchableOpacity>
         </XStack>

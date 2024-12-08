@@ -36,11 +36,18 @@ const ProductCartItem = (props: CartItem) => {
     <YStack className="bg-primary/30 p-4 rounded-md justify-between items-ce mb-2 space-y-4 ">
       <XStack className="space-x-4 justify-between items-center">
         <XStack className="space-x-4">
-          <Avatar size={64} />
+          <Avatar
+            source={{
+              uri: props.thumbnail
+                ? `${process.env.EXPO_PUBLIC_BASE_IMAGE_URL}/${props.thumbnail}`
+                : `https://picsum.photos/seed/696/3000/2000`,
+            }}
+            size={64}
+          />
 
           <YStack>
-            <Text className="text-lg font-semibold break-words max-w-[200px]">
-              {name || "Prodict"}
+            <Text className=" text-lg font-semibold break-words max-w-[200px]">
+              {name || "Products"}
             </Text>
 
             <XStack className="space-x-4 items-center">

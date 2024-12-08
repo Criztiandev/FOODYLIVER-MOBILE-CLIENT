@@ -22,7 +22,9 @@ const TopCategoriesList = () => {
         <View className="flex-row justify-between items-center mb-2 ">
           <XStack className="items-center space-x-2">
             <PuzzleIcon color="black" size={18} />
-            <Text className="text-lg font-semibold">Top Categories</Text>
+            <Text className="text-lg font-semibold text-primary">
+              Top Categories
+            </Text>
           </XStack>
         </View>
 
@@ -34,7 +36,9 @@ const TopCategoriesList = () => {
       <View className="px-2 space-y-3 my-4 ">
         <XStack className="items-center space-x-2">
           <PuzzleIcon color="black" size={18} />
-          <Text className="text-lg font-semibold">Top Categories</Text>
+          <Text className="text-lg font-semibold text-primary">
+            Top Categories
+          </Text>
         </XStack>
 
         <View className="h-[200px] bg-stone-200">
@@ -51,7 +55,9 @@ const TopCategoriesList = () => {
       <View className="flex-row justify-between items-center ">
         <XStack className="items-center space-x-2">
           <PuzzleIcon color="black" size={18} />
-          <Text className="text-lg font-semibold">Top Categories</Text>
+          <Text className="text-lg font-semibold text-primary">
+            Top Categories
+          </Text>
         </XStack>
 
         <Link href="/_sitemap">More</Link>

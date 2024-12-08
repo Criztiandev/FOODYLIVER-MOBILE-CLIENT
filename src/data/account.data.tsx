@@ -54,9 +54,4 @@ export const AccountNavivationDataset: IAccountNavigationDataSet[] = [
     title: "My Address",
     path: "/account/address",
   },
-
-  {
-    title: "Link Gcash Account",
-    path: "/account/link-gcash",
-  },
 ];

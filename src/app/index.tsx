@@ -1,57 +1,64 @@
-import { View, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Redirect, useRouter } from "expo-router";
 import useLocalStorage from "@/hooks/utils/useLocalStorage";
 
+type UserCredentials = {
+  id: string;
+  // Add other user properties
+};
+
+type AppState = {
+  isLoading: boolean;
+  credentials: UserCredentials | null;
+};
+
+const INITIAL_STATE: AppState = {
+  isLoading: true,
+  credentials: null,
+};
+
 const RootScreen = () => {
   const { getItem, setItem } = useLocalStorage();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [state, setState] = useState<AppState>(INITIAL_STATE);
 
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        setIsLoading(true);
-        const credentials = await getItem("user");
+        const credentials = await getItem<UserCredentials>("user");
 
         if (credentials) {
-          // User exists, navigate to home
-          await setItem("user", credentials); // Refresh storage
+          // Refresh storage with existing credentials
+          await setItem("user", credentials);
           router.replace("/user/home");
         } else {
-          // No user found, navigate to sign in
           router.replace("/auth/sign-in");
         }
-      } catch (err: any) {
-        setError(err);
-        // On error, default to sign in page
+      } catch {
+        // On any error, redirect to sign in
         router.replace("/auth/sign-in");
       } finally {
-        setIsLoading(false);
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+        }));
       }
     };
 
     initializeApp();
   }, []);
 
-  if (error) {
+  // Show loading screen while checking credentials
+  if (state.isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" />
       </View>
     );
   }
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  // Using Redirect as a fallback, though the router.replace should handle navigation
+  // Fallback redirect
   return <Redirect href="/auth/sign-in" />;
 };
 

@@ -2,7 +2,7 @@ import { QueryClient, UseQueryResult } from "@tanstack/react-query";
 
 export interface ProductItem {
   id?: string;
-  thumbnailUrl: string;
+  thumbnail: string;
   category_id: string;
   name: string;
   price: number;
@@ -11,6 +11,7 @@ export interface ProductItem {
   addons: any;
   stocks: number;
   is_available: boolean;
+  quantity: number;
 }
 
 export interface ProductStore {

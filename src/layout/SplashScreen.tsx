@@ -10,7 +10,6 @@ interface Props {
 }
 
 const SplashScreen = ({ setSplash }: Props) => {
-  const router = useRouter();
   const { setItem } = useLocalStorage();
 
   const handleLogin = async () => {
@@ -49,10 +48,10 @@ const SplashScreen = ({ setSplash }: Props) => {
         </YStack>
 
         <TouchableOpacity
-          className="bg-primary p-4 w-full justify-center items-center rounded-md"
+          className="bg-primary py-3 w-full justify-center items-center rounded-md"
           onPress={handleLogin}
         >
-          <Text className="text-white font-bold text-2xl">LOGIN</Text>
+          <Text className="text-white font-bold text-xl">LOGIN</Text>
         </TouchableOpacity>
       </YStack>
     </YStack>

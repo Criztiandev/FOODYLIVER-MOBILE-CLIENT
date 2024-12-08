@@ -27,8 +27,6 @@ const useLogin = () => {
     mutationKey: ["POST /login"],
 
     onSuccess: (data: LoginResponse) => {
-      console.log(data);
-
       const { token, ...rest } = data;
 
       setItem("accessToken", token);

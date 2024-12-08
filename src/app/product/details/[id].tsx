@@ -1,6 +1,12 @@
-import React from "react";
-import { Dimensions, SafeAreaView, ScrollView, View } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import React, { useState, useEffect } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  StyleSheet,
+  Platform,
+} from "react-native";
+import { Stack, useLocalSearchParams, router } from "expo-router";
 import { ProductItem } from "@/interface/product.interface";
 import XStack from "@/components/stacks/XStack";
 import ProductActions from "./components/ProductActions";
@@ -12,45 +18,66 @@ import CartButton from "@/components/atoms/button/CartButton";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import ErrorScreen from "@/layout/screen/ErrorScreen";
 import { useFetchProductById } from "@/hooks/product/query";
+import useCartStore from "@/state/useCartStore";
 
-const RootScreen = () => {
-  const { id } = useLocalSearchParams();
+interface ProductDetailScreenProps {
+  maxQuantity?: number;
+}
+
+const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
+  maxQuantity = 99,
+}) => {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const { items } = useCartStore();
 
   const {
     isLoading,
     isError,
     error,
     data: result,
-  } = useFetchProductById(id as string);
+    refetch,
+  } = useFetchProductById(id);
 
-  if (isLoading) return <LoadingScreen />;
-  if (isError) {
-    console.log(error);
-    return <ErrorScreen />;
-  }
-  const product: ProductItem = {
-    name: "Product 1",
-    price: 1000,
-    description:
-      "When the Text component doesn't support changing default fonts out of the box, this solution becomes much better. I would much rather add a global control in one place and use the native components than make a wrapper component for every detail that true native apps provide.",
-    rating: 1,
-    category_id: "1",
-    addons: [],
-    stocks: 2,
-    is_available: true,
-    thumbnailUrl: "123123123",
-    id: "1",
+  // Sync with cart quantity when component mounts or cart items change
+  useEffect(() => {
+    if (id) {
+      const cartItem = items.find((item) => item.id === id);
+      if (cartItem) {
+        setSelectedQuantity(cartItem.quantity);
+      }
+    }
+  }, [id, items]);
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity >= 1 && newQuantity <= maxQuantity) {
+      setSelectedQuantity(newQuantity);
+    }
   };
 
+  const handleError = () => {
+    console.error("Error fetching product:", error);
+    return <ErrorScreen />;
+  };
+
+  if (!id) {
+    router.replace("/user/home");
+    return null;
+  }
+
+  if (isLoading) return <LoadingScreen />;
+  if (isError) return handleError();
+
+  const product = result?.data;
+  if (!product) return handleError();
+
   return (
-    <>
+    <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: "",
-          headerTitleStyle: { color: "white" },
-          headerStyle: {
-            backgroundColor: "#f4891f",
-          },
+          title: "Product Details",
+          headerTitleStyle: styles.headerTitle,
+          headerStyle: styles.header,
           headerTitleAlign: "center",
           headerShadowVisible: false,
           headerLeft: () => <BackButton />,
@@ -61,25 +88,88 @@ const RootScreen = () => {
           ),
         }}
       />
-      <SafeAreaView className="flex-1 bg-white relative ">
-        <ScrollView className="flex-grow  relative">
-          <View style={{ height: Dimensions.get("screen").height - 120 }}>
-            <View>
-              <ProductHero {...result?.data} />
-            </View>
-            <View>
-              <ProductAddons />
-              <ProductQuantity {...result?.data} />
-            </View>
 
-            <View className="absolute bottom-0 left-0 w-full">
-              <ProductActions {...result?.data} />
-            </View>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
+          bounces={true}
+          overScrollMode="never"
+        >
+          <View style={styles.content}>
+            <ProductHero {...product} />
+            <ProductAddons />
+            <ProductQuantity
+              id={product.id}
+              quantity={selectedQuantity}
+              onQuantityChange={handleQuantityChange}
+              maxQuantity={maxQuantity}
+              selectedQuantity={selectedQuantity}
+            />
           </View>
         </ScrollView>
+
+        <SafeAreaView style={styles.bottomActions}>
+          <ProductActions quantity={selectedQuantity} {...product} />
+        </SafeAreaView>
       </SafeAreaView>
-    </>
+    </View>
   );
 };
 
-export default RootScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  header: {
+    backgroundColor: "#f4891f",
+  },
+  headerTitle: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 100,
+  },
+  content: {
+    flex: 1,
+  },
+  bottomActions: {
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    backgroundColor: "white",
+    borderTopWidth: 1,
+    borderTopColor: "#E5E5E5",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: -2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+});
+
+export default ProductDetailScreen;

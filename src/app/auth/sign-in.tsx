@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import React from "react";
 import { Link, Stack, useRouter } from "expo-router";
 import { FormProvider } from "react-hook-form";
@@ -12,16 +12,56 @@ import SplashScreen from "@/layout/SplashScreen";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import useSplashScreen from "@/hooks/init/useSplashScreen";
 
+// Separate Logo component for better organization
+const Logo = () => (
+  <YStack style={styles.logoContainer}>
+    <Text style={[styles.logoText, styles.boldPoppins]}>J&B</Text>
+    <Text style={styles.logoText}>Food Delivery</Text>
+  </YStack>
+);
+
+// Separate LoginForm component
+const LoginForm = ({ form, mutation }: any) => (
+  <FormProvider {...form}>
+    <InputField
+      keyboardType="email-address"
+      label="Email"
+      name="email"
+      placeholder="Enter your email"
+    />
+    <InputField
+      secureTextEntry={true}
+      label="Password"
+      name="password"
+      placeholder="Enter your password"
+    />
+    <View style={styles.rememberContainer}>
+      <CheckboxField name="toc" label="Remember me" />
+      <Link href="/" push style={styles.linkText}>
+        Forgot Password
+      </Link>
+    </View>
+  </FormProvider>
+);
+
+// Separate LoginButton component
+const LoginButton = ({ onPress, isPending }: any) => (
+  <Button disabled={isPending} style={styles.button} onPress={onPress}>
+    {isPending ? (
+      <ActivityIndicator />
+    ) : (
+      <Text style={[styles.buttonText, styles.boldPoppins]}>Login</Text>
+    )}
+  </Button>
+);
+
 const RootScreen = () => {
   const router = useRouter();
   const { form, mutation } = useLogin();
   const { isLoading, showSplash, handleSplash } = useSplashScreen();
 
   if (isLoading) return <LoadingScreen />;
-
-  if (showSplash) {
-    return <SplashScreen setSplash={handleSplash} />;
-  }
+  if (showSplash) return <SplashScreen setSplash={handleSplash} />;
 
   const onSubmit = (value: LoginValue) => {
     mutation.mutate(value);
@@ -30,54 +70,18 @@ const RootScreen = () => {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <View className="p-4 flex-1  h-full  justify-center " style={{ flex: 1 }}>
-        <View className=" flex-1 justify-center items-center ">
-          <YStack className="mb-12">
-            <Text className="text-[40px] text-primary  font-bold  text-center">
-              J&B
-            </Text>
-            <Text className="text-[40px] text-primary  font-bold  text-center">
-              Food Delivery
-            </Text>
-          </YStack>
-          <FormProvider {...form}>
-            <InputField
-              keyboardType="email-address"
-              label="Email"
-              name="email"
-              placeholder="Enter your email"
-            />
-
-            <InputField
-              secureTextEntry={true}
-              label="Password"
-              name="password"
-              placeholder="Enter your password"
-            />
-
-            <View className="my-4 flex-row justify-between items-center w-full">
-              <CheckboxField name="toc" label="Remember me" />
-              <Link href="/" push className="text-base text-link">
-                Forgot Password
-              </Link>
-            </View>
-          </FormProvider>
-          <Button
-            disabled={mutation.isPending}
-            className="w-full"
+      <View style={styles.container}>
+        <View style={styles.contentContainer}>
+          <Logo />
+          <LoginForm form={form} mutation={mutation} />
+          <LoginButton
             onPress={form.handleSubmit(onSubmit)}
-          >
-            {mutation.isPending ? (
-              <Text className="text-lg font-bold text-white">Login in</Text>
-            ) : (
-              <Text className="text-lg font-bold text-white">LOGIN</Text>
-            )}
-          </Button>
+            isPending={mutation.isPending}
+          />
         </View>
-
-        <Text className="text-base text-center p-4">
-          Don't have an account ?{" "}
-          <Link href="/auth/sign-up" className="text-link">
+        <Text style={styles.footerText}>
+          Don't have an account?{" "}
+          <Link href="/auth/sign-up" style={styles.linkText}>
             Sign up
           </Link>
         </Text>
@@ -85,5 +89,54 @@ const RootScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    justifyContent: "center",
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logoContainer: {
+    marginBottom: 48,
+  },
+  logoText: {
+    fontSize: 42,
+    color: "#F4891F",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  boldPoppins: {
+    fontFamily: "Poppins-Bold",
+  },
+  rememberContainer: {
+    marginVertical: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  button: {
+    width: "100%",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+  },
+  footerText: {
+    fontSize: 16,
+    textAlign: "center",
+    padding: 16,
+  },
+  linkText: {
+    color: "#link", // Replace with your actual link color
+    fontSize: 16,
+  },
+});
 
 export default RootScreen;

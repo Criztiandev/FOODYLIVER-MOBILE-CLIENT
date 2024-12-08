@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import YStack from "@/components/stacks/YStack";
 import XStack from "@/components/stacks/XStack";
 import { FlashList } from "@shopify/flash-list";
@@ -12,18 +12,19 @@ import { useFetchProductList } from "@/hooks/product/query";
 const ProductList = () => {
   const [selectCategory, setSelectedCategory] = useState("All Products");
   const { isLoading, isError, data: result, error } = useFetchProductList();
-
   const categories = [{ title: "All Products" }];
+
+  const LimitedProduct = result?.data.slice(0, 15);
 
   if (isLoading)
     return (
       <View className="px-2 mb-4 space-y-2">
         <View className="flex-row justify-between items-center mb-2 ">
           <XStack className="items-center space-x-2">
-            {categories.map((item) => (
-              <Button variant="ghost">
+            {categories?.map((item) => (
+              <Button variant="ghost" key={item.title}>
                 <Text
-                  className={`text-lg font-semibold  ${
+                  className={`text-2xl font-bold  ${
                     selectCategory === item.title
                       ? "text-primary"
                       : "text-gray-400"
@@ -44,7 +45,7 @@ const ProductList = () => {
       <View className="px-2">
         <XStack className="items-center space-x-2">
           {categories.map((item) => (
-            <Button variant="ghost" className="">
+            <Button variant="ghost" key={item.title}>
               <Text
                 className={`text-lg font-semibold  ${
                   selectCategory === item.title
@@ -92,7 +93,7 @@ const ProductList = () => {
       <View className="flex-1 px-2 ">
         {result?.data?.length > 0 ? (
           <FlashList
-            data={result.data}
+            data={LimitedProduct}
             estimatedItemSize={9999}
             numColumns={2}
             renderItem={({ item }: { item: ProductItem }) => (

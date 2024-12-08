@@ -7,4 +7,5 @@ export interface User {
   latitude: string | number | null;
   isAuthenticated: boolean;
   role?: string;
+  phone_number: string;
 }

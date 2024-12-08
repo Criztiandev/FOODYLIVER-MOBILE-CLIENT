@@ -8,18 +8,31 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { createNotifications } from "react-native-notificated";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import Toast from "react-native-toast-message";
+import { View } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevent the splash screen from auto-hiding
+SplashScreen.preventAutoHideAsync();
+
 const client = new QueryClient();
 
 export default function RootLayout() {
   const { NotificationsProvider } = createNotifications();
-
-  // fontz
-  useLoadFont();
+  const fontsLoaded = useLoadFont();
 
   // States
   useAppState();
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <QueryClientProvider client={client}>

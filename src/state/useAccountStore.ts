@@ -22,7 +22,6 @@ const useAccountStore = create<AccountStore>((set, get) => ({
   getCredentials: async () => {
     const { getItem } = useLocalStorage();
     const result = await getItem("user");
-
     return result;
   },
 
