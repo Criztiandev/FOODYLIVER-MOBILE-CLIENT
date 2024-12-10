@@ -1,28 +1,89 @@
 import React, { useState } from "react";
 import { View, Text, Dimensions } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { Home, Plus, Save } from "lucide-react-native";
+import { Home, Save } from "lucide-react-native";
+import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
+
 import BackButton from "@/components/atoms/button/BackButton";
 import AddressSearch from "@/components/atoms/search/AddressSearch";
 import YStack from "@/components/stacks/YStack";
 import BaseLayout from "@/layout/BaseLayout";
 import Button from "@/components/ui/Button";
-import useReverseGeocode from "@/hooks/maps/useReverseGeocode";
 import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
-import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
+import useUpdateProfile from "@/hooks/account/useUpdateProfile";
 
-const RootScreen = () => {
+interface AddressPayload {
+  address: string;
+  city: string;
+  postal_code: string;
+  latitude: number;
+  longitude: number;
+}
+
+const SCREEN_HEIGHT = Dimensions.get("screen").height;
+
+const AddressScreen: React.FC = () => {
+  const router = useRouter();
   const [selectedAddress, setSelectedAddress] =
     useState<GooglePlaceDetail | null>(null);
-  const router = useRouter();
-  const { address } = useReverseGeocode();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { mutate, isPending } = useUpdateProfile();
 
   const handleSelectAddress = (value: GooglePlaceDetail | null) => {
+    setError(null);
     setSelectedAddress(value);
   };
 
-  const handleSetAddress = () => {
-    console.log("Selected Address");
+  const extractAddressComponents = (
+    components: GooglePlaceDetail["address_components"] = []
+  ) => {
+    const city =
+      components?.find((component) => component.types.includes("locality"))
+        ?.long_name || "";
+
+    const postal_code =
+      components?.find((component) => component.types.includes("postal_code"))
+        ?.long_name || "";
+
+    return { city, postal_code };
+  };
+
+  const handleSetAddress = async () => {
+    if (!selectedAddress) {
+      setError("Please select an address");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setError(null);
+
+      const {
+        formatted_address,
+        geometry: { location },
+        address_components,
+      } = selectedAddress;
+
+      const { city, postal_code } =
+        extractAddressComponents(address_components);
+
+      const payload: AddressPayload = {
+        address: formatted_address,
+        city,
+        postal_code,
+        latitude: location.lat,
+        longitude: location.lng,
+      };
+
+      await mutate(payload as any);
+      router.back(); // Navigate back on success
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save address");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -41,37 +102,40 @@ const RootScreen = () => {
         }}
       />
       <View className="bg-white flex-1">
-        <View className=" px-2 mt-2">
+        <View className="px-2 mt-2">
           <AddressSearch onSelect={handleSelectAddress} />
         </View>
 
         <BaseLayout>
           <YStack className="p-2">
             <View
-              className="w-full  rounded-md overflow-hidden border border-primary/70"
-              style={{
-                height: Dimensions.get("screen").height - 320,
-              }}
+              className="w-full rounded-md overflow-hidden border border-primary/70"
+              style={{ height: SCREEN_HEIGHT - 320 }}
             >
               <CurrentLocationMap />
             </View>
+
+            {error && (
+              <Text className="text-red-500 mt-2 text-center">{error}</Text>
+            )}
 
             {selectedAddress && (
               <>
                 <View className="rounded-md px-4 py-2 border mt-4 border-primary/70 flex-row items-center space-x-2">
                   <Home color="black" size={20} />
-                  <Text className="flex-1 text-sm">
-                    {selectedAddress.formatted_address || "Loading..."}
+                  <Text className="flex-1 text-sm" numberOfLines={2}>
+                    {selectedAddress.formatted_address}
                   </Text>
                 </View>
 
                 <Button
                   className="flex-row space-x-2 my-4"
                   onPress={handleSetAddress}
+                  disabled={isSubmitting || isPending}
                 >
                   <Save color="white" />
                   <Text className="text-base font-semibold text-white">
-                    Save Address
+                    {isSubmitting ? "Saving..." : "Save Address"}
                   </Text>
                 </Button>
               </>
@@ -83,4 +147,4 @@ const RootScreen = () => {
   );
 };
 
-export default RootScreen;
+export default AddressScreen;

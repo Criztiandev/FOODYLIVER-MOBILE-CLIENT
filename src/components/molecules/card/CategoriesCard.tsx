@@ -16,7 +16,7 @@ const CategoriesCard = ({ id, name }: Props) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => router.push(`/product/list/${name}`)}
+      onPress={() => router.push(`/product/list/${id}`)}
     >
       <ImageBackground
         resizeMode="cover"

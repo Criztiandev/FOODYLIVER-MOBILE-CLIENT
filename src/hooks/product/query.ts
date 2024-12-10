@@ -11,6 +11,16 @@ export const useFetchProductList = () => {
   });
 };
 
+export const useFetchCategoryList = (id: string) => {
+  return useFetch({
+    queryKey: [`/GET /menu-list-by-category/${id}`],
+    queryFn: async () => {
+      const result = await PrivateAxios.get(`/menu-list-by-category/${id}`);
+      return result.data;
+    },
+  });
+};
+
 export const useFetchProductById = (id: string) => {
   return useFetch({
     queryKey: [`/GET menu-items/${id}`],

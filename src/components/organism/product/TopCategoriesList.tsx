@@ -59,8 +59,6 @@ const TopCategoriesList = () => {
             Top Categories
           </Text>
         </XStack>
-
-        <Link href="/_sitemap">More</Link>
       </View>
 
       {result?.data?.length > 0 ? (
