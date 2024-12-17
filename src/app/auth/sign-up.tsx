@@ -68,12 +68,13 @@ const RootScreen = () => {
     const payload = form.getValues();
     const fullName = `${payload.first_name} ${payload.last_name}`;
     const { formatted_address, coordinates } = payload.address;
-    const block = `Blk. ${payload.blk}`;
-    const lot = `Lot ${payload.lot}`;
+    const block = payload.blk ? `Blk. ${payload.blk}` : "";
+    const lot = payload.lot ? `Lot ${payload.lot}` : "";
+    const building = payload.building;
     const currentAddress = cleanAddress(formatted_address);
     const city = extractCity(formatted_address);
     const postalCode = payload.postal_code;
-    const address = `${block} ${lot} ${currentAddress} ${postalCode}`;
+    const address = `${block} ${lot} ${building} ${currentAddress} ${postalCode}`;
 
     delete payload.blk;
     delete payload.lot;

@@ -22,8 +22,10 @@ export const AddressInfoValidation = userValidation
     postal_code: true,
   })
   .extend({
-    blk: z.string().min(0, "Too short").max(32, "Too long"),
-    lot: z.string().min(0, "Too short").max(32, "Too long"),
+    blk: z.string().min(0, "Too short").max(32, "Too long").optional(),
+    lot: z.string().min(0, "Too short").max(32, "Too long").optional(),
+    address: z.any(),
+    building: z.string().min(0, "Too short").max(32, "Too long").optional(),
   });
 
 export const AccountInfoStepValidation = userValidation.pick({

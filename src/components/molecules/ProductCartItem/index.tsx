@@ -38,9 +38,7 @@ const ProductCartItem = (props: CartItem) => {
         <XStack className="space-x-4">
           <Avatar
             source={{
-              uri: props.thumbnail
-                ? `${process.env.EXPO_PUBLIC_BASE_IMAGE_URL}/${props.thumbnail}`
-                : `https://picsum.photos/seed/696/3000/2000`,
+              uri: `https://iamjohn.cloud/storage/${props.thumbnail}`,
             }}
             size={64}
           />

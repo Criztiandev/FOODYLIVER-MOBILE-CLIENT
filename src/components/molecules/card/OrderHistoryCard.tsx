@@ -17,7 +17,7 @@ const OrderHistoryCard = () => {
   };
 
   return (
-    <YStack className="space-y-2 rounded-md border border-[#bc0505] p-2">
+    <YStack className="border rounded-md p-2">
       <YStack className="mb-4">
         <XStack className="space-x-2">
           <Avatar size={64} />

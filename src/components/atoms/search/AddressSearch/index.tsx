@@ -4,14 +4,16 @@ import {
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
 } from "react-native-google-places-autocomplete";
+import { cn } from "@/lib/utils";
 
 interface Props {
   onSelect: (value: GooglePlaceDetail | null) => void;
+  className?: string;
 }
 
-const AddressSearch: FC<Props> = ({ onSelect }) => {
+const AddressSearch: FC<Props> = ({ onSelect, className }) => {
   return (
-    <View className="w-full z-50">
+    <View className={cn("w-full z-50", className)}>
       <GooglePlacesAutocomplete
         placeholder="Search for a place"
         onPress={(_, details = null) => onSelect(details || null)}
@@ -29,20 +31,19 @@ const AddressSearch: FC<Props> = ({ onSelect }) => {
             zIndex: 1,
           },
           textInputContainer: {
-            justifyContent: "center",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: "#1e1e1e",
-            borderRadius: 6,
-            paddingHorizontal: 8,
-            height: 44,
-            backgroundColor: "white",
+            padding: 0,
+            margin: 0,
+            backgroundColor: "transparent",
           },
           textInput: {
-            height: 32,
-            color: "#000",
-            fontSize: 16,
+            height: 48, // h-12 equivalent
+            borderWidth: 1,
+            borderColor: "#d4d4d4", // stone-300 equivalent
+            borderRadius: 6, // rounded-md equivalent
+            paddingHorizontal: 12, // px-3 equivalent
+            fontSize: 16, // text-base equivalent
             backgroundColor: "transparent",
+            color: "#000000",
           },
           listView: {
             position: "absolute",
@@ -51,24 +52,24 @@ const AddressSearch: FC<Props> = ({ onSelect }) => {
             right: 0,
             backgroundColor: "#fff",
             borderWidth: 1,
-            borderColor: "#8F9098",
+            borderColor: "#d4d4d4",
             borderRadius: 6,
             marginTop: 4,
             zIndex: 2,
-            elevation: 3, // for Android
-            shadowColor: "#000", // for iOS
+            elevation: 3,
+            shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
           },
           row: {
-            padding: 13,
-            height: 44,
+            padding: 12,
+            height: 48,
             flexDirection: "row",
           },
           separator: {
             height: 1,
-            backgroundColor: "#8F9098",
+            backgroundColor: "#d4d4d4",
           },
           description: {
             fontSize: 14,

@@ -37,10 +37,6 @@ const RootScreen = () => {
         }}
       />
       <View className="bg-white flex-1">
-        <View className=" px-2 mt-2">
-          <AddressSearch onSelect={handleSelectAddress} />
-        </View>
-
         <BaseLayout>
           <YStack className="p-2">
             <View className="w-full h-[300px] rounded-md overflow-hidden border border-primary/70">
@@ -58,7 +54,7 @@ const RootScreen = () => {
             >
               <Plus color="white" />
               <Text className="text-base font-semibold text-white">
-                Add Address
+                Update Address
               </Text>
             </Button>
           </YStack>

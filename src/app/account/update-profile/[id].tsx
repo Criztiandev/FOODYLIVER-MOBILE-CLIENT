@@ -26,27 +26,27 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 const ProfileFormScreen = () => {
   const { data, isLoading, isError } = useFetchProfile();
   const { mutate, isPending } = useUpdateProfile();
-  const [isInitialized, setIsInitialized] = React.useState(false);
+
+  const defaultValues = {
+    username: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+  };
 
   const form = useForm<ProfileFormData>({
-    defaultValues: data || {
-      username: "",
-      first_name: "",
-      last_name: "",
-      email: "",
-      phone_number: "",
-    },
+    defaultValues: defaultValues,
   });
 
   const { handleSubmit, reset } = form;
 
-  // Handle initial data load - only reset once when data is available
+  // Move the useEffect outside of any conditional rendering
   React.useEffect(() => {
-    if (data && !isInitialized) {
+    if (data) {
       reset(data);
-      setIsInitialized(true);
     }
-  }, [data, isInitialized]);
+  }, [data, reset]);
 
   if (isLoading) return <LoadingScreen />;
   if (isError) return <NotFoundScreen />;

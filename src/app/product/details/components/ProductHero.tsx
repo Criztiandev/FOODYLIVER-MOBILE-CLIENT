@@ -23,7 +23,7 @@ const ProductHero = ({
     <View className=" w-full  mb-4 px-2">
       <Image
         source={{
-          uri: `${process.env.EXPO_PUBLIC_BASE_IMAGE_URL}/${thumbnail}`,
+          uri: `https://iamjohn.cloud/storage/${thumbnail}`,
         }}
         className="w-full h-[300px] rounded-md mt-2"
       />

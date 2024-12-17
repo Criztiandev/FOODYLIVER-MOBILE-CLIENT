@@ -22,22 +22,15 @@ const PaymentMap = () => {
         <CurrentLocationMap />
       </View>
 
-      <Button variant="outline" className="border-stone-300 space-x-2 flex-row">
-        <MapIcon color="#F4891F" />
-        <Text className="text-base font-semibold">
-          {address || "Current Address"}
-        </Text>
-      </Button>
-
-      <Button
-        className="border-stone-300 space-x-2 flex-row"
-        onPress={() => router.push("/account/address")}
-      >
-        <MapIcon color="white" />
-        <Text className="text-white text-base font-semibold">
-          Select Addres
-        </Text>
-      </Button>
+      {address && (
+        <Button
+          variant="outline"
+          className="border-stone-300 space-x-2 flex-row"
+        >
+          <MapIcon color="#F4891F" />
+          <Text className="text-base font-semibold">{address}</Text>
+        </Button>
+      )}
     </YStack>
   );
 };

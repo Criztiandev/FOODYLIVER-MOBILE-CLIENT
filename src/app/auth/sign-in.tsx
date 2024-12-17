@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   linkText: {
-    color: "#link", // Replace with your actual link color
+    color: "blue", // Replace with your actual link color
     fontSize: 16,
   },
 });

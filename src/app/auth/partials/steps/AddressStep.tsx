@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import InputField from "@/components/form/InputField";
 import { View } from "react-native";
 import AddressInputField from "@/components/form/AddressField";
@@ -16,6 +16,12 @@ const AddressInfoStep = () => {
           <InputField label="Lot" name="lot" placeholder="Enter your Lot " />
         </View>
       </XStack>
+
+      <InputField
+        label="Building"
+        name="building"
+        placeholder="Enter your Building "
+      />
 
       <AddressInputField label="Address" name="address" />
 

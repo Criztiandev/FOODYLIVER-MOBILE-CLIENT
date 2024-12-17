@@ -27,9 +27,11 @@ const ProductCard = (props: ProductItem) => {
       onPress={() => router.navigate(`/product/details/${props.id}` as Href)}
     >
       <XStack className=" absolute top-1  w-full  p-2 px-3 justify-between items-center flex-1 z-[99px]">
-        <View className="p-2 bg-white rounded-full">
-          <Text className="text-lg font-bold">{props?.rating || 4.2}</Text>
-        </View>
+        {props.rating && (
+          <View className="p-2 bg-white rounded-full">
+            <Text className="text-lg font-bold">{props?.rating}</Text>
+          </View>
+        )}
       </XStack>
 
       <View className="bg-primary/20 relative p-4 flex-2 flex-1   rounded-md m-1 justify-center items-center space-y-4">
@@ -37,9 +39,7 @@ const ProductCard = (props: ProductItem) => {
           <Avatar
             size={100}
             source={{
-              uri: props.thumbnail
-                ? `${process.env.EXPO_PUBLIC_BASE_IMAGE_URL}/${props.thumbnail}`
-                : `https://picsum.photos/seed/696/3000/2000`,
+              uri: `https://iamjohn.cloud/storage/${props.thumbnail}`,
             }}
           />
         </View>
