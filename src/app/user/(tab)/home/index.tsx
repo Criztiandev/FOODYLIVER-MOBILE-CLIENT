@@ -4,7 +4,6 @@ import { Stack } from "expo-router";
 import XStack from "@/components/stacks/XStack";
 import { ScrollView } from "react-native";
 import CartButton from "@/components/atoms/button/CartButton";
-import NotificationButton from "@/components/atoms/button/NotificationButton";
 import TopCategoriesList from "@/components/organism/product/TopCategoriesList";
 import PromotionalList from "@/components/organism/product/PromotionalList";
 import ProductList from "@/components/organism/product/ProductList";
@@ -21,7 +20,6 @@ const RootScreen = () => {
           headerShadowVisible: false,
           headerRight: () => (
             <XStack className="">
-              <NotificationButton />
               <CartButton />
             </XStack>
           ),

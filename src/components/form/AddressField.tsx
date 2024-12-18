@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import Input, { InputProps, inputVariant } from "../ui/Input";
 import { useFormContext, Controller, FieldError } from "react-hook-form";
 import { cn } from "@/lib/utils";
@@ -7,16 +7,26 @@ import Label from "../ui/Label";
 import AddressSearch from "../atoms/search/AddressSearch";
 import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
 
-interface Props extends InputProps {
+interface AddressValue {
+  formatted_address: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+}
+
+interface Props extends Omit<InputProps, "defaultValue"> {
   name: string;
   label?: string;
   labelClassName?: string;
+  defaultValue?: AddressValue;
 }
 
 const AddressInputField: FC<Props> = ({
   className,
   label,
   labelClassName,
+  defaultValue,
   ...props
 }) => {
   const {
@@ -27,6 +37,12 @@ const AddressInputField: FC<Props> = ({
     clearErrors,
   } = useFormContext();
 
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(props.name, defaultValue);
+    }
+  }, [defaultValue, props.name, setValue]);
+
   const handleSelectAddress = (value: GooglePlaceDetail | null) => {
     if (value) {
       setValue(props.name, {
@@ -36,12 +52,13 @@ const AddressInputField: FC<Props> = ({
           lng: value.geometry.location.lng,
         },
       });
-
       clearErrors(props.name);
     } else {
       setValue(props.name, null);
     }
   };
+
+  const currentValue = getValues(props.name);
 
   return (
     <View className={cn("mb-4 w-full", className)}>
@@ -49,6 +66,7 @@ const AddressInputField: FC<Props> = ({
         control={control}
         name={props.name}
         rules={{ required: true }}
+        defaultValue={defaultValue}
         render={({ field: { onChange, value } }) => (
           <View>
             {label && (
@@ -57,7 +75,13 @@ const AddressInputField: FC<Props> = ({
               </Label>
             )}
 
-            <AddressSearch onSelect={handleSelectAddress} />
+            <AddressSearch
+              onSelect={handleSelectAddress}
+              defaultValue={
+                currentValue?.formatted_address ||
+                defaultValue?.formatted_address
+              }
+            />
           </View>
         )}
       />

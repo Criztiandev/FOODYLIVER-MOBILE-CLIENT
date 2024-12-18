@@ -1,11 +1,8 @@
 import BackButton from "@/components/atoms/button/BackButton";
-import HomeButton from "@/components/atoms/button/HomeButton";
-import DeliveryMap from "@/components/molecules/Map/DeliveryMap";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import Button from "@/components/ui/Button";
 import BaseLayout from "@/layout/BaseLayout";
-import useCartStore from "@/state/useCartStore";
 import { Image } from "expo-image";
 import { Stack, useRouter } from "expo-router";
 import { ReceiptIcon, Truck } from "lucide-react-native";

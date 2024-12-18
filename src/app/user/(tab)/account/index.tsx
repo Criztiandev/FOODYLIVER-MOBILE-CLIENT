@@ -3,7 +3,6 @@ import BaseLayout from "@/layout/BaseLayout";
 import { ChevronRight } from "lucide-react-native";
 import { Stack, useRouter } from "expo-router";
 import XStack from "@/components/stacks/XStack";
-import NotificationButton from "@/components/atoms/button/NotificationButton";
 import CartButton from "@/components/atoms/button/CartButton";
 import Avatar from "@/components/ui/Avatar";
 import YStack from "@/components/stacks/YStack";
@@ -46,7 +45,6 @@ const RootScreen = () => {
           headerShown: false,
           headerRight: () => (
             <XStack className="space-x-4 px-4">
-              <NotificationButton />
               <CartButton />
             </XStack>
           ),

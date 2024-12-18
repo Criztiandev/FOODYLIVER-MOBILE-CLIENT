@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 interface Props {
   onSelect: (value: GooglePlaceDetail | null) => void;
   className?: string;
+  defaultValue?: string;
 }
 
-const AddressSearch: FC<Props> = ({ onSelect, className }) => {
+const AddressSearch: FC<Props> = ({ onSelect, className, defaultValue }) => {
   return (
     <View className={cn("w-full z-50", className)}>
       <GooglePlacesAutocomplete
@@ -24,6 +25,9 @@ const AddressSearch: FC<Props> = ({ onSelect, className }) => {
         }}
         fetchDetails={true}
         enablePoweredByContainer={false}
+        textInputProps={{
+          defaultValue: defaultValue,
+        }}
         styles={{
           container: {
             flex: 0,

@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import { Stack } from "expo-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,6 +12,8 @@ import useFetchProfile from "@/hooks/account/useFetchProfile";
 import useUpdateProfile from "@/hooks/account/useUpdateProfile";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import NotFoundScreen from "@/layout/screen/NotFoundScreen";
+import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
+import AddressInputField from "@/components/form/AddressField";
 
 const profileSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -23,33 +25,67 @@ const profileSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
+const formFields = [
+  {
+    label: "Username",
+    name: "username" as const,
+    placeholder: "Enter your username",
+  },
+  {
+    label: "First Name",
+    name: "first_name" as const,
+    placeholder: "Enter your first name",
+  },
+  {
+    label: "Last Name",
+    name: "last_name" as const,
+    placeholder: "Enter your last name",
+  },
+  {
+    label: "Email",
+    name: "email" as const,
+    placeholder: "Enter your email",
+    keyboardType: "email-address",
+    autoCapitalize: "none",
+  },
+
+  {
+    label: "address",
+    name: "address" as const,
+    placeholder: "Enter your address",
+  },
+
+  {
+    label: "Phone Number",
+    name: "phone_number" as const,
+    placeholder: "Enter your phone number",
+    keyboardType: "phone-pad",
+  },
+] as const;
+
+const defaultValues: ProfileFormData = {
+  username: "",
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone_number: "",
+};
+
 const ProfileFormScreen = () => {
   const { data, isLoading, isError } = useFetchProfile();
   const { mutate, isPending } = useUpdateProfile();
 
-  const defaultValues = {
-    username: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone_number: "",
-  };
-
   const form = useForm<ProfileFormData>({
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const { handleSubmit, reset } = form;
 
-  // Move the useEffect outside of any conditional rendering
   React.useEffect(() => {
     if (data) {
       reset(data);
     }
   }, [data, reset]);
-
-  if (isLoading) return <LoadingScreen />;
-  if (isError) return <NotFoundScreen />;
 
   const onSubmit = React.useCallback(
     (values: ProfileFormData) => {
@@ -58,36 +94,15 @@ const ProfileFormScreen = () => {
     [mutate]
   );
 
-  const formFields = [
-    {
-      label: "Username",
-      name: "username" as const,
-      placeholder: "Enter your username",
-    },
-    {
-      label: "First Name",
-      name: "first_name" as const,
-      placeholder: "Enter your first name",
-    },
-    {
-      label: "Last Name",
-      name: "last_name" as const,
-      placeholder: "Enter your last name",
-    },
-    {
-      label: "Email",
-      name: "email" as const,
-      placeholder: "Enter your email",
-      keyboardType: "email-address",
-      autoCapitalize: "none",
-    },
-    {
-      label: "Phone Number",
-      name: "phone_number" as const,
-      placeholder: "Enter your phone number",
-      keyboardType: "phone-pad",
-    },
-  ] as const;
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isError) {
+    return <NotFoundScreen />;
+  }
+
+  console.log(data);
 
   return (
     <>
@@ -104,6 +119,10 @@ const ProfileFormScreen = () => {
       />
 
       <SafeAreaView className="bg-white flex-1 justify-between">
+        {/* <View className="w-full h-[300px] rounded-md overflow-hidden border border-primary/70">
+            <CurrentLocationMap />
+          </View> */}
+
         <FormProvider {...form}>
           <YStack className="px-4 py-2">
             {formFields.map((field) => (

@@ -13,6 +13,14 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 
+const FLAG = {
+  pending: "Pay",
+  ongoing: "Develired", // Fixed typo in "Deliver"
+  delviered: "Completed",
+  history: "Order History", // Added history case
+} as const;
+type OrderStatus = keyof typeof FLAG;
+
 const RootScreen = () => {
   const { status } = useLocalSearchParams();
   const {
@@ -22,15 +30,12 @@ const RootScreen = () => {
     error,
     isSuccess,
   } = useFetchProfile();
-  const { mutate, isPending } = useFetchOrdersById(
-    "pending",
+  const { credentials, mutate, isPending } = useFetchOrdersById(
+    status || "pending",
     profileData?.id || 6
   );
 
-  const preparedTitle =
-    (status as string) === "history"
-      ? "Order History"
-      : `To ${(status[0].toUpperCase() + status.slice(1)) as string}`;
+  const preparedTitle = (status: OrderStatus) => FLAG[status];
 
   useEffect(() => {
     if (isSuccess && profileData?.id) {
@@ -54,7 +59,7 @@ const RootScreen = () => {
       <Stack.Screen
         options={{
           headerLeft: () => <BackButton />,
-          title: preparedTitle,
+          title: `To ${preparedTitle(status as any)}`,
           headerTitleStyle: { color: "white" },
           headerStyle: {
             backgroundColor: "#f4891f",
@@ -66,9 +71,9 @@ const RootScreen = () => {
       <BaseLayout>
         <View className="flex-1 px-2 pt-4">
           <>
-            {/* {data?.length > 0 ? (
+            {credentials.length > 0 ? (
               <FlashList
-                data={data?.data}
+                data={credentials}
                 estimatedItemSize={5000}
                 renderItem={({ item }: { item: any }) => (
                   <OrderHistoryCard {...item} />
@@ -76,7 +81,7 @@ const RootScreen = () => {
               />
             ) : (
               <EmptyReview />
-            )} */}
+            )}
           </>
         </View>
       </BaseLayout>

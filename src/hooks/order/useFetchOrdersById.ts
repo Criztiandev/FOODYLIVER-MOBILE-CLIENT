@@ -4,19 +4,19 @@ import Toast from "react-native-toast-message";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
-const useFetchOrdersById = (status: string, UID: string) => {
-  const [credentials, setCredentials] = useState(null);
-  return useMutation({
+const useFetchOrdersById = (status: any, UID: string) => {
+  const [credentials, setCredentials] = useState([]);
+  const mutation = useMutation({
     mutationKey: [`/GET /orders/pending/${UID}`],
     mutationFn: async (value: any) => {
-      const result = await PrivateAxios.post(`/orders/pending`, value);
+      const result = await PrivateAxios.post(`/orders/${status}`, value);
 
       if (result instanceof AxiosError) {
         console.log(result.response);
         throw new Error(result.message);
       }
 
-      return result.data;
+      return result.data?.data;
     },
 
     onSuccess: (data) => {
@@ -25,7 +25,6 @@ const useFetchOrdersById = (status: string, UID: string) => {
         throw new Error(data.message);
       }
 
-      console.log(data);
       setCredentials(data);
     },
 
@@ -41,6 +40,8 @@ const useFetchOrdersById = (status: string, UID: string) => {
       });
     },
   });
+
+  return { ...mutation, credentials };
 };
 
 export default useFetchOrdersById;
