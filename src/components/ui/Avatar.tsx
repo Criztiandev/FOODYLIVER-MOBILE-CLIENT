@@ -18,14 +18,6 @@ const Avatar = ({
 }: AvatarProps) => {
   const [imageFailed, setImageFailed] = React.useState(false);
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase();
-  };
-
   return (
     <View
       className={cn(

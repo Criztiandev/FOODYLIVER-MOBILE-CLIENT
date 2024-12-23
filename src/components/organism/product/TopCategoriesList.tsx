@@ -4,14 +4,10 @@ import YStack from "@/components/stacks/YStack";
 import XStack from "@/components/stacks/XStack";
 import { PuzzleIcon } from "lucide-react-native";
 
-import { Link } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
-import CategoriesCard from "@/components/molecules/card/CategoriesCard";
-import { useQuery } from "@tanstack/react-query";
 import { useFetchCategories } from "@/hooks/categories/query";
-import LoadingScreen from "@/layout/screen/LoadingScreen";
-import ErrorScreen from "@/layout/screen/ErrorScreen";
 import SectionLoadingScreen from "@/layout/screen/SectionLoadingScreen";
+import CategoriesCard from "@/components/molecules/card/CategoriesCard";
 
 const TopCategoriesList = () => {
   const { isLoading, isError, error, data: result } = useFetchCategories();
@@ -67,7 +63,7 @@ const TopCategoriesList = () => {
             data={result.data}
             estimatedItemSize={10000}
             horizontal
-            renderItem={({ item }: { item: Categories }) => (
+            renderItem={({ item }: { item: any }) => (
               <CategoriesCard {...item} />
             )}
           />

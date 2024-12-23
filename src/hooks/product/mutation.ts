@@ -75,7 +75,6 @@ export const useGCashMutation = (getCredentials: () => Promise<User>) => {
         phone_number: credentials.phone_number,
         items: transformedPayload,
       };
-      console.log(finalPayload);
       const response = await PrivateAxios.post(
         "/payments/create",
         finalPayload
@@ -123,7 +122,6 @@ export const useGcashOrderMutation = () => {
     mutationFn: async (values: any[]) => {
       const { data: result } = await PrivateAxios.post("/orders", values);
 
-      console.log("Gcash Order Mutation");
       return values[0];
     },
 

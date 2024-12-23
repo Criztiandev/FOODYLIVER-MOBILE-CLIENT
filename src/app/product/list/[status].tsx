@@ -32,8 +32,6 @@ const RootScreen = () => {
     error,
   } = useFetchCategoryList((status as any) || "");
 
-  console.log(result);
-
   if (isLoading) return <LoadingScreen />;
   if (isError) {
     console.log(error);

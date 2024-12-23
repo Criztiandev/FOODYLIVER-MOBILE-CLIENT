@@ -1,20 +1,27 @@
 import { Text, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
-import { ImageBackground } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import BackgroundImageWrapper from "@/components/organism/other/BackgroundImageWrapper";
 
-const PromotionalCard = (props: any) => {
+interface PromotionalItem {
+  id: string;
+  name: string;
+  thumbnail: string;
+}
+
+interface Props extends PromotionalItem {}
+
+const PromotionalCard: React.FC<Props> = ({ id, name, thumbnail }) => {
   const router = useRouter();
 
   return (
     <TouchableOpacity
       style={[styles.container, { width: Dimensions.get("screen").width - 16 }]}
-      onPress={() => router.push(`/product/list/${props.name}`)}
+      onPress={() => router.push(`/product/list/${name}`)}
     >
-      <ImageBackground
-        resizeMode="cover"
-        source={require("@/assets/images/cooking-img.png")}
+      <BackgroundImageWrapper
+        thumbnail={thumbnail}
         style={styles.imageBackground}
       >
         {/* Gradient overlay */}
@@ -24,8 +31,8 @@ const PromotionalCard = (props: any) => {
         />
 
         {/* Text content */}
-        <Text style={styles.text}>{props.name}</Text>
-      </ImageBackground>
+        <Text style={styles.text}>{name}</Text>
+      </BackgroundImageWrapper>
     </TouchableOpacity>
   );
 };

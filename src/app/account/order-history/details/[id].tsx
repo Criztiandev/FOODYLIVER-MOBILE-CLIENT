@@ -1,16 +1,33 @@
 import BackButton from "@/components/atoms/button/BackButton";
+import OrderStatus from "@/components/organism/other/OrderStatus";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import Button from "@/components/ui/Button";
+import useFetchOrderByTransactionID from "@/hooks/order/useFetchOrderByTransactionID";
 import BaseLayout from "@/layout/BaseLayout";
+import LoadingScreen from "@/layout/screen/LoadingScreen";
 import { Image } from "expo-image";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { ReceiptIcon, Truck } from "lucide-react-native";
-import React from "react";
+import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 
 const RootScreen = () => {
+  const { customer_id, id: transaction_id, status } = useLocalSearchParams();
   const router = useRouter();
+
+  const {
+    isLoading,
+    isError,
+    data: result,
+  } = useFetchOrderByTransactionID(customer_id as any, transaction_id as any);
+
+  if (isLoading) return <LoadingScreen />;
+  if (isError) return <LoadingScreen />;
+
+  const paypload = useMemo(() => {
+    return result[0];
+  }, []);
 
   return (
     <>
@@ -21,7 +38,7 @@ const RootScreen = () => {
           headerStyle: {
             backgroundColor: "#f4891f",
           },
-          title: "Order Delivered",
+          title: "Order History Details",
           headerTitleAlign: "center",
         }}
       />
@@ -35,15 +52,7 @@ const RootScreen = () => {
             />
           </View>
 
-          <XStack className="my-4 space-x-2 justify-center items-center ">
-            <Text className="font-bold text-2xl text-center">
-              Yey! Order has been
-            </Text>
-            <XStack className="items-center space-x-2">
-              <Text className="font-bold text-2xl text-center">Delivered</Text>
-              <Truck className="text-primary" size={32} />
-            </XStack>
-          </XStack>
+          <OrderStatus status="pending" />
 
           <YStack className="border p-2 rounded-md border-primary/70 space-y-2 mb-4">
             <XStack className="items-center space-x-2">
@@ -77,16 +86,9 @@ const RootScreen = () => {
             <YStack className="space-y-2">
               <XStack className="space-x-4  justify-between items-center">
                 <XStack className="space-x-2">
-                  <Text className="">Subtotal</Text>
-                </XStack>
-                <Text className="">PHP 568.00</Text>
-              </XStack>
-
-              <XStack className="space-x-4  justify-between items-center">
-                <XStack className="space-x-2">
                   <Text className="">Delivery Fee</Text>
                 </XStack>
-                <Text className="">PHP 48.00</Text>
+                <Text className="">PHP {paypload.delivery_fee}</Text>
               </XStack>
 
               <XStack className="space-x-4  justify-between items-center">
@@ -95,17 +97,11 @@ const RootScreen = () => {
                 </XStack>
 
                 <Text className="text-[32px] font-bold text-primary">
-                  PHP 568.00
+                  PHP {paypload.total_amount}
                 </Text>
               </XStack>
             </YStack>
           </YStack>
-        </YStack>
-
-        <YStack className="p-4">
-          <Button>
-            <Text className="font-bold text-white text-lg">Order again</Text>
-          </Button>
         </YStack>
       </BaseLayout>
     </>

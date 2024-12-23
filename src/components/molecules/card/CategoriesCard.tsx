@@ -1,16 +1,17 @@
-import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
+import BackgroundImageWrapper from "@/components/organism/other/BackgroundImageWrapper";
+
+interface Categories {
+  id: string;
+  name: string;
+  thumbnail: string;
+}
 
 interface Props extends Categories {}
 
-const CategoriesCard = ({ id, name }: Props) => {
+const CategoriesCard = ({ id, name, thumbnail }: Props) => {
   const router = useRouter();
 
   return (
@@ -18,9 +19,8 @@ const CategoriesCard = ({ id, name }: Props) => {
       style={styles.container}
       onPress={() => router.push(`/product/list/${id}`)}
     >
-      <ImageBackground
-        resizeMode="cover"
-        source={require("@/assets/images/cooking-img.png")}
+      <BackgroundImageWrapper
+        thumbnail={thumbnail}
         style={styles.imageBackground}
       >
         {/* Dark overlay */}
@@ -28,7 +28,7 @@ const CategoriesCard = ({ id, name }: Props) => {
 
         {/* Text content */}
         <Text style={styles.text}>{name}</Text>
-      </ImageBackground>
+      </BackgroundImageWrapper>
     </TouchableOpacity>
   );
 };
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.4)", // Adjust opacity as needed
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
   text: {
     color: "white",

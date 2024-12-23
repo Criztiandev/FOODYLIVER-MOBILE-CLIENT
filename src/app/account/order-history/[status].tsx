@@ -54,6 +54,8 @@ const RootScreen = () => {
     return <ErrorScreen />;
   }
 
+  console.log(credentials);
+
   return (
     <>
       <Stack.Screen
@@ -76,7 +78,7 @@ const RootScreen = () => {
                 data={credentials}
                 estimatedItemSize={5000}
                 renderItem={({ item }: { item: any }) => (
-                  <OrderHistoryCard {...item} />
+                  <OrderHistoryCard {...item} order_status={status} />
                 )}
               />
             ) : (

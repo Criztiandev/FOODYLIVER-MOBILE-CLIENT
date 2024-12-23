@@ -12,7 +12,6 @@ const useFetchOrdersById = (status: any, UID: string) => {
       const result = await PrivateAxios.post(`/orders/${status}`, value);
 
       if (result instanceof AxiosError) {
-        console.log(result.response);
         throw new Error(result.message);
       }
 
@@ -21,7 +20,6 @@ const useFetchOrdersById = (status: any, UID: string) => {
 
     onSuccess: (data) => {
       if (data instanceof AxiosError) {
-        console.log(data.response);
         throw new Error(data.message);
       }
 
@@ -30,7 +28,6 @@ const useFetchOrdersById = (status: any, UID: string) => {
 
     onError: (error) => {
       if (error instanceof AxiosError) {
-        console.log(error.response);
         throw new Error(error.message);
       }
 

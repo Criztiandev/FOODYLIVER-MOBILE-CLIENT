@@ -4,4 +4,5 @@ interface Categories {
   description: string;
   created_at?: string;
   updated_at?: string;
+  thumbnail?: string;
 }

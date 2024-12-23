@@ -126,9 +126,6 @@ const RootScreen = () => {
   const router = useRouter();
   const { subtotal } = useCartStore();
 
-  console.log("Delivery Details");
-  console.log(transaction_id);
-
   // First, fetch order details
   const orderQry = useFetchOrderDetailsList(transaction_id as string);
   if (orderQry.isLoading) return <LoadingScreen />;
@@ -138,9 +135,6 @@ const RootScreen = () => {
     console.error("Order Error:", orderQry.error);
     return <ErrorScreen />;
   }
-
-  console.log("Delivery Details");
-  console.log(orderQry.data);
 
   const selectedOrderDetails = orderQry.data.find(
     (items: any) => items.transaction_id === transaction_id

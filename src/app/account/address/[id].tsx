@@ -39,7 +39,9 @@ const RootScreen = () => {
       <View className="bg-white flex-1">
         <BaseLayout>
           <YStack className="p-2">
-            <View className="w-full h-[300px] rounded-md overflow-hidden border border-primary/70"></View>
+            <View className="w-full h-[300px] rounded-md overflow-hidden border border-primary/70">
+              <CurrentLocationMap />
+            </View>
 
             <View className="rounded-md px-4 py-2 border mt-4 border-primary/70 flex-row items-center space-x-2">
               <Home color="black" size={20} />
