@@ -27,7 +27,6 @@ const RootScreen = () => {
     const initializeApp = async () => {
       try {
         const credentials = await getItem<UserCredentials>("user");
-
         if (credentials) {
           // Refresh storage with existing credentials
           await setItem("user", credentials);

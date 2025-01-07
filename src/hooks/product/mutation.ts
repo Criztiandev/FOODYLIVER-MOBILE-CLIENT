@@ -120,9 +120,8 @@ export const useGcashOrderMutation = () => {
   return useMutate({
     mutationKey: ["gcash-order"],
     mutationFn: async (values: any[]) => {
-      const { data: result } = await PrivateAxios.post("/orders", values);
-
-      return values[0];
+      const { data } = await PrivateAxios.post("/orders", values);
+      return data;
     },
 
     onSuccess: (data) => {
@@ -130,21 +129,32 @@ export const useGcashOrderMutation = () => {
 
       Toast.show({
         type: "success",
-        text1: "Orders created successfully",
+        text1: "Order created successfully",
+        text2: "Redirecting to delivery tracking...",
+        position: "bottom",
       });
 
       clearCart();
       router.replace(`/order/delivery?transaction_id=${transaction_id}`);
     },
-    onError: (error: Error, variables: any[], context: unknown) => {
-      // Type check if it's an AxiosError
+
+    onError: (error: unknown) => {
+      // Log detailed error info
       if (axios.isAxiosError(error)) {
-        console.log(error.response);
+        console.error("Order creation failed:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+      } else {
+        console.error("Unexpected error:", error);
       }
 
       Toast.show({
         type: "error",
-        text1: "Failed to process orders",
+        text1: "Failed to process order",
+        text2: "Please try again or contact support",
+        position: "bottom",
       });
     },
   });

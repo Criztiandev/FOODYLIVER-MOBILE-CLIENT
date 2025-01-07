@@ -31,7 +31,7 @@ const PromotionalCard: React.FC<Props> = ({ id, name, thumbnail }) => {
         />
 
         {/* Text content */}
-        <Text style={styles.text}>{name}</Text>
+        <Text style={styles.text}>{name[0].toUpperCase() + name.slice(1)}</Text>
       </BackgroundImageWrapper>
     </TouchableOpacity>
   );

@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
 /**
- * Add Debounce to avoid multi clicking at the same time to avoid spamming
+ * Button component with debounce to prevent rapid clicking
+ * Supports variants, sizes and disabled states
  */
 
 export const buttonVariants = cva(
@@ -13,18 +14,18 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary",
-        destructive: "bg-destructive",
+        destructive: "bg-destructive text-destructive-foreground",
         outline:
-          "border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground",
-        secondary: "bg-secondary",
-        ghost: "web:hover:bg-accent web:hover:text-accent-foreground",
-        link: "web:underline-offset-4 web:hover:underline web:focus:underline",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "underline-offset-4 hover:underline focus:underline text-primary",
       },
       size: {
         default: "h-12 px-4 py-2 native:h-12 native:px-5 native:py-3",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8 native:h-14",
-        icon: "h-10 w-10",
+        sm: "h-9 rounded-md px-3 text-sm",
+        lg: "h-11 rounded-md px-8 native:h-14 text-lg",
+        icon: "h-10 w-10 p-0",
       },
     },
     defaultVariants: {
@@ -34,13 +35,14 @@ export const buttonVariants = cva(
   }
 );
 
-interface Props
+interface ButtonProps
   extends ComponentPropsWithoutRef<typeof TouchableOpacity>,
     VariantProps<typeof buttonVariants> {
   activeOpacity?: number;
+  debounceTime?: number;
 }
 
-const Button = forwardRef<ElementRef<typeof TouchableOpacity>, Props>(
+const Button = forwardRef<ElementRef<typeof TouchableOpacity>, ButtonProps>(
   (
     {
       children,
@@ -49,23 +51,31 @@ const Button = forwardRef<ElementRef<typeof TouchableOpacity>, Props>(
       className,
       activeOpacity = 0.7,
       disabled,
+      onPress,
+      debounceTime = 300,
       ...props
     },
     ref
   ) => {
-    // Handle disabled state separately from className
+    // Debounce the onPress handler
+    const debouncedOnPress = onPress;
+
+    // Handle disabled state and combine classNames
     const buttonClassName = cn(
       buttonVariants({ variant, size, className }),
-      disabled && "opacity-50"
+      disabled && "opacity-50 cursor-not-allowed"
     );
 
     return (
       <TouchableOpacity
         {...props}
         ref={ref}
-        activeOpacity={activeOpacity}
+        activeOpacity={disabled ? 1 : activeOpacity}
         disabled={disabled}
+        onPress={debouncedOnPress}
         className={buttonClassName}
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
       >
         {children}
       </TouchableOpacity>

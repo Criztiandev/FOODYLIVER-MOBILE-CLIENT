@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Dimensions } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { Home, Save } from "lucide-react-native";
+import { Save } from "lucide-react-native";
 import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
 
 import BackButton from "@/components/atoms/button/BackButton";
@@ -20,15 +20,11 @@ interface AddressPayload {
   longitude: number;
 }
 
-const SCREEN_HEIGHT = Dimensions.get("screen").height;
-
 const AddressScreen: React.FC = () => {
   const router = useRouter();
   const [selectedAddress, setSelectedAddress] =
     useState<GooglePlaceDetail | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const { mutate, isPending } = useUpdateProfile();
 
   const handleSelectAddress = (value: GooglePlaceDetail | null) => {
@@ -57,9 +53,7 @@ const AddressScreen: React.FC = () => {
     }
 
     try {
-      setIsSubmitting(true);
       setError(null);
-
       const {
         formatted_address,
         geometry: { location },
@@ -78,11 +72,9 @@ const AddressScreen: React.FC = () => {
       };
 
       await mutate(payload as any);
-      router.back(); // Navigate back on success
+      router.back();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save address");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -93,44 +85,48 @@ const AddressScreen: React.FC = () => {
           headerLeft: () => <BackButton />,
           title: "Add New Address",
           headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "white",
-          },
-          headerStyle: {
-            backgroundColor: "#F4891F",
-          },
+          headerTitleStyle: { color: "white" },
+          headerStyle: { backgroundColor: "#F4891F" },
         }}
       />
       <View className="bg-white flex-1">
         <BaseLayout>
-          <YStack className="p-2">
+          <View className="flex-1 relative">
             <View
-              className="w-full rounded-md overflow-hidden border border-primary/70"
-              style={{ height: 300 }}
+              className="w-full absolute top-0 left-0 right-0 bottom-0"
+              style={{
+                height: Dimensions.get("screen").height - 150,
+              }}
             >
               <CurrentLocationMap />
             </View>
 
-            {error && (
-              <Text className="text-red-500 mt-2 text-center">{error}</Text>
-            )}
+            <View className="absolute top-4 left-2 right-2 z-10">
+              <AddressSearch
+                onSelect={handleSelectAddress}
+                className="bg-white border-2 border-primary/70 rounded-lg shadow-lg"
+              />
+            </View>
 
-            <>
-              <View className="">
-                <AddressSearch onSelect={handleSelectAddress} />
-              </View>
+            <View className="absolute bottom-4 left-2 right-2 z-10">
+              {error && (
+                <Text className="text-red-500 text-center font-medium bg-white/90 p-2 rounded-lg mb-2">
+                  {error}
+                </Text>
+              )}
+
               <Button
-                className="flex-row space-x-2 my-4"
+                className="flex-row justify-center space-x-2 py-3 bg-primary shadow-lg"
                 onPress={handleSetAddress}
-                disabled={isSubmitting || isPending}
+                disabled={isPending}
               >
-                <Save color="white" />
-                <Text className="text-base font-semibold text-white">
-                  {isSubmitting ? "Saving..." : "Save Address"}
+                <Save color="white" size={22} />
+                <Text className="text-base font-bold text-white">
+                  {isPending ? "Saving..." : "Save Address"}
                 </Text>
               </Button>
-            </>
-          </YStack>
+            </View>
+          </View>
         </BaseLayout>
       </View>
     </>

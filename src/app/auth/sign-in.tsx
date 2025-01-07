@@ -3,7 +3,6 @@ import React from "react";
 import { Link, Stack, useRouter } from "expo-router";
 import { FormProvider } from "react-hook-form";
 import InputField from "@/components/form/InputField";
-import CheckboxField from "@/components/form/CheckboxField";
 import Button from "@/components/ui/Button";
 import useLogin from "@/hooks/auth/useLogin";
 import { LoginValue } from "@/interface/auth.interface";
@@ -11,132 +10,174 @@ import YStack from "@/components/stacks/YStack";
 import SplashScreen from "@/layout/SplashScreen";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import useSplashScreen from "@/hooks/init/useSplashScreen";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-// Separate Logo component for better organization
+// Components
 const Logo = () => (
   <YStack style={styles.logoContainer}>
-    <Text style={[styles.logoText, styles.boldPoppins]}>J&B</Text>
-    <Text style={styles.logoText}>Food Delivery</Text>
+    {/* <Image
+      source={require("@/assets/images/delivery.png")}
+      style={styles.logoImage}
+      resizeMode="contain"
+    /> */}
+    <YStack className="items-center mt-4">
+      <Text
+        className="text-4xl font-bold text-primary"
+        style={[styles.boldPoppins]}
+      >
+        J&B Food Delivery
+      </Text>
+      <Text
+        className="text-base text-gray-600 mt-2"
+        style={[styles.regularPoppins]}
+      >
+        Fast & Reliable Food Delivery
+      </Text>
+    </YStack>
   </YStack>
 );
 
-// Separate LoginForm component
-const LoginForm = ({ form, mutation }: any) => (
+const LoginForm = ({ form }: { form: any }) => (
   <FormProvider {...form}>
-    <InputField
-      keyboardType="email-address"
-      label="Email"
-      name="email"
-      placeholder="Enter your email"
-    />
-    <InputField
-      secureTextEntry={true}
-      label="Password"
-      name="password"
-      placeholder="Enter your password"
-    />
-    <View style={styles.rememberContainer}>
-      <CheckboxField name="toc" label="Remember me" />
-      <Link href="/" push style={styles.linkText}>
-        Forgot Password
-      </Link>
+    <View style={styles.formContainer}>
+      <InputField
+        keyboardType="email-address"
+        label="Email"
+        name="email"
+        placeholder="Enter your email"
+        autoCapitalize="none"
+        autoComplete="email"
+      />
+      <InputField
+        secureTextEntry
+        label="Password"
+        name="password"
+        placeholder="Enter your password"
+        autoCapitalize="none"
+        autoComplete="password"
+      />
     </View>
   </FormProvider>
 );
 
-// Separate LoginButton component
-const LoginButton = ({ onPress, isPending }: any) => (
-  <Button disabled={isPending} style={styles.button} onPress={onPress}>
+const LoginButton = ({
+  onPress,
+  isPending,
+}: {
+  onPress: () => void;
+  isPending: boolean;
+}) => (
+  <Button
+    disabled={isPending}
+    style={styles.button}
+    onPress={onPress}
+    accessibilityLabel="Login button"
+  >
     {isPending ? (
-      <ActivityIndicator />
+      <ActivityIndicator color="#fff" size="small" />
     ) : (
       <Text style={[styles.buttonText, styles.boldPoppins]}>Login</Text>
     )}
   </Button>
 );
 
-const RootScreen = () => {
-  const router = useRouter();
+const SignInScreen = () => {
   const { form, mutation } = useLogin();
   const { isLoading, showSplash, handleSplash } = useSplashScreen();
 
   if (isLoading) return <LoadingScreen />;
   if (showSplash) return <SplashScreen setSplash={handleSplash} />;
 
-  const onSubmit = (value: LoginValue) => {
+  const handleSubmit = (value: LoginValue) => {
     mutation.mutate(value);
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.safeArea}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           <Logo />
-          <LoginForm form={form} mutation={mutation} />
+          <LoginForm form={form} />
           <LoginButton
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={form.handleSubmit(handleSubmit)}
             isPending={mutation.isPending}
           />
         </View>
-        <Text style={styles.footerText}>
-          Don't have an account?{" "}
-          <Link href="/auth/sign-up" style={styles.linkText}>
-            Sign up
-          </Link>
-        </Text>
+        <View style={styles.footer}>
+          <Text style={[styles.footerText, styles.regularPoppins]}>
+            Don't have an account?{" "}
+            <Link
+              href="/auth/sign-up"
+              style={[styles.linkText, styles.boldPoppins]}
+            >
+              Sign up
+            </Link>
+          </Text>
+        </View>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
-    padding: 16,
-    justifyContent: "center",
   },
   contentContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 16,
+  },
+  formContainer: {
+    width: "100%",
+    marginBottom: 24,
   },
   logoContainer: {
     marginBottom: 48,
+    alignItems: "center",
   },
   logoText: {
-    fontSize: 42,
+    fontSize: 48,
     color: "#F4891F",
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  logoSubText: {
+    fontSize: 24,
+    color: "#F4891F",
     textAlign: "center",
   },
   boldPoppins: {
     fontFamily: "Poppins-Bold",
   },
-  rememberContainer: {
-    marginVertical: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
+  regularPoppins: {
+    fontFamily: "Poppins-Regular",
   },
   button: {
     width: "100%",
+    backgroundColor: "#F4891F",
   },
   buttonText: {
     fontSize: 18,
     color: "white",
-    fontWeight: "bold",
+  },
+  footer: {
+    paddingVertical: 20,
   },
   footerText: {
     fontSize: 16,
     textAlign: "center",
-    padding: 16,
+    color: "#666",
   },
   linkText: {
-    color: "blue", // Replace with your actual link color
-    fontSize: 16,
+    color: "#F4891F",
   },
 });
 
-export default RootScreen;
+export default SignInScreen;

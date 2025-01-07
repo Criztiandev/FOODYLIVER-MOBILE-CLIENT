@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { PrivateAxios } from "@/lib/axios";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
+import { AxiosError } from "axios";
 
 interface StepsItem {
   component: ReactNode;
@@ -29,6 +30,8 @@ const useRegister = ({ defaultValues, steps }: Props) => {
     mutationFn: async (value: any) => {
       try {
         const result = await PrivateAxios.post("/register", value);
+
+        console.log(result);
         return result.data;
       } catch (e) {
         return e;
@@ -37,8 +40,10 @@ const useRegister = ({ defaultValues, steps }: Props) => {
     mutationKey: ["register-mutation"],
 
     onSuccess: (data) => {
-      if (data instanceof Error) {
+      if (data instanceof AxiosError) {
+        console.log(data.response);
         const { message } = data;
+
         Toast.show({
           type: "error",
           text1: message,
@@ -58,6 +63,7 @@ const useRegister = ({ defaultValues, steps }: Props) => {
     },
 
     onError: (error) => {
+      console.log(error);
       Toast.show({
         type: "error",
         text1: "Something went wrong",

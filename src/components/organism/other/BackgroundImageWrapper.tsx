@@ -34,7 +34,7 @@ const BackgroundImageWrapper: React.FC<BackgroundImageWrapperProps> = ({
       source={
         hasError
           ? require("@/assets/images/cooking-img.png")
-          : { uri: `https://iamjohn.cloud/storage/${thumbnail}` }
+          : { uri: `https://jandbfoodapp.site/storage/${thumbnail}` }
       }
       style={[style, { position: "relative" }]}
       onLoadStart={() => setIsLoading(true)}

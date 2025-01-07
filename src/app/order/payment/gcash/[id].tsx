@@ -25,6 +25,7 @@ const RootScreen: React.FC = () => {
 
   const createBaseOrderPayload = async () => {
     const credentials = (await getCredentials()) as User;
+    const currentDate = new Date().toISOString().split("T")[0]; // Format as YYYY-MM-DD
 
     return items.map((product) => ({
       item_id: product.id,
@@ -34,7 +35,7 @@ const RootScreen: React.FC = () => {
       delivery_fee: DELIVERY_FEE,
       total_amount: product.price,
       quantity: product.quantity,
-      delivery_date: new Date(),
+      delivery_date: currentDate,
       delivery_time: DEFAULT_DELIVERY_TIME,
       is_order_accepted_by_driver: false,
       status: "PENDING",
@@ -68,24 +69,42 @@ const RootScreen: React.FC = () => {
   const handleNavigationStateChange = async (navState: WebViewNavigation) => {
     console.log("Current URL:", navState.url);
 
-    if (navState.url.includes("success") && !hasProcessedPayment.current) {
-      hasProcessedPayment.current = true;
-      const url = new URL(navState.url);
-      const transactionID = url.searchParams.get("transaction_id");
+    // Check for both success and successful in the URL
+    const isSuccess =
+      navState.url.toLowerCase().includes("success") ||
+      navState.url.toLowerCase().includes("successful");
 
-      if (!transactionID) {
-        Toast.show({
-          type: "error",
-          text1: "Payment Error",
-          text2: "Transaction ID not found",
-          position: "bottom",
-        });
-        return;
-      }
+    if (isSuccess && !hasProcessedPayment.current) {
+      hasProcessedPayment.current = true;
 
       try {
+        const url = new URL(navState.url);
+        let transactionID = url.searchParams.get("transaction_id");
+
+        // If transaction_id not in params, try to extract from URL path
+        if (!transactionID) {
+          const urlParts = navState.url.split("/");
+          transactionID = urlParts[urlParts.length - 1];
+        }
+
+        if (!transactionID) {
+          throw new Error("Transaction ID not found");
+        }
+
         const transformedPayload = await createOrderPayload(transactionID);
         mutate(transformedPayload as any);
+
+        Toast.show({
+          type: "success",
+          text1: "Payment Successful",
+          text2: "Your order has been placed",
+          position: "bottom",
+        });
+
+        // Navigate back to home after successful payment
+        setTimeout(() => {
+          router.replace("/user/home");
+        }, 2000);
       } catch (error) {
         console.error("Error processing payment:", error);
         Toast.show({
@@ -95,12 +114,17 @@ const RootScreen: React.FC = () => {
           position: "bottom",
         });
       }
-    } else if (navState.url.includes("failed")) {
+    } else if (
+      navState.url.includes("failed") ||
+      navState.url.includes("failure")
+    ) {
       Toast.show({
         type: "error",
         text1: "Payment Failed",
+        text2: "Please try again",
         position: "bottom",
       });
+      router.back();
     }
   };
 
@@ -119,6 +143,12 @@ const RootScreen: React.FC = () => {
     if (!url) return "";
     return decodeURIComponent(String(url));
   }, [url]);
+
+  console.log(decodedUrl);
+
+  if (isPending) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>

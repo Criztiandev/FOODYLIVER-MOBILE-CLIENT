@@ -16,6 +16,10 @@ export const PersonalInfoStepValidation = userValidation.pick({
   last_name: true,
 });
 
+export const CurrentLocationStepValidation = userValidation.pick({
+  address: true,
+});
+
 export const AddressInfoValidation = userValidation
   .pick({
     address: true,
@@ -24,7 +28,6 @@ export const AddressInfoValidation = userValidation
   .extend({
     blk: z.string().min(0, "Too short").max(32, "Too long").optional(),
     lot: z.string().min(0, "Too short").max(32, "Too long").optional(),
-    address: z.any(),
     building: z.string().min(0, "Too short").max(32, "Too long").optional(),
   });
 

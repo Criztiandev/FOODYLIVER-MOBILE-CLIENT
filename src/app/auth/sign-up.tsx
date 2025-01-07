@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { Link, Stack } from "expo-router";
 import { FormProvider } from "react-hook-form";
@@ -65,17 +66,25 @@ const RootScreen = () => {
       return;
     }
 
+    // Get form values
     const payload = form.getValues();
+
+    // Extract name components
     const fullName = `${payload.first_name} ${payload.last_name}`;
+
+    // Extract address components
     const { formatted_address, coordinates } = payload.address;
     const block = payload.blk ? `Blk. ${payload.blk}` : "";
     const lot = payload.lot ? `Lot ${payload.lot}` : "";
-    const building = payload.building;
     const currentAddress = cleanAddress(formatted_address);
+    const barangay = payload.barangay ? `Brgy ${payload.barangay}` : "";
     const city = extractCity(formatted_address);
     const postalCode = payload.postal_code;
-    const address = `${block} ${lot} ${building} ${currentAddress} ${postalCode}`;
 
+    // Build complete address string
+    const address = `${block} ${lot} ${barangay} ${currentAddress} ${postalCode}`;
+
+    // Clean up payload
     delete payload.blk;
     delete payload.lot;
 
@@ -105,11 +114,17 @@ const RootScreen = () => {
             style={styles.keyboardView}
           >
             {/* Main Content */}
-            <View style={styles.mainContent}>
-              <Text style={styles.title}>Sign Up Your Account</Text>
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.mainContent}>
+                <Text style={styles.title}>Sign Up Your Account</Text>
 
-              <FormProvider {...form}>{element}</FormProvider>
-            </View>
+                <FormProvider {...form}>{element}</FormProvider>
+              </View>
+            </ScrollView>
 
             {/* Bottom Section */}
             <View style={styles.bottomSection}>
@@ -156,15 +171,23 @@ const styles = StyleSheet.create({
   keyboardView: {
     flex: 1,
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   mainContent: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 16,
+    paddingVertical: 24,
   },
   title: {
     fontSize: 32,
-    marginBottom: 48,
+    marginBottom: 24,
+    marginTop: 24,
     textAlign: "center",
     fontWeight: "bold",
   },
@@ -197,6 +220,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "600",
+    fontSize: 18,
   },
   backButtonText: {
     fontSize: 16,

@@ -15,8 +15,8 @@ import { View } from "react-native";
 
 const FLAG = {
   pending: "Pay",
-  ongoing: "Develired", // Fixed typo in "Deliver"
-  delviered: "Completed",
+  ongoing: "Deliver", // Fixed typo in "Deliver"
+  delviered: "Complete",
   history: "Order History", // Added history case
 } as const;
 type OrderStatus = keyof typeof FLAG;
@@ -53,8 +53,6 @@ const RootScreen = () => {
     }
     return <ErrorScreen />;
   }
-
-  console.log(credentials);
 
   return (
     <>

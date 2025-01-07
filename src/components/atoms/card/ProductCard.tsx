@@ -39,7 +39,7 @@ const ProductCard = (props: ProductItem) => {
           <Avatar
             size={100}
             source={{
-              uri: `https://iamjohn.cloud/storage/${props.thumbnail}`,
+              uri: `https://jandbfoodapp.site/storage/${props.thumbnail}`,
             }}
           />
         </View>

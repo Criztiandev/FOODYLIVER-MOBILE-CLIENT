@@ -38,7 +38,7 @@ const ProductCartItem = (props: CartItem) => {
         <XStack className="space-x-4">
           <Avatar
             source={{
-              uri: `https://iamjohn.cloud/storage/${props.thumbnail}`,
+              uri: `https://jandbfoodapp.site/storage/${props.thumbnail}`,
             }}
             size={64}
           />

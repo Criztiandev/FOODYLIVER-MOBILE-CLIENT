@@ -9,7 +9,7 @@ const NavigationBlob = ({ title, path, icon }: IOrderNavigationDataset) => {
   const router = useRouter();
   return (
     <TouchableOpacity
-      className="  p-2 mr-2 rounded-md border-primary border"
+      className="  p-2 mr-2 rounded-md border-gray-200 border"
       onPress={() => router.push(path)}
     >
       <YStack className="items-center space-y-1">

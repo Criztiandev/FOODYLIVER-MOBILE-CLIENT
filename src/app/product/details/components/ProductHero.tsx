@@ -19,14 +19,25 @@ const ProductHero = ({
   description,
   thumbnail,
 }: Props) => {
+  console.log(thumbnail);
   return (
     <View className=" w-full  mb-4 px-2">
-      <Image
-        source={{
-          uri: `https://iamjohn.cloud/storage/${thumbnail}`,
-        }}
-        className="w-full h-[300px] rounded-md mt-2"
-      />
+      <View className="">
+        <Image
+          source={{
+            uri: thumbnail
+              ? `https://jandbfoodapp.site/storage/${thumbnail}`
+              : "https://placehold.co/600x400",
+          }}
+          style={{
+            width: "100%",
+            height: 300,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: "#F4891F",
+          }}
+        />
+      </View>
 
       <YStack className="py-4 space-y-4">
         <Text className="text-3xl font-bold capitalize">

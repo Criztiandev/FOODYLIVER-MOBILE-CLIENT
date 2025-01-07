@@ -4,15 +4,10 @@ import { router, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, Text, View, StyleSheet } from "react-native";
 import CartEmpty from "./components/CartEmpty";
-import YStack from "@/components/stacks/YStack";
 import CartSelectedProducts from "./components/CartSelectedProduct";
 import Button from "@/components/ui/Button";
-import { Coins, Ship, ShoppingBag, Truck, Wallet } from "lucide-react-native";
+import { Coins, ShoppingBag, Truck, Wallet } from "lucide-react-native";
 import Avatar from "@/components/ui/Avatar";
-import useAccountStore from "@/state/useAccountStore";
-import useFetchProfile from "@/hooks/account/useFetchProfile";
-import LoadingScreen from "@/layout/screen/LoadingScreen";
-import ErrorScreen from "@/layout/screen/ErrorScreen";
 import useLocalStorage from "@/hooks/utils/useLocalStorage";
 import { User } from "@/interface/user.interface";
 
@@ -45,12 +40,14 @@ const RootScreen = () => {
     label: string,
     value: number
   ) => (
-    <View style={styles.checkoutRow}>
-      <View style={styles.labelContainer}>
+    <View className="flex-row justify-between items-center">
+      <View className="flex-row items-center space-x-2">
         {icon}
-        <Text style={styles.labelText}>{label}</Text>
+        <Text className="text-base font-semibold text-gray-600">{label}</Text>
       </View>
-      <Text style={styles.valueText}>₱{value.toFixed(2)}</Text>
+      <Text className="text-base font-semibold text-gray-600">
+        ₱{value.toFixed(2)}
+      </Text>
     </View>
   );
 
@@ -64,18 +61,22 @@ const RootScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1">
       <Stack.Screen options={stackScreenOptions as any} />
 
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView className="flex-1 bg-white">
         {/* User Profile Header */}
-        <View style={styles.profileHeader}>
-          <Avatar size={64} source={require("@/assets/images/girl-user.png")} />
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>
+        <View className="bg-primary p-4 flex-row items-center space-x-4">
+          <Avatar
+            size={64}
+            source={require("@/assets/images/girl-user.png")}
+            className="border-2 border-white"
+          />
+          <View className="flex-1">
+            <Text className="text-xl font-bold text-white capitalize">
               {credentials?.name || "Yen Timmango"}
             </Text>
-            <Text style={styles.profileAddress}>
+            <Text className="text-base text-white/70">
               {credentials?.address || "Block 56, Lot 14, Villa Luisa North"}
             </Text>
           </View>
@@ -83,17 +84,17 @@ const RootScreen = () => {
 
         {/* Scrollable Content */}
         <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollViewContent}
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: 200 }}
         >
-          <View style={styles.cartItemsContainer}>
+          <View className="mt-2">
             <CartSelectedProducts />
           </View>
         </ScrollView>
 
         {/* Checkout Section */}
-        <SafeAreaView style={styles.checkoutContainer}>
-          <View style={styles.summaryContainer}>
+        <SafeAreaView className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+          <View className="space-y-2 mb-2">
             {renderCheckoutItem(
               <Truck color="black" size={18} />,
               "Shipping Fee",
@@ -112,12 +113,12 @@ const RootScreen = () => {
           </View>
 
           <Button
-            style={styles.checkoutButton}
+            className="bg-primary py-3"
             onPress={() => router.push("/order/payment")}
           >
-            <View style={styles.buttonContent}>
+            <View className="flex-row items-center justify-center space-x-2">
               <ShoppingBag color="white" size={18} />
-              <Text style={styles.buttonText}>Checkout</Text>
+              <Text className="text-lg font-semibold text-white">Checkout</Text>
             </View>
           </Button>
         </SafeAreaView>
@@ -129,107 +130,11 @@ const RootScreen = () => {
 const stackScreenOptions = {
   headerLeft: () => <BackButton />,
   title: "My Cart",
-  headerTitleStyle: { color: "white" },
+  headerTitleStyle: { color: "white", fontSize: 18, fontWeight: "600" },
   headerStyle: {
     backgroundColor: "#f4891f",
   },
   headerTitleAlign: "center",
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  profileHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    backgroundColor: "#f4891f",
-    gap: 16,
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  profileName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
-    textTransform: "capitalize",
-  },
-  profileAddress: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "rgba(255, 255, 255, 0.5)",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    paddingBottom: 100,
-  },
-  cartItemsContainer: {
-    marginTop: 8,
-  },
-  checkoutContainer: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#e5e5e5",
-    backgroundColor: "white",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  summaryContainer: {
-    marginBottom: 8,
-    gap: 8,
-  },
-  checkoutRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  labelContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  labelText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#4B5563",
-  },
-  valueText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#4B5563",
-  },
-  checkoutButton: {
-    marginTop: 8,
-  },
-  buttonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    marginLeft: 8,
-    fontSize: 18,
-    fontWeight: "600",
-    color: "white",
-  },
-});
 
 export default RootScreen;
