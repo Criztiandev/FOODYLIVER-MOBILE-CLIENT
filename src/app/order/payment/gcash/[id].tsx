@@ -66,8 +66,6 @@ const RootScreen: React.FC = () => {
   );
 
   const handleNavigationStateChange = async (navState: WebViewNavigation) => {
-    console.log("Current URL:", navState.url);
-
     if (navState.url.includes("success") && !hasProcessedPayment.current) {
       hasProcessedPayment.current = true;
       const url = new URL(navState.url);
@@ -153,7 +151,6 @@ const RootScreen: React.FC = () => {
           onError={handleError}
           onLoadStart={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;
-            console.log("Loading started:", nativeEvent.url);
           }}
           onLoadEnd={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;

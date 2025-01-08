@@ -50,8 +50,4 @@ export const AccountNavivationDataset: IAccountNavigationDataSet[] = [
     title: "Update Profile",
     path: "/account/update-profile",
   },
-  {
-    title: "My Address",
-    path: "/account/address",
-  },
 ];

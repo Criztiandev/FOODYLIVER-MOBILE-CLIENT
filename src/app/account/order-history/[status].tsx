@@ -43,9 +43,6 @@ const RootScreen = () => {
 
   if (profileLoading || isPending) return <LoadingScreen />;
   if (profileError) {
-    if (error instanceof AxiosError) {
-      console.log(error.response);
-    }
     return <ErrorScreen />;
   }
 

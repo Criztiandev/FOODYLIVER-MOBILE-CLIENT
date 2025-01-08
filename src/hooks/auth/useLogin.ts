@@ -14,7 +14,6 @@ const useLogin = () => {
   const router = useRouter();
 
   const form = useForm<LoginValue>({
-    defaultValues: { email: "criztian@gmail.com", password: "password" },
     resolver: zodResolver(LoginValidation),
   });
 
@@ -28,6 +27,8 @@ const useLogin = () => {
 
     onSuccess: (data: LoginResponse) => {
       const { token, ...rest } = data;
+
+      console.log(rest);
 
       setItem("accessToken", token);
       setItem("user", rest);

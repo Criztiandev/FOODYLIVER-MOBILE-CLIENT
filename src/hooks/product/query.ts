@@ -28,5 +28,6 @@ export const useFetchProductById = (id: string) => {
       const result = await PrivateAxios.get(`/menu-items/${id}`);
       return result.data;
     },
+    enabled: !!id,
   });
 };

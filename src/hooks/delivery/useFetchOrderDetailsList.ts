@@ -12,10 +12,14 @@ export const useFetchOrderDetailsList = (transactionID: string) => {
       const credentials = (await getCredentials()) as User;
 
       const result = await PrivateAxios.get(
-        `/order/customer/lists/${transactionID}/${credentials?.user_id}`
+        `/order/driver/lists/${credentials?.user_id}`
       );
 
-      return result.data;
+      const filteredData = result.data.filter(
+        (item: any) => item.transaction_id === transactionID
+      );
+
+      return filteredData;
     },
   });
 };

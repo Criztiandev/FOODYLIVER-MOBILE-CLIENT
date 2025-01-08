@@ -12,7 +12,6 @@ const useFetchOrdersById = (status: string, UID: string) => {
       const result = await PrivateAxios.post(`/orders/pending`, value);
 
       if (result instanceof AxiosError) {
-        console.log(result.response);
         throw new Error(result.message);
       }
 

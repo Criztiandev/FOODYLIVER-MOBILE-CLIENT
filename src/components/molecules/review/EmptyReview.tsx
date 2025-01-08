@@ -1,23 +1,21 @@
 import YStack from "@/components/stacks/YStack";
-import Avatar from "@/components/ui/Avatar";
-import Button from "@/components/ui/Button";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 
-const EmptyReview = () => {
-  const router = useRouter();
+const jokes = [
+  "Seems our reviews are on vacation! 🏖️",
+  "Our reviews are as empty as a programmer's coffee cup at 8am ☕",
+  "Houston, we have no reviews! 🚀",
+  "Plot twist: all our reviewers got abducted by aliens! 👽",
+] as const;
 
-  const generateRandomJoke = () => {
-    const jokes = [
-      "Seems our reviews are on vacation! 🏖️",
-      "Our reviews are as empty as a programmer's coffee cup at 8am ☕",
-      "Houston, we have no reviews! 🚀",
-      "Plot twist: all our reviewers got abducted by aliens! 👽",
-    ];
-    return jokes[Math.floor(Math.random() * jokes.length)];
-  };
+const EmptyReview = () => {
+  // Use useMemo to keep the same joke during re-renders
+  const randomJoke = useMemo(
+    () => jokes[Math.floor(Math.random() * jokes.length)],
+    [] // Empty dependency array means this will be calculated once on mount
+  );
 
   return (
     <YStack className="flex-1 justify-center items-center space-y-6 p-4">
@@ -31,21 +29,15 @@ const EmptyReview = () => {
           Cricket Sounds 🦗
         </Text>
         <Text className="text-base text-center text-gray-600">
-          {generateRandomJoke()}
+          {randomJoke}
         </Text>
         <Text className="text-sm text-center text-gray-500">
           Be the first to break the silence and share your thoughts!
         </Text>
-        <View className="flex-row space-x-3">
-          <Button className="px-6 bg-gray-100" onPress={() => router.back()}>
-            <Text className="text-gray-800 font-semibold text-base">
-              Go Back
-            </Text>
-          </Button>
-        </View>
       </YStack>
     </YStack>
   );
 };
 
-export default EmptyReview;
+// Memoize the entire component since it's static once rendered
+export default React.memo(EmptyReview);

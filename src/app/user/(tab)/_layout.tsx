@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Home, UserCircle } from "lucide-react-native";
+import { Backpack, Home, UserCircle } from "lucide-react-native";
 
 const RootLayout = () => {
   return (

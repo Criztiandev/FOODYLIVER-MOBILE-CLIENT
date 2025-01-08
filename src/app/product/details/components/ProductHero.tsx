@@ -23,7 +23,7 @@ const ProductHero = ({
     <View className=" w-full  mb-4 px-2">
       <Image
         source={{
-          uri: `https://iamjohn.cloud/storage/${thumbnail}`,
+          uri: `https://jandbfoodapp.site/storage/${thumbnail}`,
         }}
         className="w-full h-[300px] rounded-md mt-2"
       />

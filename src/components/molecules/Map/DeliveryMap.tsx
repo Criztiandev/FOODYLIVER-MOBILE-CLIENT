@@ -1,7 +1,11 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import useLocation from "@/hooks/utils/useLocation";
-import { LocationObject } from "expo-location";
+import React, { FC, useEffect, useRef, useState } from "react";
+import MapView, {
+  Marker,
+  PROVIDER_GOOGLE,
+  Region,
+  Circle,
+} from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
 interface Props {
@@ -9,39 +13,67 @@ interface Props {
     latitude: number;
     longitude: number;
   };
+  onProximityChange: (isNearby: boolean) => void;
+  googleMapsApiKey: string;
 }
 
-const initialZoom = 12;
-const animationDuration = 1000;
+const PROXIMITY_RADIUS = 100; // 1000km in meters
 
-const DeliveryMap: FC<Props> = ({ targetRegion }) => {
-  const mapRef = useRef<MapView | null>(null);
-  const { location, error } = useLocation(true); // Using watch mode
+const calculateDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number => {
+  const R = 6371e3; // Earth's radius in meters
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Distance in meters
+};
+
+const DeliveryMap: FC<Props> = ({
+  targetRegion,
+  onProximityChange,
+  googleMapsApiKey,
+}) => {
+  const mapRef = useRef<MapView>(null);
+  const { location, error } = useLocation(true);
   const [initialRegion, setInitialRegion] = useState<Region | null>(null);
 
   useEffect(() => {
-    if (location) {
+    if (location?.coords) {
+      const { latitude, longitude } = location.coords;
+
+      // Calculate distance from current location to target
+      const distance = calculateDistance(
+        latitude,
+        longitude,
+        targetRegion.latitude,
+        targetRegion.longitude
+      );
+
+      const isNearby = distance <= PROXIMITY_RADIUS;
+      onProximityChange(isNearby);
+
       const newRegion = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+        latitude,
+        longitude,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       };
       setInitialRegion(newRegion);
-      focusMap(newRegion);
     }
-  }, [location]);
+  }, [location, targetRegion]);
 
-  const focusMap = (region: Region) => {
-    mapRef.current?.animateCamera(
-      { center: region, zoom: initialZoom },
-      { duration: animationDuration }
-    );
-  };
-
-  if (!initialRegion) {
-    return null;
-  }
+  if (!initialRegion) return null;
 
   return (
     <MapView
@@ -57,22 +89,22 @@ const DeliveryMap: FC<Props> = ({ targetRegion }) => {
           latitude: location?.coords.latitude || 0,
           longitude: location?.coords.longitude || 0,
         }}
+        title="Your Location"
       />
 
-      <Marker
-        coordinate={{
-          latitude: targetRegion?.latitude || 0,
-          longitude: targetRegion?.longitude || 0,
-        }}
+      <Marker coordinate={targetRegion} title="Destination" />
+
+      <Circle
+        center={targetRegion}
+        radius={PROXIMITY_RADIUS}
+        fillColor="rgba(255, 124, 2, 0.2)"
+        strokeColor="rgba(255, 124, 2, 0.5)"
       />
 
       <MapViewDirections
         origin={initialRegion}
-        destination={{
-          latitude: targetRegion.latitude,
-          longitude: targetRegion.longitude,
-        }}
-        apikey="AIzaSyACcQI_2ajppwlgGZ_9kD_YHGcuM0f7AEo"
+        destination={targetRegion}
+        apikey={googleMapsApiKey}
         strokeWidth={4}
         strokeColor="#FF7C02"
         optimizeWaypoints={true}
