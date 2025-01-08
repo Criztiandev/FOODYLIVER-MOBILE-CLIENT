@@ -102,8 +102,6 @@ const ProfileFormScreen = () => {
     return <NotFoundScreen />;
   }
 
-  console.log(data);
-
   return (
     <>
       <Stack.Screen

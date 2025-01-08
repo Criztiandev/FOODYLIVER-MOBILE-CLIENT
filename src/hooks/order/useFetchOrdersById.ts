@@ -20,11 +20,9 @@ const useFetchOrdersById = (status: string, UID: string) => {
 
     onSuccess: (data) => {
       if (data instanceof AxiosError) {
-        console.log(data.response);
         throw new Error(data.message);
       }
 
-      console.log(data);
       setCredentials(data);
     },
 

@@ -57,8 +57,6 @@ const RootScreen = () => {
     (order: Order) => order?.status === "DELIVERED"
   );
 
-  console.log(orders);
-
   const renderItem = useCallback(
     ({ item }: { item: Order }) => <OrderCard item={item} />,
     []

@@ -34,7 +34,6 @@ const RootScreen = () => {
 
   if (isLoading) return <LoadingScreen />;
   if (isError) {
-    console.log(error);
     return <ErrorScreen />;
   }
 

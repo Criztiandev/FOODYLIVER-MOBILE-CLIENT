@@ -14,7 +14,6 @@ const useDeliverOrder = (id: string) => {
       );
 
       if (result instanceof AxiosError) {
-        console.log(result.response);
         throw new Error(result.response?.data?.message || result.message);
       }
 
