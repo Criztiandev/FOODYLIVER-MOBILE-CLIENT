@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import BaseLayout from "@/layout/BaseLayout";
 import { ChevronRight, LogOut, User as UserIcon } from "lucide-react-native";
 import { Stack, useRouter } from "expo-router";
 import XStack from "@/components/stacks/XStack";
-import CartButton from "@/components/atoms/button/CartButton";
 import Avatar from "@/components/ui/Avatar";
 import YStack from "@/components/stacks/YStack";
-import { Text, View } from "react-native";
+import { Text, View, RefreshControl, ScrollView } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import Button from "@/components/ui/Button";
-import NavigationBlob from "./components/NavigationBlob";
-import {
-  AccountNavivationDataset,
-  OrderNavigationDataset,
-} from "@/data/account.data";
+import { AccountNavivationDataset } from "@/data/account.data";
 import useLogout from "@/hooks/account/useLogout";
 import useLocalStorage from "@/hooks/utils/useLocalStorage";
 import { User } from "@/interface/user.interface";
 
 const RootScreen = () => {
   const [credentials, setCredentials] = useState<User | any>([]);
+  const [refreshing, setRefreshing] = useState(false);
   const { mutate, isPending } = useLogout();
   const { getItem } = useLocalStorage();
   const router = useRouter();
@@ -27,6 +23,20 @@ const RootScreen = () => {
   const handleLogout = () => {
     mutate("");
   };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const newCredentials = await getItem("user");
+      if (newCredentials) {
+        setCredentials(newCredentials);
+      }
+    } catch (error) {
+      console.error("Error refreshing:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [getItem]);
 
   useEffect(() => {
     (async () => {
@@ -47,15 +57,23 @@ const RootScreen = () => {
             backgroundColor: "#f4891f",
           },
           headerTitleAlign: "center",
-          headerRight: () => (
-            <XStack className="space-x-4 px-4">
-              <CartButton />
-            </XStack>
-          ),
         }}
       />
       <BaseLayout>
-        <View className="flex-1 bg-gray-50">
+        <ScrollView
+          className="flex-1 bg-gray-50"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#f4891f"]}
+              tintColor="#f4891f"
+              progressViewOffset={10}
+              progressBackgroundColor="#ffffff"
+            />
+          }
+          showsVerticalScrollIndicator={false}
+        >
           <View className="bg-primary p-6 shadow-lg">
             <XStack className="items-center space-x-4">
               <Avatar
@@ -73,7 +91,7 @@ const RootScreen = () => {
           </View>
 
           <View className="p-2">
-            <View className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200 min-h-[150px]">
+            <View className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200 min-h-[200px]">
               <Text className="text-xl font-bold text-gray-800 mb-4">
                 Account Settings
               </Text>
@@ -114,7 +132,7 @@ const RootScreen = () => {
               </XStack>
             </Button>
           </View>
-        </View>
+        </ScrollView>
       </BaseLayout>
     </>
   );

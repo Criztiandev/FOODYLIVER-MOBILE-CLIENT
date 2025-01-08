@@ -18,7 +18,8 @@ import OrderCard from "@/components/molecules/card/OrderCard";
 
 // Memoized header options with improved styling
 const screenOptions = {
-  title: "Delivery Orders",
+  title: "Delivery History",
+
   headerTitleStyle: {
     color: "white",
     fontSize: 20,
@@ -56,7 +57,7 @@ const RootScreen = () => {
 
   const notDeliveredOrders = useMemo(() => {
     if (!OrderQueryResult) return [];
-    return OrderQueryResult.filter((order: any) => order?.status === "PENDING");
+    return OrderQueryResult.filter((order: any) => order?.status === "ONGOING");
   }, [OrderQueryResult]);
 
   const renderItem = useCallback(

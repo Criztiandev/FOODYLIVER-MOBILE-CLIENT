@@ -1,28 +1,30 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import BaseLayout from "@/layout/BaseLayout";
-import { Stack, useRouter } from "expo-router";
-import { Text, View, RefreshControl, ScrollView } from "react-native";
+import { Stack } from "expo-router";
+import { View, RefreshControl, ScrollView } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import useLocalStorage from "@/hooks/utils/useLocalStorage";
-import { User } from "@/interface/user.interface";
-import { useFetchOrderByRider } from "@/hooks/delivery/useFetchOrderByRider";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import ErrorScreen from "@/layout/screen/ErrorScreen";
 import EmptyReview from "@/components/molecules/review/EmptyReview";
-import YStack from "@/components/stacks/YStack";
-import XStack from "@/components/stacks/XStack";
-import Button from "@/components/ui/Button";
-import { Mail, Phone, Receipt, Wallet, MapPin } from "lucide-react-native";
-import useDeliverOrder from "@/hooks/order/useDeliverOrder";
 import OrderCard from "@/components/molecules/card/OrderCard";
+import BackButton from "@/components/atoms/button/BackButton";
+import { useFetchOrderByRider } from "@/hooks/delivery/useFetchOrderByRider";
+import { Order } from "@/interface/order.interface";
 
-// Memoized header options with improved styling
+interface OrderResponse {
+  data: Order[];
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => Promise<void>;
+}
+
 const screenOptions = {
   title: "Delivery Orders",
+  headerLeft: () => <BackButton />,
   headerTitleStyle: {
     color: "white",
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: "600" as const,
   },
   headerStyle: {
     backgroundColor: "#FF7C02",
@@ -31,17 +33,14 @@ const screenOptions = {
 };
 
 const RootScreen = () => {
-  const [credentials, setCredentials] = useState<User | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const router = useRouter();
-  const { getItem } = useLocalStorage();
 
   const {
-    isLoading: isOrderQueryLoading,
-    isError: isOrderQueryError,
-    data: OrderQueryResult,
+    isLoading,
+    isError,
+    data: orders,
     refetch,
-  } = useFetchOrderByRider(credentials?.user_id || "3");
+  } = useFetchOrderByRider("3");
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -54,39 +53,23 @@ const RootScreen = () => {
     }
   }, [refetch]);
 
-  const notDeliveredOrders = useMemo(() => {
-    if (!OrderQueryResult) return [];
-    return OrderQueryResult.filter((order: any) => order?.status === "PENDING");
-  }, [OrderQueryResult]);
+  const deliveredOrders = orders?.filter(
+    (order: Order) => order?.status === "DELIVERED"
+  );
+
+  console.log(orders);
 
   const renderItem = useCallback(
-    ({ item }: { item: any }) => <OrderCard item={item} />,
+    ({ item }: { item: Order }) => <OrderCard item={item} />,
     []
   );
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchCredentials = async () => {
-      const userCredentials = await getItem("user");
-      if (isMounted && userCredentials) {
-        setCredentials(userCredentials as User);
-      }
-    };
-
-    fetchCredentials();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [getItem]);
-
-  if (isOrderQueryLoading) return <LoadingScreen />;
-  if (isOrderQueryError) return <ErrorScreen />;
+  if (isLoading) return <LoadingScreen />;
+  if (isError) return <ErrorScreen />;
 
   return (
     <>
-      <Stack.Screen options={screenOptions as any} />
+      <Stack.Screen options={screenOptions} />
       <BaseLayout>
         <ScrollView
           className="flex-1 bg-gray-50"
@@ -104,15 +87,17 @@ const RootScreen = () => {
           contentContainerStyle={{ flexGrow: 1 }}
         >
           <View className="flex-1 px-4 pt-4 border border-gray-200">
-            {notDeliveredOrders.length > 0 ? (
+            {deliveredOrders.length > 0 ? (
               <FlashList
-                data={notDeliveredOrders}
+                data={deliveredOrders}
                 renderItem={renderItem}
                 estimatedItemSize={200}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 20 }}
                 onEndReachedThreshold={0.5}
                 onEndReached={onRefresh}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
               />
             ) : (
               <EmptyReview />

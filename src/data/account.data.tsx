@@ -50,4 +50,8 @@ export const AccountNavivationDataset: IAccountNavigationDataSet[] = [
     title: "Update Profile",
     path: "/account/update-profile",
   },
+  {
+    title: "Delivery History",
+    path: "/account/order-history",
+  },
 ];

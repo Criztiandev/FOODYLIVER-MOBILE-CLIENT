@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { Text, View, Alert, RefreshControl } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import * as Linking from "expo-linking";
 import {
   Coins,
@@ -12,6 +12,7 @@ import {
 } from "lucide-react-native";
 import { Image } from "expo-image";
 import { ScrollView } from "react-native";
+import Toast from "react-native-toast-message";
 
 import HomeButton from "@/components/atoms/button/HomeButton";
 import XStack from "@/components/stacks/XStack";
@@ -23,6 +24,8 @@ import ErrorScreen from "@/layout/screen/ErrorScreen";
 
 import { useFetchOrderDetailsList } from "@/hooks/delivery/useFetchOrderDetailsList";
 import Button from "@/components/ui/Button";
+import useDeliverOrder from "@/hooks/order/useDeliverOrder";
+import BackButton from "@/components/atoms/button/BackButton";
 
 // Types
 interface OrderSummaryProps {
@@ -96,7 +99,7 @@ const RiderInfo: React.FC<RiderInfoProps> = ({
     <XStack className="items-center space-x-4">
       <Avatar size={80} source={avatar} className="border-2 border-white" />
       <YStack className="flex-1">
-        <Text className="text-2xl font-bold text-white">{name}</Text>
+        <Text className="text-2xl font-bold text-white capitalize">{name}</Text>
         <XStack className="items-center space-x-2 mt-2">
           <Phone size={16} color="white" />
           <Text className="text-white/90">{phone || "09123456789"}</Text>
@@ -123,6 +126,7 @@ const DeliveryStatus: React.FC<{ status: string }> = ({ status }) => (
 );
 
 const RootScreen = () => {
+  const router = useRouter();
   const { transaction_id } = useLocalSearchParams();
   const orderQry = useFetchOrderDetailsList(transaction_id as string);
   const [refreshing, setRefreshing] = useState(false);
@@ -133,21 +137,31 @@ const RootScreen = () => {
     setRefreshing(false);
   }, [orderQry.refetch]);
 
+  const handleCall = async (phoneNumber: string) => {
+    try {
+      await Linking.openURL(`tel:${phoneNumber}`);
+    } catch (error) {
+      console.error("Error opening phone app:", error);
+      Alert.alert(
+        "Error",
+        "Unable to make phone call. Please check your phone settings and try again."
+      );
+    }
+  };
+
   if (orderQry.isLoading) return <LoadingScreen />;
   if (orderQry.isError) {
     console.error("Order Error:", orderQry.error);
     return <ErrorScreen />;
   }
 
-  const selectedOrderDetails = orderQry.data.find(
-    (items: any) => items.transaction_id === transaction_id
-  );
+  const selectedOrderDetails = orderQry.data[0];
 
   return (
     <>
       <Stack.Screen
         options={{
-          headerLeft: () => <HomeButton />,
+          headerLeft: () => <BackButton />,
           title: "Delivery Details",
           headerTitleStyle: { color: "white" },
           headerStyle: { backgroundColor: "#f4891f" },
@@ -168,11 +182,11 @@ const RootScreen = () => {
             />
           }
         >
-          {selectedOrderDetails?.rider && (
+          {selectedOrderDetails?.customer && (
             <RiderInfo
-              name={selectedOrderDetails?.rider?.name}
-              phone={selectedOrderDetails?.rider?.phone}
-              address={selectedOrderDetails?.rider?.address}
+              name={selectedOrderDetails?.customer?.name}
+              phone={selectedOrderDetails?.customer?.phone}
+              address={selectedOrderDetails?.customer?.address}
               avatar={require("@/assets/images/girl-user.png")}
             />
           )}
@@ -195,11 +209,6 @@ const RootScreen = () => {
             <OrderSummary
               subtotal={Number(selectedOrderDetails?.total_amount) || 0}
             />
-            <Button className="bg-primary">
-              <Text className="text-white text-lg font-bold">
-                Deliver Order
-              </Text>
-            </Button>
           </View>
         </ScrollView>
       </BaseLayout>

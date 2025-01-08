@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Backpack, Home, UserCircle } from "lucide-react-native";
+import { Backpack, Home, Truck, UserCircle } from "lucide-react-native";
 
 const RootLayout = () => {
   return (
@@ -49,6 +49,17 @@ const RootLayout = () => {
           headerShown: false,
           tabBarIcon: (props) => (
             <Home color="white" opacity={props.focused ? 1 : 0.5} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="deliveries"
+        options={{
+          title: "",
+          headerShown: false,
+          tabBarIcon: (props) => (
+            <Truck color="white" opacity={props.focused ? 1 : 0.5} />
           ),
         }}
       />

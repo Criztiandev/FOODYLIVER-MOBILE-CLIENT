@@ -4,9 +4,9 @@ import { Mail, Phone, Receipt, Wallet, MapPin } from "lucide-react-native";
 import Button from "@/components/ui/Button";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
-import useDeliverOrder from "@/hooks/order/useDeliverOrder";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
+import useOnGoingOrder from "@/hooks/order/useOnGoingOrder";
 
 // Separate OrderItem component with improved UI
 interface OrderCardProps {
@@ -19,6 +19,8 @@ interface OrderCardProps {
       phone_number?: string;
       address?: string;
       user_id: string;
+      latitude: string;
+      longitude: string;
     };
     payment_method: string;
     longitude: string;
@@ -30,15 +32,13 @@ interface OrderCardProps {
 
 const OrderCard = React.memo(({ item }: OrderCardProps) => {
   const router = useRouter();
-  const { mutate, isPending, isSuccess, isError } = useDeliverOrder(
-    item.id || ""
-  );
+  const { mutate, isPending } = useOnGoingOrder(item?.id ? item.id : "");
 
   const handleViewDetails = () => {
     router.push({
       pathname: "/order/delivery/[id]" as any,
       params: {
-        id: item.transaction_id,
+        transaction_id: item.transaction_id,
         customer_id: item.customer.user_id,
         long: item.longitude,
         lat: item.latitude,
@@ -48,6 +48,15 @@ const OrderCard = React.memo(({ item }: OrderCardProps) => {
 
   const handleTrackOrder = () => {
     try {
+      if (!item.id) {
+        Toast.show({
+          type: "error",
+          text1: "Invalid Order",
+          text2: "Order ID is missing",
+        });
+        return;
+      }
+
       if (item.status === "PENDING") {
         mutate({
           transaction_id: item.transaction_id,
@@ -55,8 +64,17 @@ const OrderCard = React.memo(({ item }: OrderCardProps) => {
         });
       }
 
+      if (!item.customer.latitude || !item.customer.longitude) {
+        Toast.show({
+          type: "error",
+          text1: "Location is not available",
+          text2: "Failed to complete delivery. Please try again.",
+        });
+        return;
+      }
+
       router.push(
-        `/order/track/${item.transaction_id}?customer_id=${item.customer.user_id}&long=${item.latitude}&lat=${item.latitude}` as any
+        `/order/track/${item.transaction_id}?customer_id=${item.customer.user_id}&long=${item.customer.longitude}&lat=${item.customer.latitude}` as any
       );
     } catch (error) {
       console.error("Error tracking order:", error);
@@ -168,17 +186,19 @@ const OrderCard = React.memo(({ item }: OrderCardProps) => {
             <Text className="text-[#FF7C02] font-medium">View Details</Text>
           </Button>
 
-          <Button
-            variant="default"
-            size="sm"
-            className="border-[#FF7C02]"
-            onPress={handleTrackOrder}
-            disabled={isPending}
-          >
-            <Text className="text-white font-medium">
-              {isPending ? "Processing..." : "Deliver Order"}
-            </Text>
-          </Button>
+          {(item.status === "ONGOING" || item.status === "PENDING") && (
+            <Button
+              variant="default"
+              size="sm"
+              className="border-[#FF7C02]"
+              onPress={handleTrackOrder}
+              disabled={isPending || !item.id}
+            >
+              <Text className="text-white font-medium">
+                {isPending ? "Processing..." : "Deliver Order"}
+              </Text>
+            </Button>
+          )}
         </XStack>
       </YStack>
     </View>

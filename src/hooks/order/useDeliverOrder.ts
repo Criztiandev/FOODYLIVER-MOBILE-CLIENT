@@ -2,7 +2,6 @@ import { PrivateAxios } from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { router } from "expo-router";
-import React from "react";
 import Toast from "react-native-toast-message";
 
 const useDeliverOrder = (id: string) => {
@@ -10,7 +9,7 @@ const useDeliverOrder = (id: string) => {
     mutationKey: [`/POST /order/deliver/${id}`],
     mutationFn: async (value: any) => {
       const result = await PrivateAxios.post(
-        `/order/update/status/${id}`,
+        `/order/update/status/${value.transaction_id}`,
         value
       );
 
