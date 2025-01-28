@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { Home, Plus } from "lucide-react-native";
 import BackButton from "@/components/atoms/button/BackButton";
@@ -8,18 +8,11 @@ import BaseLayout from "@/layout/BaseLayout";
 import Button from "@/components/ui/Button";
 import useReverseGeocode from "@/hooks/maps/useReverseGeocode";
 import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
-import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
 import XStack from "@/components/stacks/XStack";
 
 const RootScreen = () => {
-  const [selectedAddress, setSelectedAddress] =
-    useState<GooglePlaceDetail | null>(null);
   const router = useRouter();
   const { address } = useReverseGeocode();
-
-  const handleSelectAddress = (value: GooglePlaceDetail | null) => {
-    setSelectedAddress(value);
-  };
 
   return (
     <>
@@ -38,30 +31,30 @@ const RootScreen = () => {
           },
         }}
       />
-      <View className="bg-white flex-1">
+      <View style={styles.container}>
         <BaseLayout>
-          <YStack className="p-4 space-y-4">
-            <View className="w-full h-[300px] rounded-lg overflow-hidden border-2 border-primary/70 shadow-sm">
+          <YStack style={styles.content}>
+            <View style={styles.mapContainer}>
               <CurrentLocationMap />
             </View>
 
-            <View className="rounded-lg px-4 py-3 border-2 border-primary/70 bg-white shadow-sm">
-              <XStack className="items-center space-x-3">
+            <View style={styles.addressCard}>
+              <XStack style={styles.addressContent}>
                 <Home color="#F4891F" size={24} />
-                <Text className="flex-1 text-base">
+                <Text style={styles.addressText}>
                   {!address ? "Getting your location..." : address}
                 </Text>
               </XStack>
             </View>
 
             <Button
-              className="flex-row justify-center space-x-2 py-3 bg-primary"
+              style={styles.updateButton}
               onPress={() => router.push("/account/address/new-address")}
             >
-              <Plus color="white" size={22} />
-              <Text className="text-base font-bold text-white">
-                Update Address
-              </Text>
+              <View style={styles.buttonContent}>
+                <Plus color="white" size={22} />
+                <Text style={styles.buttonText}>Update Address</Text>
+              </View>
             </Button>
           </YStack>
         </BaseLayout>
@@ -69,5 +62,74 @@ const RootScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  content: {
+    padding: 16,
+    gap: 16,
+  },
+  mapContainer: {
+    width: "100%",
+    height: 300,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "rgba(244, 137, 31, 0.7)",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  addressCard: {
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: "rgba(244, 137, 31, 0.7)",
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  addressContent: {
+    alignItems: "center",
+    gap: 12,
+  },
+  addressText: {
+    flex: 1,
+    fontSize: 16,
+    color: "#4B5563",
+    lineHeight: 24,
+  },
+  updateButton: {
+    backgroundColor: "#F4891F",
+    paddingVertical: 12,
+    borderRadius: 12,
+    elevation: 3,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "white",
+  },
+});
 
 export default RootScreen;

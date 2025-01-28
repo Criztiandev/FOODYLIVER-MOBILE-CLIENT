@@ -11,7 +11,7 @@ import { FlashList } from "@shopify/flash-list";
 import { AxiosError } from "axios";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { View, RefreshControl } from "react-native";
+import { View, RefreshControl, StyleSheet } from "react-native";
 
 const FLAG = {
   pending: "Accepted",
@@ -92,7 +92,7 @@ const RootScreen = () => {
       />
 
       <BaseLayout>
-        <View className="flex-1 px-2 pt-4">
+        <View style={styles.container}>
           {credentials.length > 0 ? (
             <FlashList
               data={credentials}
@@ -112,5 +112,13 @@ const RootScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 8,
+    paddingTop: 16,
+  },
+});
 
 export default RootScreen;

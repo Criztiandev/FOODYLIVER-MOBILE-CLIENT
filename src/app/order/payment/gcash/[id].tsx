@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React, { useRef, useMemo, useCallback } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import BackButton from "@/components/atoms/button/BackButton";
@@ -12,7 +12,7 @@ import LoadingScreen from "@/layout/screen/LoadingScreen";
 
 const DRIVER_ID = 3;
 const DEFAULT_DELIVERY_TIME = "11:00 AM";
-const DELIVERY_FEE = 50;
+const DELIVERY_FEE = 25;
 
 const RootScreen: React.FC = () => {
   const router = useRouter();
@@ -164,11 +164,11 @@ const RootScreen: React.FC = () => {
           headerShadowVisible: false,
         }}
       />
-      <View className="flex-1 bg-white">
+      <View style={styles.container}>
         <WebView
           ref={webViewRef}
           source={{ uri: decodedUrl }}
-          style={{ flex: 1 }}
+          style={styles.webview}
           javaScriptEnabled={true}
           domStorageEnabled={true}
           startInLoadingState={true}
@@ -194,5 +194,15 @@ const RootScreen: React.FC = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  webview: {
+    flex: 1,
+  },
+});
 
 export default RootScreen;

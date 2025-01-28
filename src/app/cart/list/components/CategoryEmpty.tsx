@@ -1,31 +1,85 @@
 import YStack from "@/components/stacks/YStack";
-import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { ShoppingBag } from "lucide-react-native";
 import React from "react";
-import { Text } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 
 const CategoryEmpty = () => {
   const router = useRouter();
   return (
-    <YStack className="flex-1 justify-center items-center space-y-4 p-4">
+    <YStack style={styles.container}>
       <Image
-        className="w-full h-[200px]"
+        style={styles.image}
+        contentFit="contain"
         source={require("@/assets/images/Girl-magnify.png")}
       />
-      <YStack className="space-y-4 justify-center items-center">
-        <Text className="text-3xl font-bold">No Product Available</Text>
-        <Text className="text-base text-center">
-          Hmm... looks like our products are playing hide and seek! 🙈 Let me
-          help you find something else before they come out of hiding.
+      <YStack style={styles.content}>
+        <Text style={styles.title}>No Products Found</Text>
+        <Text style={styles.subtitle}>
+          We couldn't find any products in this category. Let's explore other
+          amazing options available!
         </Text>
-        <Button className="px-8" onPress={() => router.push("/")}>
-          <Text className="text-white font-semibold text-base">Browse</Text>
+        <Button style={styles.button} onPress={() => router.push("/")}>
+          <View style={styles.buttonContent}>
+            <ShoppingBag color="white" size={20} />
+            <Text style={styles.buttonText}>Browse Products</Text>
+          </View>
         </Button>
       </YStack>
     </YStack>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+    backgroundColor: "#FFFFFF",
+  },
+  image: {
+    width: "80%",
+    height: 240,
+    marginBottom: 32,
+  },
+  content: {
+    alignItems: "center",
+    gap: 16,
+    maxWidth: "80%",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#1F2937",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#6B7280",
+    textAlign: "center",
+    lineHeight: 24,
+  },
+  button: {
+    marginTop: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    backgroundColor: "#F4891F",
+    borderRadius: 8,
+    elevation: 2,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
 
 export default CategoryEmpty;

@@ -11,8 +11,6 @@ import Avatar from "@/components/ui/Avatar";
 import useLocalStorage from "@/hooks/utils/useLocalStorage";
 import { User } from "@/interface/user.interface";
 
-const SHIPPING_FEE = 50;
-
 const RootScreen = () => {
   const [credentials, setCredentials] = useState<User | null>(null);
   const { items, calculateSubtotal } = useCartStore();
@@ -23,7 +21,7 @@ const RootScreen = () => {
   useEffect(() => {
     const currentSubtotal = calculateSubtotal();
     setSubtotal(currentSubtotal);
-    setTotal(currentSubtotal + SHIPPING_FEE);
+    setTotal(currentSubtotal);
   }, [items, calculateSubtotal]);
 
   useEffect(() => {
@@ -90,11 +88,6 @@ const RootScreen = () => {
 
         <SafeAreaView style={styles.checkoutContainer}>
           <View style={styles.checkoutSummary}>
-            {renderCheckoutItem(
-              <Truck color="black" size={18} />,
-              "Shipping Fee",
-              SHIPPING_FEE
-            )}
             {renderCheckoutItem(
               <Coins color="black" size={18} />,
               "Sub Total",

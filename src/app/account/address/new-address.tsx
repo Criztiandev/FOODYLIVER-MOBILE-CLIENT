@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, StyleSheet } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { Save } from "lucide-react-native";
 import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
 
 import BackButton from "@/components/atoms/button/BackButton";
 import AddressSearch from "@/components/atoms/search/AddressSearch";
-import YStack from "@/components/stacks/YStack";
 import BaseLayout from "@/layout/BaseLayout";
 import Button from "@/components/ui/Button";
 import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
@@ -37,11 +36,11 @@ const AddressScreen: React.FC = () => {
   ) => {
     const city =
       components?.find((component) => component.types.includes("locality"))
-        ?.long_name || "";
+        ?.long_name ?? "";
 
     const postal_code =
       components?.find((component) => component.types.includes("postal_code"))
-        ?.long_name || "";
+        ?.long_name ?? "";
 
     return { city, postal_code };
   };
@@ -71,7 +70,7 @@ const AddressScreen: React.FC = () => {
         longitude: location.lng,
       };
 
-      await mutate(payload as any);
+      mutate(payload as any);
       router.back();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save address");
@@ -89,41 +88,38 @@ const AddressScreen: React.FC = () => {
           headerStyle: { backgroundColor: "#F4891F" },
         }}
       />
-      <View className="bg-white flex-1">
+      <View style={styles.container}>
         <BaseLayout>
-          <View className="flex-1 relative">
+          <View style={styles.contentContainer}>
             <View
-              className="w-full absolute top-0 left-0 right-0 bottom-0"
-              style={{
-                height: Dimensions.get("screen").height - 150,
-              }}
+              style={[
+                styles.mapContainer,
+                {
+                  height: Dimensions.get("screen").height - 150,
+                },
+              ]}
             >
               <CurrentLocationMap />
             </View>
 
-            <View className="absolute top-4 left-2 right-2 z-10">
-              <AddressSearch
-                onSelect={handleSelectAddress}
-                className="bg-white border-2 border-primary/70 rounded-lg shadow-lg"
-              />
+            <View style={styles.searchContainer}>
+              <AddressSearch onSelect={handleSelectAddress} />
             </View>
 
-            <View className="absolute bottom-4 left-2 right-2 z-10">
-              {error && (
-                <Text className="text-red-500 text-center font-medium bg-white/90 p-2 rounded-lg mb-2">
-                  {error}
-                </Text>
-              )}
+            <View style={styles.bottomContainer}>
+              {error && <Text style={styles.errorText}>{error}</Text>}
 
               <Button
-                className="flex-row justify-center space-x-2 py-3 bg-primary shadow-lg"
+                style={styles.saveButton}
                 onPress={handleSetAddress}
                 disabled={isPending}
               >
-                <Save color="white" size={22} />
-                <Text className="text-base font-bold text-white">
-                  {isPending ? "Saving..." : "Save Address"}
-                </Text>
+                <View style={styles.buttonContent}>
+                  <Save color="white" size={22} />
+                  <Text style={styles.buttonText}>
+                    {isPending ? "Saving..." : "Save Address"}
+                  </Text>
+                </View>
               </Button>
             </View>
           </View>
@@ -132,5 +128,85 @@ const AddressScreen: React.FC = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  contentContainer: {
+    flex: 1,
+    position: "relative",
+  },
+  mapContainer: {
+    width: "100%",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  searchContainer: {
+    position: "absolute",
+    top: 16,
+    left: 8,
+    right: 8,
+    zIndex: 10,
+  },
+  searchInput: {
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: "rgba(244, 137, 31, 0.7)",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  bottomContainer: {
+    position: "absolute",
+    bottom: 16,
+    left: 8,
+    right: 8,
+    zIndex: 10,
+  },
+  errorText: {
+    color: "#EF4444",
+    textAlign: "center",
+    fontWeight: "500",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    padding: 8,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  saveButton: {
+    backgroundColor: "#F4891F",
+    paddingVertical: 12,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "white",
+  },
+});
 
 export default AddressScreen;

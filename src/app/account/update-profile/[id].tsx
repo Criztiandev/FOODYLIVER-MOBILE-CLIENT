@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, View, StyleSheet } from "react-native";
 import { Stack } from "expo-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -48,13 +48,11 @@ const formFields = [
     keyboardType: "email-address",
     autoCapitalize: "none",
   },
-
   {
     label: "address",
     name: "address" as const,
     placeholder: "Enter your address",
   },
-
   {
     label: "Phone Number",
     name: "phone_number" as const,
@@ -118,13 +116,13 @@ const ProfileFormScreen = () => {
         }}
       />
 
-      <SafeAreaView className="bg-white flex-1 justify-between">
-        {/* <View className="w-full h-[300px] rounded-md overflow-hidden border border-primary/70">
-            <CurrentLocationMap />
-          </View> */}
+      <SafeAreaView style={styles.container}>
+        {/* <View style={styles.mapContainer}>
+          <CurrentLocationMap />
+        </View> */}
 
         <FormProvider {...form}>
-          <YStack className="px-4 py-2">
+          <YStack style={styles.formContainer}>
             {formFields.map((field) => (
               <InputField
                 key={field.name}
@@ -136,13 +134,13 @@ const ProfileFormScreen = () => {
           </YStack>
         </FormProvider>
 
-        <View className="p-4">
+        <View style={styles.buttonContainer}>
           <Button
             onPress={handleSubmit(onSubmit)}
             disabled={isPending}
-            className={isPending ? "opacity-70" : ""}
+            style={[styles.button, isPending && styles.buttonDisabled]}
           >
-            <Text className="text-lg font-semibold text-white">
+            <Text style={styles.buttonText}>
               {isPending ? "Updating..." : "Update"}
             </Text>
           </Button>
@@ -151,5 +149,39 @@ const ProfileFormScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    justifyContent: "space-between",
+  },
+  mapContainer: {
+    width: "100%",
+    height: 300,
+    borderRadius: 8,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(244, 137, 31, 0.7)",
+  },
+  formContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  buttonContainer: {
+    padding: 16,
+  },
+  button: {
+    backgroundColor: "#F4891F",
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "white",
+  },
+});
 
 export default ProfileFormScreen;

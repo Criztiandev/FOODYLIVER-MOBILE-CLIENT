@@ -1,7 +1,5 @@
-import { View, Text } from "react-native";
-import React, { useEffect } from "react";
-import { Stack, Tabs } from "expo-router";
-import ProtectedRoute from "@/components/routes/ProtectedRoute";
+import React from "react";
+import { Stack } from "expo-router";
 
 const RootLayout = () => {
   return (
@@ -10,6 +8,7 @@ const RootLayout = () => {
       <Stack.Screen name="payment" />
       <Stack.Screen name="delivery" />
       <Stack.Screen name="track" />
+      <Stack.Screen name="forced" />
     </Stack>
   );
 };

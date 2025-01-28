@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  StyleSheet,
-  Platform,
-  Text,
-} from "react-native";
-import { Stack, useLocalSearchParams, router } from "expo-router";
+import React, { useState } from "react";
+import { ScrollView, View, StyleSheet } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
 import ProductActions from "./components/ProductActions";
 import ProductQuantity from "./components/ProductQuantity";
-import ProductAddons from "./components/ProductAddons";
 import ProductHero from "./components/ProductHero";
 import BackButton from "@/components/atoms/button/BackButton";
 import CartButton from "@/components/atoms/button/CartButton";
@@ -30,8 +22,8 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   maxQuantity = 99,
 }) => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { items, updateQuantity, addProduct } = useCartStore();
-  const { isLoading, isError, error, data: result } = useFetchProductById(id);
+  const { items } = useCartStore();
+  const { isLoading, isError, data: result } = useFetchProductById(id);
   const [currentQuantity, setCurrentQuantity] = useState(1);
 
   const selectedProduct = items.find((item) => item.id === id);
@@ -62,7 +54,7 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           headerShadowVisible: false,
           headerLeft: () => <BackButton />,
           headerRight: () => (
-            <XStack style={styles.headerRight}>
+            <XStack>
               <CartButton />
             </XStack>
           ),

@@ -8,37 +8,21 @@ import { ProductItem } from "@/interface/product.interface";
 import SectionLoadingScreen from "@/layout/screen/SectionLoadingScreen";
 import ProductCard from "@/components/atoms/card/ProductCard";
 import { useFetchProductList } from "@/hooks/product/query";
+import { EmptyState } from "@/components/atoms/states/EmptyState";
+import { ErrorState } from "@/components/atoms/states/ErrorState";
 
 const PRODUCTS_PER_PAGE = 15;
 
-const CategoryHeader = ({
-  title,
-  isSelected,
-  onPress,
-}: {
+const CategoryHeader: React.FC<{
   title: string;
   isSelected: boolean;
   onPress?: () => void;
-}) => (
+}> = ({ title, isSelected, onPress }) => (
   <Button variant="ghost" onPress={onPress}>
     <Text style={[styles.categoryText, isSelected && styles.selectedCategory]}>
       {title}
     </Text>
   </Button>
-);
-
-const EmptyState = () => (
-  <View style={styles.emptyStateContainer}>
-    <Text style={styles.emptyStateText}>No Available Products</Text>
-  </View>
-);
-
-const ErrorState = () => (
-  <View style={styles.errorContainer}>
-    <View style={styles.errorInnerContainer}>
-      <Text style={styles.errorText}>Something went wrong</Text>
-    </View>
-  </View>
 );
 
 const ProductList = () => {
