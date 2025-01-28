@@ -1,6 +1,5 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import YStack from "@/components/stacks/YStack";
 import XStack from "@/components/stacks/XStack";
 import { PuzzleIcon } from "lucide-react-native";
 import { FlashList } from "@shopify/flash-list";
@@ -13,26 +12,25 @@ interface Promotion {
   name: string;
   description: string;
   image: string;
-  // Add other promotion properties as needed
 }
 
 const PromotionalHeader = () => (
-  <XStack className="items-center space-x-2">
+  <View style={styles.headerContainer}>
     <PuzzleIcon color="black" size={18} />
-    <Text className="text-lg font-semibold text-primary">Promotional</Text>
-  </XStack>
+    <Text style={styles.headerText}>Promotional</Text>
+  </View>
 );
 
 const EmptyState = () => (
-  <View className="h-[200px] flex-1 justify-center items-center border border-stone-400 w-full rounded-md opacity-70">
-    <Text className="font-semibold text-lg">No Available Promotions</Text>
+  <View style={styles.emptyStateContainer}>
+    <Text style={styles.stateText}>No Available Promotions</Text>
   </View>
 );
 
 const ErrorState = () => (
-  <View className="h-[200px] bg-stone-200">
-    <View className="h-full flex-1 justify-center items-center border border-stone-400 w-full rounded-md opacity-70">
-      <Text className="font-semibold text-lg">Something went wrong</Text>
+  <View style={styles.errorContainer}>
+    <View style={styles.emptyStateContainer}>
+      <Text style={styles.stateText}>Something went wrong</Text>
     </View>
   </View>
 );
@@ -53,8 +51,8 @@ const PromotionalList = () => {
 
   if (isLoading) {
     return (
-      <View className="px-2 mb-4 space-y-2">
-        <View className="flex-row justify-between items-center mb-2">
+      <View style={styles.container}>
+        <View style={styles.headerRow}>
           <PromotionalHeader />
         </View>
         <SectionLoadingScreen />
@@ -64,7 +62,7 @@ const PromotionalList = () => {
 
   if (isError) {
     return (
-      <View className="px-2 space-y-3">
+      <View style={styles.container}>
         <PromotionalHeader />
         <ErrorState />
       </View>
@@ -73,11 +71,9 @@ const PromotionalList = () => {
 
   const randomPromotions = getRandomPromotions(result?.data);
 
-  console.log(randomPromotions);
-
   return (
-    <YStack className="px-2 mb-4 space-y-2">
-      <View className="flex-row justify-between items-center">
+    <View style={styles.container}>
+      <View style={styles.headerRow}>
         <PromotionalHeader />
       </View>
 
@@ -100,8 +96,50 @@ const PromotionalList = () => {
           <EmptyState />
         )}
       </XStack>
-    </YStack>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 8,
+    marginBottom: 16,
+    gap: 8,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#F4891F",
+  },
+  emptyStateContainer: {
+    height: 200,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#9CA3AF",
+    width: "100%",
+    borderRadius: 8,
+    opacity: 0.7,
+  },
+  stateText: {
+    fontWeight: "600",
+    fontSize: 18,
+  },
+  errorContainer: {
+    height: 200,
+    backgroundColor: "#E5E7EB",
+  },
+});
 
 export default PromotionalList;

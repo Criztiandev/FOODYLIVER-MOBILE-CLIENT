@@ -15,26 +15,21 @@ export interface IOrderNavigationDataset extends IAccountNavigationDataSet {
 
 export const OrderNavigationDataset: IOrderNavigationDataset[] = [
   {
-    title: "To Pay",
+    title: "Pending",
     path: "/account/order-history/pending",
     icon: <Wallet color="#0FA958" />,
   },
 
   {
-    title: "To Track",
+    title: "Ongoing",
     path: "/account/order-history/ongoing",
     icon: <Map color="#BC0505" />,
   },
 
   {
-    title: "To Recieve",
-    path: "/account/order-history/delviered",
+    title: "Completed",
+    path: "/account/order-history/delivered",
     icon: <Box color="black" />,
-  },
-  {
-    title: "History",
-    path: "/account/order-history/history",
-    icon: <History color="black" />,
   },
 ];
 

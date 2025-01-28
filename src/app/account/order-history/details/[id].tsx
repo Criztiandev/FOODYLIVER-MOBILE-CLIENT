@@ -16,21 +16,39 @@ import {
   Coins,
   Wallet,
 } from "lucide-react-native";
-import React, { useMemo } from "react";
-import { Text, View, Alert, Linking } from "react-native";
+import React, { useMemo, useState, useCallback } from "react";
+import {
+  Text,
+  View,
+  Alert,
+  Linking,
+  RefreshControl,
+  ScrollView,
+} from "react-native";
 import Avatar from "@/components/ui/Avatar";
 
 const RootScreen = () => {
   const { customer_id, id: transaction_id, status } = useLocalSearchParams();
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
 
   const {
     isLoading,
     isError,
     data: result,
+    refetch,
   } = useFetchOrderByTransactionID(customer_id as any, transaction_id as any);
 
-  console.log(result);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } catch (error) {
+      console.error("Refresh error:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
 
   if (isLoading) return <LoadingScreen />;
   if (isError) return <LoadingScreen />;
@@ -55,6 +73,8 @@ const RootScreen = () => {
     }
   };
 
+  console.log(orderDetails);
+
   return (
     <>
       <Stack.Screen
@@ -70,7 +90,12 @@ const RootScreen = () => {
       />
 
       <BaseLayout>
-        <View className="flex-1 bg-gray-50">
+        <ScrollView
+          className="flex-1 bg-gray-50"
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           {orderDetails?.rider && (
             <View className="bg-primary p-4 shadow-lg border border-primary/30">
               <XStack className="items-center space-x-4">
@@ -83,13 +108,11 @@ const RootScreen = () => {
                   <Text className="text-2xl font-bold text-white">
                     {orderDetails.rider.name}
                   </Text>
-                  <Text className="text-base text-white/80 mt-1">
-                    Your Delivery Partner
-                  </Text>
+                  <Text className="text-base text-white/80 mt-1">Rider</Text>
                   <XStack className="items-center space-x-2 mt-2">
                     <Phone size={16} color="white" />
                     <Text className="text-white/90">
-                      {orderDetails.rider.phone_number}
+                      {orderDetails.rider.phone_number || "N/A"}
                     </Text>
                   </XStack>
                   <Text className="text-sm text-white/70 mt-1">
@@ -141,7 +164,7 @@ const RootScreen = () => {
                     <Text className="text-base text-gray-700">Sub Total</Text>
                   </XStack>
                   <Text className="text-base font-semibold text-gray-800">
-                    ₱ {orderDetails.total_amount - orderDetails.delivery_fee}
+                    ₱ {orderDetails.total_amount}
                   </Text>
                 </XStack>
 
@@ -162,23 +185,7 @@ const RootScreen = () => {
             </View>
 
             <View className="space-y-3 mt-auto">
-              {orderDetails?.rider && orderDetails?.status !== "PENDING" && (
-                <Button
-                  onPress={() =>
-                    router.replace(`/order/track/${transaction_id}`)
-                  }
-                  className="bg-primary py-4 border border-primary"
-                  accessibilityLabel="Track Order"
-                >
-                  <XStack className="items-center justify-center space-x-3">
-                    <MapPin color="white" size={24} />
-                    <Text className="text-lg text-white font-bold">
-                      Track Order
-                    </Text>
-                  </XStack>
-                </Button>
-              )}
-              {orderDetails?.rider && (
+              {orderDetails?.rider && orderDetails?.status === "ONGOING" && (
                 <Button
                   variant="outline"
                   className="border-2 border-gray-200 py-4"
@@ -195,7 +202,7 @@ const RootScreen = () => {
               )}
             </View>
           </View>
-        </View>
+        </ScrollView>
       </BaseLayout>
     </>
   );

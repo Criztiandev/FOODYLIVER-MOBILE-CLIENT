@@ -10,19 +10,21 @@ import LoadingScreen from "@/layout/screen/LoadingScreen";
 import { FlashList } from "@shopify/flash-list";
 import { AxiosError } from "axios";
 import { Stack, useLocalSearchParams } from "expo-router";
-import React, { useEffect } from "react";
-import { View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, RefreshControl } from "react-native";
 
 const FLAG = {
-  pending: "Pay",
-  ongoing: "Deliver", // Fixed typo in "Deliver"
-  delviered: "Complete",
-  history: "Order History", // Added history case
+  pending: "Accepted",
+  ongoing: "Deliver",
+  delivered: "Complete",
+  history: "Order History",
 } as const;
 type OrderStatus = keyof typeof FLAG;
 
 const RootScreen = () => {
   const { status } = useLocalSearchParams();
+  const [refreshing, setRefreshing] = useState(false);
+
   const {
     data: profileData,
     isLoading: profileLoading,
@@ -30,6 +32,7 @@ const RootScreen = () => {
     error,
     isSuccess,
   } = useFetchProfile();
+
   const { credentials, mutate, isPending } = useFetchOrdersById(
     status || "pending",
     profileData?.id || 6
@@ -37,22 +40,42 @@ const RootScreen = () => {
 
   const preparedTitle = (status: OrderStatus) => FLAG[status];
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await mutate({
+        status:
+          (Array.isArray(status) ? status[0] : status)?.toUpperCase() ||
+          "PENDING",
+        user_id: profileData?.id || 1,
+      });
+    } catch (error) {
+      console.error("Refresh error:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [status, profileData?.id, mutate]);
+
   useEffect(() => {
     if (isSuccess && profileData?.id) {
       mutate({
-        status: "PENDING",
+        status:
+          (Array.isArray(status) ? status[0] : status)?.toUpperCase() ||
+          "PENDING",
         user_id: profileData?.id || 1,
       });
     }
-  }, [isSuccess]);
+  }, [isSuccess, status, profileData?.id]);
 
   if (profileLoading || isPending) return <LoadingScreen />;
   if (profileError) {
     if (error instanceof AxiosError) {
-      console.log(error.response);
+      console.error("Profile Error:", error.response);
     }
     return <ErrorScreen />;
   }
+
+  console.log(credentials);
 
   return (
     <>
@@ -70,19 +93,20 @@ const RootScreen = () => {
 
       <BaseLayout>
         <View className="flex-1 px-2 pt-4">
-          <>
-            {credentials.length > 0 ? (
-              <FlashList
-                data={credentials}
-                estimatedItemSize={5000}
-                renderItem={({ item }: { item: any }) => (
-                  <OrderHistoryCard {...item} order_status={status} />
-                )}
-              />
-            ) : (
-              <EmptyReview />
-            )}
-          </>
+          {credentials.length > 0 ? (
+            <FlashList
+              data={credentials}
+              estimatedItemSize={5000}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              renderItem={({ item }: { item: any }) => (
+                <OrderHistoryCard {...item} order_status={status} />
+              )}
+            />
+          ) : (
+            <EmptyReview />
+          )}
         </View>
       </BaseLayout>
     </>

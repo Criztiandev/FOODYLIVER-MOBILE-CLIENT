@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -32,47 +32,37 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   const { id } = useLocalSearchParams<{ id: string }>();
   const { items, updateQuantity, addProduct } = useCartStore();
   const { isLoading, isError, error, data: result } = useFetchProductById(id);
+  const [currentQuantity, setCurrentQuantity] = useState(1);
 
-  // Early returns for error states
-  if (!id) {
-    router.replace("/user/home");
-    return null;
-  }
+  const selectedProduct = items.find((item) => item.id === id);
 
-  if (isLoading) return <LoadingScreen />;
-  if (isError || !result?.data) {
-    console.error("Error fetching product:", error);
-    return <ErrorScreen />;
-  }
-
-  const product = result.data;
-  const currentItem = items.find((item) => item.id === id);
-  const currentQuantity = currentItem?.quantity || 1;
-
-  const handleQuantityChange = (newQuantity: number) => {
-    if (!id) return;
-    const validatedQuantity = Math.max(1, Math.min(newQuantity, maxQuantity));
-
-    const existingItem = items.find((item) => item.id === id);
-    if (existingItem) {
-      updateQuantity(id, validatedQuantity);
-    } else {
-      addProduct(product, validatedQuantity);
+  const handleIncrement = () => {
+    if (currentQuantity < maxQuantity) {
+      setCurrentQuantity((prev) => prev + 1);
     }
   };
+
+  const handleDecrement = () => {
+    if (currentQuantity > 1) {
+      setCurrentQuantity((prev) => prev - 1);
+    }
+  };
+
+  if (isLoading) return <LoadingScreen />;
+  if (isError) return <ErrorScreen />;
 
   return (
     <>
       <Stack.Screen
         options={{
           title: "Product Details",
-          headerTitleStyle: { color: "white", fontSize: 18, fontWeight: "600" },
-          headerStyle: { backgroundColor: "#f4891f" },
+          headerTitleStyle: styles.headerTitle,
+          headerStyle: styles.header,
           headerTitleAlign: "center",
           headerShadowVisible: false,
           headerLeft: () => <BackButton />,
           headerRight: () => (
-            <XStack className="space-x-4">
+            <XStack style={styles.headerRight}>
               <CartButton />
             </XStack>
           ),
@@ -80,34 +70,55 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
       />
 
       <BaseLayout>
-        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-          <YStack className="p-2 space-y-6">
-            <ProductHero {...product} />
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <YStack style={styles.contentContainer}>
+            {result?.data && <ProductHero {...result.data} />}
 
-            <YStack className="space-y-4">
-              <ProductAddons />
-            </YStack>
-
-            <YStack className="space-y-4">
-              <ProductQuantity
-                id={product.id}
-                maxQuantity={maxQuantity}
-                {...product}
-              />
-            </YStack>
+            <ProductQuantity
+              quantity={selectedProduct?.quantity || currentQuantity}
+              onIncrement={handleIncrement}
+              onDecrement={handleDecrement}
+            />
           </YStack>
         </ScrollView>
 
-        <View className="p-4 border-t border-stone-200">
-          <ProductActions
-            quantity={currentQuantity}
-            onQuantityChange={handleQuantityChange}
-            {...product}
-          />
+        <View style={styles.footer}>
+          {result?.data && (
+            <ProductActions
+              quantity={currentQuantity}
+              onQuantityChange={setCurrentQuantity}
+              {...result.data}
+            />
+          )}
         </View>
       </BaseLayout>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  headerTitle: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  header: {
+    backgroundColor: "#f4891f",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 8,
+  },
+  footer: {
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#e7e5e4",
+  },
+});
 
 export default ProductDetailScreen;

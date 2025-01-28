@@ -1,24 +1,27 @@
 import React, { FC, ReactNode } from "react";
-import {
-  SafeAreaView,
-  StatusBar,
-  View,
-  Platform,
-  KeyboardAvoidingView,
-} from "react-native";
+import { SafeAreaView, StatusBar, View, StyleSheet } from "react-native";
 
 interface Props {
   children?: ReactNode;
-  className?: string;
 }
 
-const BaseLayout: FC<Props> = ({ children, ...props }) => {
+const BaseLayout: FC<Props> = ({ children }) => {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#F4891F" />
-      <View className="flex-1">{children}</View>
+      <View style={styles.content}>{children}</View>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  content: {
+    flex: 1,
+  },
+});
 
 export default BaseLayout;

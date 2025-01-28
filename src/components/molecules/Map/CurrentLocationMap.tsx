@@ -7,18 +7,21 @@ import React, {
 } from "react";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import useLocation from "@/hooks/utils/useLocation";
+import { StyleSheet, View } from "react-native";
 
 interface Props extends PropsWithChildren {
   initialZoom?: number;
   animationDuration?: number;
+  onRegionChange?: (region: Region) => void;
 }
 
 const CurrentLocationMap: FC<Props> = ({
   initialZoom = 12,
   animationDuration = 1000,
+  onRegionChange,
 }) => {
   const mapRef = useRef<MapView | null>(null);
-  const { location, error } = useLocation(true); // Using watch mode
+  const { location } = useLocation(true);
   const [initialRegion, setInitialRegion] = useState<Region | null>(null);
 
   useEffect(() => {
@@ -31,6 +34,7 @@ const CurrentLocationMap: FC<Props> = ({
       };
       setInitialRegion(newRegion);
       focusMap(newRegion);
+      onRegionChange?.(newRegion);
     }
   }, [location]);
 
@@ -49,22 +53,40 @@ const CurrentLocationMap: FC<Props> = ({
   }
 
   return (
-    <MapView
-      ref={mapRef}
-      className="w-full h-full"
-      provider={PROVIDER_GOOGLE}
-      initialRegion={initialRegion}
-      showsUserLocation
-      showsMyLocationButton
-    >
-      <Marker
-        coordinate={{
-          latitude: location?.coords.latitude || 0,
-          longitude: location?.coords.longitude || 0,
-        }}
-      />
-    </MapView>
+    <View style={styles.container}>
+      <MapView
+        ref={mapRef}
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={initialRegion}
+        showsUserLocation
+        showsMyLocationButton
+        showsCompass
+        showsScale
+        onRegionChange={onRegionChange}
+      >
+        {location && (
+          <Marker
+            coordinate={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            }}
+          />
+        )}
+      </MapView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    overflow: "hidden",
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+});
 
 export default CurrentLocationMap;

@@ -31,8 +31,8 @@ import { Image } from "expo-image";
 
 // Types
 interface OrderSummaryProps {
-  subtotal: number;
-  shippingFee?: number;
+  total_amount: number;
+  delivery_fee?: number;
 }
 
 interface RiderInfoProps {
@@ -44,11 +44,10 @@ interface RiderInfoProps {
 
 // Components
 const OrderSummary: React.FC<OrderSummaryProps> = ({
-  subtotal,
-  shippingFee = 50,
+  total_amount,
+  delivery_fee = 50,
 }) => {
-  const total = subtotal + shippingFee;
-
+  const total = total_amount + delivery_fee;
   return (
     <View className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200">
       <XStack className="items-center space-x-2 mb-4 border-b border-gray-200 pb-2">
@@ -63,7 +62,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             <Text className="text-base text-gray-700">Shipping Fee</Text>
           </XStack>
           <Text className="text-base font-semibold text-gray-800">
-            ₱ {shippingFee}
+            ₱ {delivery_fee}
           </Text>
         </XStack>
 
@@ -73,7 +72,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             <Text className="text-base text-gray-700">Sub Total</Text>
           </XStack>
           <Text className="text-base font-semibold text-gray-800">
-            ₱ {subtotal}
+            ₱ {total_amount}
           </Text>
         </XStack>
 
@@ -83,7 +82,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
               <Wallet color="#F4891F" size={20} />
               <Text className="text-lg font-bold text-gray-800">Total</Text>
             </XStack>
-            <Text className="text-lg font-bold text-primary">₱ {total}</Text>
+            <Text className="text-lg font-bold text-primary">
+              ₱ {total_amount}
+            </Text>
           </XStack>
         </View>
       </View>
@@ -102,12 +103,10 @@ const RiderInfo: React.FC<RiderInfoProps> = ({
       <Avatar size={80} source={avatar} className="border-2 border-white" />
       <YStack className="flex-1">
         <Text className="text-2xl font-bold text-white">{name}</Text>
-        <Text className="text-base text-white/80 mt-1">
-          Your Delivery Partner
-        </Text>
+        <Text className="text-base text-white/80 mt-1">Rider</Text>
         <XStack className="items-center space-x-2 mt-2">
           <Phone size={16} color="white" />
-          <Text className="text-white/90">{phone}</Text>
+          <Text className="text-white/90">{phone || "N/A"}</Text>
         </XStack>
         <Text className="text-sm text-white/70 mt-1">{address}</Text>
       </YStack>
@@ -203,12 +202,13 @@ const RootScreen = () => {
 
             <DeliveryStatus status={selectedOrderDetails?.status} />
             <OrderSummary
-              subtotal={Number(selectedOrderDetails?.total_amount) || 0}
+              delivery_fee={Number(selectedOrderDetails?.delivery_fee) || 0}
+              total_amount={Number(selectedOrderDetails?.total_amount) || 0}
             />
 
             <View className="space-y-3 mt-auto">
               {selectedOrderDetails?.rider &&
-                selectedOrderDetails?.status !== "PENDING" && (
+                selectedOrderDetails?.status === "ONGOING" && (
                   <Button
                     onPress={() =>
                       router.replace(`/order/track/${transaction_id}`)
@@ -224,24 +224,25 @@ const RootScreen = () => {
                     </XStack>
                   </Button>
                 )}
-              {selectedOrderDetails?.rider && (
-                <Button
-                  variant="outline"
-                  className="border-2 border-gray-200 py-4"
-                  onPress={handleCallRider}
-                  accessibilityLabel="Call Rider"
-                >
-                  <XStack className="items-center justify-center space-x-3">
-                    <Phone color="#F4891F" size={24} />
-                    <Text
-                      numberOfLines={1}
-                      className="text-lg text-primary font-bold"
-                    >
-                      Call Rider
-                    </Text>
-                  </XStack>
-                </Button>
-              )}
+              {selectedOrderDetails?.rider &&
+                selectedOrderDetails?.status === "ONGOING" && (
+                  <Button
+                    variant="outline"
+                    className="border-2 border-gray-200 py-4"
+                    onPress={handleCallRider}
+                    accessibilityLabel="Call Rider"
+                  >
+                    <XStack className="items-center justify-center space-x-3">
+                      <Phone color="#F4891F" size={24} />
+                      <Text
+                        numberOfLines={1}
+                        className="text-lg text-primary font-bold"
+                      >
+                        Call Rider
+                      </Text>
+                    </XStack>
+                  </Button>
+                )}
             </View>
           </View>
         </View>

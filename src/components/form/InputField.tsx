@@ -1,29 +1,24 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, TextStyle } from "react-native";
 import React, { FC } from "react";
 import Input, { InputProps } from "../ui/Input";
 import { useFormContext, Controller, FieldError } from "react-hook-form";
-import { cn } from "@/lib/utils";
 import Label from "../ui/Label";
 
-interface Props extends InputProps {
+interface Props extends Omit<InputProps, "style"> {
   name: string;
   label?: string;
-  labelClassName?: string;
+  labelClassName?: TextStyle | TextStyle[];
+  style?: TextStyle | TextStyle[];
 }
 
-const InputField: FC<Props> = ({
-  className,
-  label,
-  labelClassName,
-  ...props
-}) => {
+const InputField: FC<Props> = ({ style, label, labelClassName, ...props }) => {
   const {
     control,
     formState: { errors },
   } = useFormContext();
 
   return (
-    <View className={cn("mb-4 w-full", className)}>
+    <View style={[styles.container, style]}>
       <Controller
         control={control}
         name={props.name}
@@ -31,21 +26,49 @@ const InputField: FC<Props> = ({
         render={({ field: { onChange, value } }) => (
           <View>
             {label && (
-              <Label className={cn("mb-2 font-semibold", labelClassName)}>
-                {label}
-              </Label>
+              <Label style={[styles.label, labelClassName]}>{label}</Label>
             )}
-            <Input {...props} onChangeText={onChange} value={value} />
+            <Input
+              {...props}
+              onChangeText={onChange}
+              value={value}
+              style={[styles.input]}
+            />
           </View>
         )}
       />
       {errors[props.name] && (
-        <Text className="text-error">
+        <Text style={styles.errorText}>
           {(errors[props.name] as FieldError)?.message}
         </Text>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+    width: "100%",
+  },
+  label: {
+    marginBottom: 8,
+    fontWeight: "600",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  errorText: {
+    color: "#dc2626", // Typical error red color
+    marginTop: 4,
+    fontSize: 12,
+  },
+});
 
 export default InputField;

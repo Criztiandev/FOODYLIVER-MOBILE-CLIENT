@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Redirect, useRouter } from "expo-router";
 import useLocalStorage from "@/hooks/utils/useLocalStorage";
@@ -51,7 +51,7 @@ const RootScreen = () => {
   // Show loading screen while checking credentials
   if (state.isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -60,5 +60,15 @@ const RootScreen = () => {
   // Fallback redirect
   return <Redirect href="/auth/sign-in" />;
 };
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+  },
+});
 
 export default RootScreen;

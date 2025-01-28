@@ -1,24 +1,17 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { View } from "react-native";
+import React from "react";
 import BaseLayout from "@/layout/BaseLayout";
 import { Href, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
-import XStack from "@/components/stacks/XStack";
-import { DollarSign, Heart, ShoppingCart } from "lucide-react-native";
-import Avatar from "@/components/ui/Avatar";
-import YStack from "@/components/stacks/YStack";
 import BackButton from "@/components/atoms/button/BackButton";
 import useCartStore from "@/state/useCartStore";
-import { CartItem } from "@/interface/cart.interface";
 import { ProductItem } from "@/interface/product.interface";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
-import {
-  useFetchCategoryList,
-  useFetchProductList,
-} from "@/hooks/product/query";
+import { useFetchCategoryList } from "@/hooks/product/query";
 import ErrorScreen from "@/layout/screen/ErrorScreen";
 import ProductCard from "@/components/atoms/card/ProductCard";
 import CategoryEmpty from "@/app/cart/list/components/CategoryEmpty";
+import { StyleSheet } from "react-native";
 
 const RootScreen = () => {
   const { status } = useLocalSearchParams();
@@ -38,14 +31,6 @@ const RootScreen = () => {
     return <ErrorScreen />;
   }
 
-  const handleViewDetails = (item: ProductItem) => {
-    router.navigate(`/product/details/${item.id}` as Href);
-  };
-
-  const handleAddToCart = (item: ProductItem) => {
-    addProduct(item, 1);
-  };
-
   return (
     <>
       <Stack.Screen
@@ -60,7 +45,7 @@ const RootScreen = () => {
         }}
       />
       <BaseLayout>
-        <View className="flex-1 px-2 pt-4">
+        <View style={styles.container}>
           <>
             {result.length > 0 ? (
               <FlashList
@@ -80,5 +65,13 @@ const RootScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 8,
+    paddingTop: 16,
+  },
+});
 
 export default RootScreen;

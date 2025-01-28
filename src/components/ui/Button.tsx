@@ -1,43 +1,76 @@
-import { TouchableOpacityProps, TouchableOpacity } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import React, { ComponentPropsWithoutRef, ElementRef, forwardRef } from "react";
-import { cn } from "@/lib/utils";
-import { cva, VariantProps } from "class-variance-authority";
 
-/**
- * Button component with debounce to prevent rapid clicking
- * Supports variants, sizes and disabled states
- */
+const styles = StyleSheet.create({
+  base: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 6,
+  },
+  // Variants
+  default: {
+    backgroundColor: "#F4891F", // primary color from context
+  },
+  destructive: {
+    backgroundColor: "#dc2626", // destructive color
+  },
+  outline: {
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  secondary: {
+    backgroundColor: "#f3f4f6",
+  },
+  ghost: {
+    backgroundColor: "transparent",
+  },
+  link: {
+    backgroundColor: "transparent",
+    textDecorationLine: "underline",
+    textDecorationColor: "#F4891F",
+  },
+  // Sizes
+  sizeDefault: {
+    height: 48,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  sizeSm: {
+    height: 36,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  sizeLg: {
+    height: 56,
+    paddingHorizontal: 32,
+    borderRadius: 6,
+  },
+  sizeIcon: {
+    height: 40,
+    width: 40,
+    padding: 0,
+  },
+  // States
+  disabled: {
+    opacity: 0.5,
+  },
+});
 
-export const buttonVariants = cva(
-  "group flex items-center justify-center rounded-md web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary",
-        destructive: "bg-destructive text-destructive-foreground",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "underline-offset-4 hover:underline focus:underline text-primary",
-      },
-      size: {
-        default: "h-12 px-4 py-2 native:h-12 native:px-5 native:py-3",
-        sm: "h-9 rounded-md px-3 text-sm",
-        lg: "h-11 rounded-md px-8 native:h-14 text-lg",
-        icon: "h-10 w-10 p-0",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-);
+type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link";
+type ButtonSize = "default" | "sm" | "lg" | "icon";
 
 interface ButtonProps
-  extends ComponentPropsWithoutRef<typeof TouchableOpacity>,
-    VariantProps<typeof buttonVariants> {
+  extends ComponentPropsWithoutRef<typeof TouchableOpacity> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   activeOpacity?: number;
   debounceTime?: number;
 }
@@ -46,13 +79,13 @@ const Button = forwardRef<ElementRef<typeof TouchableOpacity>, ButtonProps>(
   (
     {
       children,
-      variant,
-      size,
-      className,
+      variant = "default",
+      size = "default",
       activeOpacity = 0.7,
       disabled,
       onPress,
       debounceTime = 300,
+      style,
       ...props
     },
     ref
@@ -60,11 +93,17 @@ const Button = forwardRef<ElementRef<typeof TouchableOpacity>, ButtonProps>(
     // Debounce the onPress handler
     const debouncedOnPress = onPress;
 
-    // Handle disabled state and combine classNames
-    const buttonClassName = cn(
-      buttonVariants({ variant, size, className }),
-      disabled && "opacity-50 cursor-not-allowed"
-    );
+    // Combine styles based on variant and size
+    const buttonStyles = [
+      styles.base,
+      styles[variant],
+      size === "default" && styles.sizeDefault,
+      size === "sm" && styles.sizeSm,
+      size === "lg" && styles.sizeLg,
+      size === "icon" && styles.sizeIcon,
+      disabled && styles.disabled,
+      style, // Allow custom styles to override
+    ];
 
     return (
       <TouchableOpacity
@@ -73,7 +112,7 @@ const Button = forwardRef<ElementRef<typeof TouchableOpacity>, ButtonProps>(
         activeOpacity={disabled ? 1 : activeOpacity}
         disabled={disabled}
         onPress={debouncedOnPress}
-        className={buttonClassName}
+        style={buttonStyles}
         accessibilityRole="button"
         accessibilityState={{ disabled }}
       >

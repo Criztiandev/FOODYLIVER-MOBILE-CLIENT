@@ -1,10 +1,9 @@
 import React, { FC } from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import {
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
 } from "react-native-google-places-autocomplete";
-import { cn } from "@/lib/utils";
 
 interface Props {
   onSelect: (value: GooglePlaceDetail | null) => void;
@@ -14,7 +13,7 @@ interface Props {
 
 const AddressSearch: FC<Props> = ({ onSelect, className, defaultValue }) => {
   return (
-    <View className={cn("w-full z-50", className)}>
+    <View style={[styles.container]}>
       <GooglePlacesAutocomplete
         placeholder="Search for a place"
         onPress={(_, details = null) => onSelect(details || null)}
@@ -83,5 +82,12 @@ const AddressSearch: FC<Props> = ({ onSelect, className, defaultValue }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    zIndex: 50,
+  },
+});
 
 export default AddressSearch;

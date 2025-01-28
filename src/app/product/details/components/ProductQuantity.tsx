@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 import { PlusIcon, MinusIcon } from "lucide-react-native";
 import YStack from "@/components/stacks/YStack";
 import XStack from "@/components/stacks/XStack";
@@ -7,71 +7,87 @@ import Button from "@/components/ui/Button";
 import useCartStore from "@/state/useCartStore";
 import { ProductItem } from "@/interface/product.interface";
 
-interface ProductQuantityProps extends ProductItem {
-  maxQuantity?: number;
+interface ProductQuantityProps {
+  quantity?: number;
+  onIncrement?: () => void;
+  onDecrement?: () => void;
 }
 
 const ProductQuantity = ({
-  id,
-  maxQuantity = 99,
-  ...props
+  quantity = 0,
+  onIncrement,
+  onDecrement,
 }: ProductQuantityProps) => {
-  const { items, incrementQuantity, decrementQuantity, addProduct } =
-    useCartStore();
-
-  const currentItem = items.find((item) => item.id === id);
-  const currentQuantity = currentItem?.quantity || 0;
-
-  const handleIncrement = () => {
-    if (!currentItem) {
-      addProduct({ id, ...props }, 1);
-      return;
-    }
-
-    if (currentQuantity < maxQuantity) {
-      incrementQuantity(id as string);
-    }
-  };
-
-  const handleDecrement = () => {
-    if (currentQuantity > 0) {
-      decrementQuantity(id as string);
-    }
-  };
-
   return (
-    <YStack className="justify-end items-start px-2">
-      <Text className="text-lg font-semibold mb-2">Quantity</Text>
-      <XStack className="space-x-4 items-center">
+    <YStack style={styles.container}>
+      <Text style={styles.title}>Quantity</Text>
+      <XStack style={styles.quantityContainer}>
         <Button
           size="icon"
-          onPress={handleDecrement}
-          disabled={currentQuantity <= 0}
+          onPress={onDecrement}
+          disabled={quantity <= 0}
           aria-label="Decrease quantity"
+          style={styles.button}
         >
-          <MinusIcon color={currentQuantity <= 0 ? "gray" : "white"} />
+          <MinusIcon color={quantity <= 0 ? "#9CA3AF" : "#FFFFFF"} />
         </Button>
 
         <Button
           size="icon"
           variant="ghost"
-          className="bg-stone-200/50 w-12"
-          aria-label={`Current quantity is ${currentQuantity}`}
+          style={styles.quantityButton}
+          aria-label={`Current quantity is ${quantity}`}
         >
-          <Text className="font-bold">{currentQuantity}</Text>
+          <Text style={styles.quantityText}>{quantity}</Text>
         </Button>
 
         <Button
           size="icon"
-          onPress={handleIncrement}
-          disabled={currentQuantity >= maxQuantity}
+          onPress={onIncrement}
+          disabled={quantity >= 99}
           aria-label="Increase quantity"
+          style={styles.button}
         >
-          <PlusIcon color={currentQuantity >= maxQuantity ? "gray" : "white"} />
+          <PlusIcon color={quantity >= 99 ? "#9CA3AF" : "#FFFFFF"} />
         </Button>
       </XStack>
     </YStack>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+    paddingHorizontal: 8,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  button: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  quantityButton: {
+    width: 48,
+    height: 40,
+    backgroundColor: "rgba(231, 229, 228, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  quantityText: {
+    fontWeight: "700",
+    fontSize: 16,
+  },
+});
 
 export default ProductQuantity;

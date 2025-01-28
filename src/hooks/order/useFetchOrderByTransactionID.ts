@@ -11,6 +11,9 @@ export const useFetchOrderByTransactionID = (
       const result = await PrivateAxios.get(
         `/order/customer/${customerID}/${transactionID}`
       );
+
+      console.log(result.data);
+
       return result.data;
     },
   });

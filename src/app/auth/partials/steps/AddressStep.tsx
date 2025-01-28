@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 import InputField from "@/components/form/InputField";
-import { Text, TouchableOpacity, View, ScrollView } from "react-native";
-import AddressInputField from "@/components/form/AddressField";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import XStack from "@/components/stacks/XStack";
 import CurrentLocationInputField from "@/components/molecules/Map/CurrentLocationInputField";
-import Button from "@/components/ui/Button";
 import { ChevronDown } from "lucide-react-native";
 import CurrentLocationMap from "@/components/molecules/Map/CurrentLocationMap";
 
 const AddressInfoStep = () => {
-  const [isOptionalAddress, setIsOptionalAddress] = useState(true);
+  const [isOptionalAddress, setIsOptionalAddress] = useState(false);
   return (
     <ScrollView
-      className="flex-1 w-full"
+      style={styles.scrollView}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingBottom: 20,
-      }}
+      contentContainerStyle={styles.scrollViewContent}
     >
-      <View className="h-[300px] rounded-md border-stone-300 w-full mb-4">
+      <View style={styles.mapContainer}>
         <CurrentLocationMap />
       </View>
       <CurrentLocationInputField name="address" label="Complete Address" />
@@ -26,19 +28,17 @@ const AddressInfoStep = () => {
       <TouchableOpacity
         onPress={() => setIsOptionalAddress(!isOptionalAddress)}
       >
-        <XStack className="mb-4 items-center justify-between w-full">
-          <Text className="text-xl text-primary font-semibold">
-            Address Details
-          </Text>
+        <XStack style={styles.headerContainer}>
+          <Text style={styles.headerText}>Other Details</Text>
 
           <ChevronDown size={24} color="black" />
         </XStack>
       </TouchableOpacity>
 
       {isOptionalAddress && (
-        <View className="w-full">
-          <XStack className="space-x-4">
-            <View className="flex-1">
+        <View style={styles.formContainer}>
+          <XStack style={styles.rowContainer}>
+            <View style={styles.flexOne}>
               <InputField
                 label="House/Unit No."
                 name="house_number"
@@ -46,7 +46,7 @@ const AddressInfoStep = () => {
               />
             </View>
 
-            <View className="flex-1">
+            <View style={styles.flexOne}>
               <InputField
                 label="Street"
                 name="street"
@@ -71,5 +71,43 @@ const AddressInfoStep = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    width: "100%",
+  },
+  scrollViewContent: {
+    paddingBottom: 20,
+  },
+  mapContainer: {
+    height: 300,
+    borderRadius: 6,
+    borderColor: "#d6d3d1",
+    width: "100%",
+    marginBottom: 16,
+    backgroundColor: "black",
+  },
+  headerContainer: {
+    marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  headerText: {
+    fontSize: 20,
+    color: "#F4891F",
+    fontWeight: "600",
+  },
+  formContainer: {
+    width: "100%",
+  },
+  rowContainer: {
+    columnGap: 16,
+  },
+  flexOne: {
+    flex: 1,
+  },
+});
 
 export default AddressInfoStep;

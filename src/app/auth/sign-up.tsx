@@ -3,11 +3,11 @@ import {
   ActivityIndicator,
   Text,
   View,
-  StyleSheet,
-  KeyboardAvoidingView,
   Platform,
   SafeAreaView,
   ScrollView,
+  StyleSheet,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Link, Stack } from "expo-router";
 import { FormProvider } from "react-hook-form";
@@ -23,7 +23,7 @@ import {
   PersonalInfoStepValidation,
 } from "@/service/validation/auth.validation";
 
-// Utility functions (can be moved to separate file)
+// Utility functions
 const cleanAddress = (formattedAddress: string): string => {
   const cleaned = formattedAddress
     .replace(/\bBlk\.?\s*\d*\s*|\bLot\s*\d*\s*/gi, "")
@@ -66,7 +66,6 @@ const RootScreen = () => {
       return;
     }
 
-    // Get form values
     const payload = form.getValues();
 
     // Extract name components
@@ -113,7 +112,6 @@ const RootScreen = () => {
             behavior={Platform.OS === "ios" ? "padding" : undefined}
             style={styles.keyboardView}
           >
-            {/* Main Content */}
             <ScrollView
               style={styles.scrollView}
               contentContainerStyle={styles.scrollViewContent}
@@ -121,12 +119,10 @@ const RootScreen = () => {
             >
               <View style={styles.mainContent}>
                 <Text style={styles.title}>Sign Up Your Account</Text>
-
                 <FormProvider {...form}>{element}</FormProvider>
               </View>
             </ScrollView>
 
-            {/* Bottom Section */}
             <View style={styles.bottomSection}>
               <Button
                 style={styles.primaryButton}
@@ -134,7 +130,7 @@ const RootScreen = () => {
                 disabled={mutation.isPending}
               >
                 {mutation.isPending ? (
-                  <ActivityIndicator color="white" />
+                  <ActivityIndicator color="white" size="small" />
                 ) : (
                   <Text style={styles.buttonText}>
                     {isLastStep ? "Sign up" : "Next"}
@@ -143,7 +139,11 @@ const RootScreen = () => {
               </Button>
 
               {!isFistStep && (
-                <Button style={styles.secondaryButton} onPress={prevStep}>
+                <Button
+                  style={styles.secondaryButton}
+                  onPress={prevStep}
+                  variant="outline"
+                >
                   <Text style={styles.backButtonText}>Back</Text>
                 </Button>
               )}
@@ -167,6 +167,7 @@ const RootScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
   },
   keyboardView: {
     flex: 1,
@@ -181,58 +182,70 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
   },
   title: {
     fontSize: 32,
-    marginBottom: 24,
+    marginBottom: 32,
     marginTop: 24,
     textAlign: "center",
-    fontWeight: "bold",
+    fontWeight: "700",
+    color: "#1F2937",
   },
   bottomSection: {
-    padding: 16,
-    backgroundColor: "white",
-    // Optional: Add shadow
+    padding: 24,
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: -3 },
+        shadowColor: "#000000",
+        shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.1,
-        shadowRadius: 3,
+        shadowRadius: 4,
       },
       android: {
-        elevation: 5,
+        elevation: 8,
       },
     }),
   },
   primaryButton: {
     width: "100%",
-    marginBottom: 12,
+    marginBottom: 16,
+    height: 48,
+    backgroundColor: "#3B82F6",
+    borderRadius: 8,
   },
   secondaryButton: {
     width: "100%",
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#ccc",
+    height: 48,
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "#3B82F6",
+    borderRadius: 8,
   },
   buttonText: {
-    color: "white",
+    color: "#FFFFFF",
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 16,
+    textAlign: "center",
   },
   backButtonText: {
+    color: "#3B82F6",
     fontSize: 16,
     fontWeight: "600",
+    textAlign: "center",
   },
   footerText: {
     fontSize: 16,
     textAlign: "center",
-    marginTop: 16,
+    marginTop: 24,
+    color: "#4B5563",
   },
   link: {
-    color: "#3b82f6", // blue-500
+    color: "#3B82F6",
+    fontWeight: "600",
   },
 });
 

@@ -1,17 +1,11 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ImageSourcePropType,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import XStack from "@/components/stacks/XStack";
 import { ShoppingCart } from "lucide-react-native";
 import { Href, useRouter } from "expo-router";
-import Avatar from "@/components/ui/Avatar";
-import YStack from "@/components/stacks/YStack";
 import { ProductItem } from "@/interface/product.interface";
 import useCartStore from "@/state/useCartStore";
+import { Image } from "expo-image";
 
 const ProductCard = (props: ProductItem) => {
   const router = useRouter();
@@ -23,43 +17,114 @@ const ProductCard = (props: ProductItem) => {
 
   return (
     <TouchableOpacity
-      className="relative"
+      style={styles.container}
       onPress={() => router.navigate(`/product/details/${props.id}` as Href)}
     >
-      <XStack className=" absolute top-1  w-full  p-2 px-3 justify-between items-center flex-1 z-[99px]">
-        {props.rating && (
-          <View className="p-2 bg-white rounded-full">
-            <Text className="text-lg font-bold">{props?.rating}</Text>
+      <View style={styles.priceContainer}>
+        <Text style={styles.price}>₱ {props.price}</Text>
+      </View>
+      <XStack style={styles.ratingContainer}>
+        {!!props.rating && (
+          <View style={styles.ratingBadge}>
+            <Text style={styles.ratingText}>{props.rating}</Text>
           </View>
         )}
       </XStack>
 
-      <View className="bg-primary/20 relative p-4 flex-2 flex-1   rounded-md m-1 justify-center items-center space-y-4">
-        <View className="mt-6">
-          <Avatar
-            size={100}
+      <View style={styles.cardContent}>
+        <View style={styles.imageContainer}>
+          <Image
             source={{
               uri: `https://jandbfoodapp.site/storage/${props.thumbnail}`,
             }}
+            style={styles.image}
           />
         </View>
-        <XStack className="items-start justify-between w-full">
-          <YStack>
-            <Text className="font-bold text-xl capitalize">
-              {props?.name?.length < 10
+        <XStack style={styles.productInfo}>
+          <XStack style={{ flex: 1 }}>
+            <Text style={styles.productName}>
+              {!!props.name?.length && props.name.length < 10
                 ? props.name
-                : `${props?.name?.substring(0, 10)}..`}
+                : `${props.name?.substring(0, 10)}..`}
             </Text>
-            <Text className="text-[16px] font-bold">₱ {props.price}</Text>
-          </YStack>
+          </XStack>
 
-          <TouchableOpacity onPress={handleAdd}>
-            <ShoppingCart size={24} color="black" />
+          <TouchableOpacity onPress={handleAdd} style={styles.cartButton}>
+            <ShoppingCart size={24} color="#F4891F" />
           </TouchableOpacity>
         </XStack>
       </View>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    position: "relative",
+  },
+  priceContainer: {
+    position: "absolute",
+    right: 12,
+    top: 12,
+    zIndex: 99,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    padding: 4,
+    borderRadius: 6,
+  },
+  ratingContainer: {
+    position: "absolute",
+    top: 4,
+    width: "100%",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    justifyContent: "space-between",
+    alignItems: "center",
+    zIndex: 99,
+  },
+  ratingBadge: {
+    padding: 8,
+    backgroundColor: "white",
+    borderRadius: 9999,
+  },
+  ratingText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  cardContent: {
+    backgroundColor: "rgba(244, 137, 31, 0.2)",
+    position: "relative",
+    flex: 1,
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageContainer: {
+    width: "100%",
+  },
+  image: {
+    width: "100%",
+    height: 120,
+    objectFit: "cover",
+  },
+  productInfo: {
+    width: "100%",
+    padding: 16,
+  },
+  productName: {
+    fontWeight: "bold",
+    fontSize: 20,
+    textTransform: "capitalize",
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  cartButton: {
+    padding: 4,
+  },
+});
 
 export default ProductCard;

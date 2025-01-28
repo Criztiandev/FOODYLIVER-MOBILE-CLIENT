@@ -88,7 +88,7 @@ const PaymentMethodButton = ({
 // Main Component
 const PaymentScreen = () => {
   const form = useForm();
-  const { items } = useCartStore();
+  const { items, calculateSubtotal } = useCartStore();
   const { getCredentials } = useAccountStore();
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethodKeyword>("COD");
@@ -111,9 +111,12 @@ const PaymentScreen = () => {
         customer_id: credentials.user_id,
         transaction_id: null,
         delivery_fee: PAYMENT_CONSTANTS.DELIVERY_FEE,
-        total_amount: product.price,
-        quantity: product.quantity,
-        delivery_date: localDate, // Now using the formatted date string
+        total_amount:
+          selectedPaymentMethod === "gcash"
+            ? (calculateSubtotal() + PAYMENT_CONSTANTS.DELIVERY_FEE) / 10 / 2
+            : calculateSubtotal() + PAYMENT_CONSTANTS.DELIVERY_FEE,
+        quantity: selectedPaymentMethod === "gcash" ? 1 : product.quantity,
+        delivery_date: localDate,
         delivery_time: PAYMENT_CONSTANTS.DEFAULT_DELIVERY_TIME,
         is_order_accepted_by_driver: false,
         status: "PENDING",

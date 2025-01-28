@@ -1,15 +1,22 @@
-import { View, ViewProps } from "react-native";
-import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { View, ViewProps, StyleSheet } from "react-native";
+import { FC } from "react";
 
-interface Props extends ViewProps {}
+interface Props extends ViewProps {
+  style?: any;
+}
 
-const XStack: FC<Props> = ({ children, ...props }) => {
+const XStack: FC<Props> = ({ children, style, ...props }) => {
   return (
-    <View {...props} className={cn("flex flex-row ", props.className)}>
+    <View {...props} style={[styles.container, style]}>
       {children}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+  },
+});
 
 export default XStack;

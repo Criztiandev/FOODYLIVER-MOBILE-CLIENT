@@ -1,40 +1,34 @@
-import { KeyboardTypeOptions, TextInput } from "react-native";
+import { KeyboardTypeOptions, TextInput, StyleSheet } from "react-native";
 import React, { ComponentPropsWithoutRef } from "react";
-import { cn } from "@/lib/utils";
-import { cva, VariantProps } from "class-variance-authority";
 
-export const inputVariant = cva(
-  "border rounded-md h-12 w-full rounded-md border border-input bg-background px-3 web:py-2 text-base lg:text-sm text-foreground placeholder:text-muted-foreground file:border-0 file:bg-transparent file:font-medium",
-  {
-    variants: {
-      variant: {
-        default: "border border-stone-300",
-      },
-      size: {
-        default: "",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-);
+const styles = StyleSheet.create({
+  base: {
+    borderWidth: 1,
+    borderRadius: 8,
+    height: 48,
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  default: {
+    borderColor: "#d6d3d1", // stone-300
+  },
+});
 
-interface Props
-  extends ComponentPropsWithoutRef<typeof TextInput>,
-    VariantProps<typeof inputVariant> {
+interface Props extends ComponentPropsWithoutRef<typeof TextInput> {
   type?: KeyboardTypeOptions;
   placeholderTextColor?: string;
+  variant?: "default";
 }
 
 const Input = React.forwardRef<React.ElementRef<typeof TextInput>, Props>(
-  ({ className, variant, placeholderTextColor, ...props }, ref) => {
+  ({ variant = "default", placeholderTextColor, style, ...props }, ref) => {
     return (
       <TextInput
         ref={ref}
-        className={inputVariant({ variant, className })}
-        placeholderTextColor={placeholderTextColor ?? "text-muted-foreground"}
+        style={[styles.base, styles[variant], style]}
+        placeholderTextColor={placeholderTextColor ?? "#71717a"} // zinc-500 for muted text
         editable={props.editable}
         {...props}
       />

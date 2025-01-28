@@ -4,6 +4,11 @@ import Toast from "react-native-toast-message";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
+interface Order {
+  latest_order_date: string;
+  // Add other order properties as needed
+}
+
 const useFetchOrdersById = (status: any, UID: string) => {
   const [credentials, setCredentials] = useState([]);
   const mutation = useMutation({
@@ -14,8 +19,14 @@ const useFetchOrdersById = (status: any, UID: string) => {
       if (result instanceof AxiosError) {
         throw new Error(result.message);
       }
+      const orders = result.data?.data;
+      const sortedOrders = orders.sort((a: Order, b: Order) => {
+        const dateA = new Date(a.latest_order_date);
+        const dateB = new Date(b.latest_order_date);
+        return dateA.getTime() - dateB.getTime(); // Changed to ascending order
+      });
 
-      return result.data?.data;
+      return sortedOrders;
     },
 
     onSuccess: (data) => {

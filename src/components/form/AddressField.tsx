@@ -1,8 +1,6 @@
-import { View, Text } from "react-native";
-import React, { FC, useState, useEffect } from "react";
-import Input, { InputProps, inputVariant } from "../ui/Input";
+import { View, Text, StyleSheet } from "react-native";
+import React, { FC, useEffect } from "react";
 import { useFormContext, Controller, FieldError } from "react-hook-form";
-import { cn } from "@/lib/utils";
 import Label from "../ui/Label";
 import AddressSearch from "../atoms/search/AddressSearch";
 import { GooglePlaceDetail } from "react-native-google-places-autocomplete";
@@ -15,11 +13,12 @@ interface AddressValue {
   };
 }
 
-interface Props extends Omit<InputProps, "defaultValue"> {
+interface Props {
   name: string;
   label?: string;
   labelClassName?: string;
   defaultValue?: AddressValue;
+  className?: string;
 }
 
 const AddressInputField: FC<Props> = ({
@@ -61,7 +60,7 @@ const AddressInputField: FC<Props> = ({
   const currentValue = getValues(props.name);
 
   return (
-    <View className={cn("mb-4 w-full", className)}>
+    <View style={[styles.container]}>
       <Controller
         control={control}
         name={props.name}
@@ -69,11 +68,7 @@ const AddressInputField: FC<Props> = ({
         defaultValue={defaultValue}
         render={({ field: { onChange, value } }) => (
           <View>
-            {label && (
-              <Label className={cn("mb-2 font-semibold", labelClassName)}>
-                {label}
-              </Label>
-            )}
+            {label && <Label style={[styles.label]}>{label}</Label>}
 
             <AddressSearch
               onSelect={handleSelectAddress}
@@ -86,12 +81,26 @@ const AddressInputField: FC<Props> = ({
         )}
       />
       {errors[props.name] && (
-        <Text className="text-error">
+        <Text style={styles.errorText}>
           {(errors[props.name] as FieldError)?.message}
         </Text>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+    width: "100%",
+  },
+  label: {
+    marginBottom: 8,
+    fontWeight: "600",
+  },
+  errorText: {
+    color: "#ef4444",
+  },
+});
 
 export default AddressInputField;

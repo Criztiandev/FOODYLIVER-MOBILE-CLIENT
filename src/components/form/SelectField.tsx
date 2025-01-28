@@ -1,7 +1,6 @@
-import { View, Text } from "react-native";
-import React, { FC } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { FC } from "react";
 import { useFormContext, Controller, FieldError } from "react-hook-form";
-import { cn } from "@/lib/utils";
 import Select, { SelectProps } from "../ui/Select";
 
 interface Props extends Omit<SelectProps, "options"> {
@@ -21,7 +20,7 @@ const SelectField: FC<Props> = ({
   } = useFormContext();
 
   return (
-    <View className={cn("mb-4 w-full", className)}>
+    <View style={[styles.container]}>
       <Controller
         control={control}
         name={props.name}
@@ -36,20 +35,31 @@ const SelectField: FC<Props> = ({
             }}
             onBlur={onBlur}
             placeholder={placeholder}
-            containerClass={cn(
-              props.containerClass,
-              errors[props.name] && "border-error focus:border-error"
-            )}
+            containerClass={errors[props.name] ? "error-border" : undefined}
           />
         )}
       />
       {errors[props.name] && (
-        <Text className="text-red-500">
+        <Text style={styles.errorText}>
           {(errors[props.name] as FieldError)?.message}
         </Text>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+    width: "100%",
+  },
+  errorBorder: {
+    borderColor: "#ef4444",
+    borderWidth: 1,
+  },
+  errorText: {
+    color: "#ef4444",
+  },
+});
 
 export default SelectField;

@@ -1,7 +1,5 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import YStack from "@/components/stacks/YStack";
-import XStack from "@/components/stacks/XStack";
 import { PuzzleIcon } from "lucide-react-native";
 import { FlashList } from "@shopify/flash-list";
 import { useFetchCategories } from "@/hooks/categories/query";
@@ -13,28 +11,27 @@ interface Category {
   name: string;
   image: string;
   thumbnail: string;
-  // Add other properties that CategoriesCard expects
 }
 
 const CategoryHeader = () => (
-  <XStack className="items-center space-x-2">
+  <View style={styles.headerContainer}>
     <PuzzleIcon color="black" size={18} />
-    <Text className="text-lg font-semibold text-primary">Top Categories</Text>
-  </XStack>
+    <Text style={styles.headerText}>Top Categories</Text>
+  </View>
 );
 
 const EmptyState = () => (
-  <View className="h-[200px]">
-    <View className="h-full flex-1 justify-center items-center border border-stone-400 w-full rounded-md opacity-70">
-      <Text className="font-semibold text-lg">No Available Categories</Text>
+  <View style={styles.emptyStateContainer}>
+    <View style={styles.emptyStateInner}>
+      <Text style={styles.emptyStateText}>No Available Categories</Text>
     </View>
   </View>
 );
 
 const ErrorState = () => (
-  <View className="h-[200px] bg-stone-200">
-    <View className="h-full flex-1 justify-center items-center border border-stone-400 w-full rounded-md opacity-70">
-      <Text className="font-semibold text-lg">Something went wrong</Text>
+  <View style={styles.errorStateContainer}>
+    <View style={styles.errorStateInner}>
+      <Text style={styles.errorStateText}>Something went wrong</Text>
     </View>
   </View>
 );
@@ -44,8 +41,8 @@ const TopCategoriesList = () => {
 
   if (isLoading) {
     return (
-      <View className="px-2 my-4 space-y-2">
-        <View className="flex-row justify-between items-center mb-2">
+      <View style={styles.container}>
+        <View style={styles.headerWrapper}>
           <CategoryHeader />
         </View>
         <SectionLoadingScreen />
@@ -55,7 +52,7 @@ const TopCategoriesList = () => {
 
   if (isError) {
     return (
-      <View className="px-2 space-y-3 my-4">
+      <View style={styles.container}>
         <CategoryHeader />
         <ErrorState />
       </View>
@@ -63,13 +60,13 @@ const TopCategoriesList = () => {
   }
 
   return (
-    <YStack className="px-2 my-4 space-y-2">
-      <View className="flex-row justify-between items-center">
+    <View style={styles.container}>
+      <View style={styles.headerWrapper}>
         <CategoryHeader />
       </View>
 
       {result?.data?.length > 0 ? (
-        <XStack>
+        <View>
           <FlashList<Category>
             data={result.data}
             estimatedItemSize={100}
@@ -79,12 +76,73 @@ const TopCategoriesList = () => {
               <CategoriesCard {...item} thumbnail={item.image} />
             )}
           />
-        </XStack>
+        </View>
       ) : (
         <EmptyState />
       )}
-    </YStack>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 8,
+    marginVertical: 16,
+    gap: 8,
+  },
+  headerWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#F4891F",
+  },
+  emptyStateContainer: {
+    height: 200,
+  },
+  emptyStateInner: {
+    height: "100%",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#9CA3AF",
+    width: "100%",
+    borderRadius: 6,
+    opacity: 0.7,
+  },
+  emptyStateText: {
+    fontWeight: "600",
+    fontSize: 18,
+  },
+  errorStateContainer: {
+    height: 200,
+    backgroundColor: "#E5E7EB",
+  },
+  errorStateInner: {
+    height: "100%",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#9CA3AF",
+    width: "100%",
+    borderRadius: 6,
+    opacity: 0.7,
+  },
+  errorStateText: {
+    fontWeight: "600",
+    fontSize: 18,
+  },
+});
 
 export default TopCategoriesList;

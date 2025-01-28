@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "reacnative-boilterplate",
-    "slug": "reacnative-boilterplate",
+    "name": "J&B Delivery",
+    "slug": "jb-delivery",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "jsEngine": "hermes",
+    "developmentClient": true,
     "ios": {
       "supportsTablet": true,
       "jsEngine": "jsc",
@@ -52,7 +53,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "f0dee834-d700-4872-a528-d11d298bcde5"
+        "projectId": "8a9d282f-9aaa-443d-816c-aee0856405c5"
       }
     }
   }

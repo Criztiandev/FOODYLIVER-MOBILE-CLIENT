@@ -8,7 +8,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { createNotifications } from "react-native-notificated";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import Toast from "react-native-toast-message";
-import { View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 

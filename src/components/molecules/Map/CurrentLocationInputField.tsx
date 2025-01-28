@@ -1,7 +1,6 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React, { FC, useState, useEffect } from "react";
 import { useFormContext, Controller, FieldError } from "react-hook-form";
-import { cn } from "@/lib/utils";
 import * as Location from "expo-location";
 import Label from "@/components/ui/Label";
 import InputField from "@/components/form/InputField";
@@ -18,12 +17,12 @@ interface LocationValue {
 interface Props extends Omit<InputProps, "defaultValue"> {
   name: string;
   label?: string;
-  labelClassName?: string;
+  labelClassName?: any;
   defaultValue?: LocationValue;
 }
 
 const CurrentLocationInputField: FC<Props> = ({
-  className,
+  style,
   label,
   labelClassName,
   defaultValue,
@@ -45,7 +44,6 @@ const CurrentLocationInputField: FC<Props> = ({
       setIsLoading(true);
       setLocationError(null);
 
-      // Request permissions
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
@@ -53,12 +51,10 @@ const CurrentLocationInputField: FC<Props> = ({
         return;
       }
 
-      // Get current position
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
 
-      // Get address from coordinates (reverse geocoding)
       const reverseGeocode = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -108,7 +104,7 @@ const CurrentLocationInputField: FC<Props> = ({
   const currentValue = getValues(props.name);
 
   return (
-    <View className={cn("mb-4 w-full", className)}>
+    <View style={[styles.container, style]}>
       <Controller
         control={control}
         name={props.name}
@@ -117,9 +113,7 @@ const CurrentLocationInputField: FC<Props> = ({
         render={({ field: { onChange, value } }) => (
           <View>
             {label && (
-              <Label className={cn("mb-2 font-semibold", labelClassName)}>
-                {label}
-              </Label>
+              <Label style={[styles.label, labelClassName]}>{label}</Label>
             )}
 
             <InputField
@@ -133,24 +127,39 @@ const CurrentLocationInputField: FC<Props> = ({
               }
               defaultValue={currentValue?.formatted_address || ""}
               style={{
-                // color for placeholder
-                color: isLoading ? "gray" : "black",
+                color: isLoading ? "#9CA3AF" : "#000000",
               }}
             />
 
             {locationError && (
-              <Text className="text-error mt-1 text-sm">{locationError}</Text>
+              <Text style={styles.errorText}>{locationError}</Text>
             )}
           </View>
         )}
       />
       {errors[props.name] && (
-        <Text className="text-error">
+        <Text style={styles.errorText}>
           {(errors[props.name] as FieldError)?.message}
         </Text>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+    width: "100%",
+  },
+  label: {
+    marginBottom: 8,
+    fontWeight: "600",
+  },
+  errorText: {
+    color: "#DC2626",
+    marginTop: 4,
+    fontSize: 14,
+  },
+});
 
 export default CurrentLocationInputField;

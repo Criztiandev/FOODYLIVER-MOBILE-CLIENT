@@ -6,7 +6,7 @@ import XStack from "@/components/stacks/XStack";
 import CartButton from "@/components/atoms/button/CartButton";
 import Avatar from "@/components/ui/Avatar";
 import YStack from "@/components/stacks/YStack";
-import { Text, View } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import Button from "@/components/ui/Button";
 import NavigationBlob from "./components/NavigationBlob";
@@ -48,37 +48,33 @@ const RootScreen = () => {
           },
           headerTitleAlign: "center",
           headerRight: () => (
-            <XStack className="space-x-4 px-4">
+            <XStack style={styles.headerRight}>
               <CartButton />
             </XStack>
           ),
         }}
       />
       <BaseLayout>
-        <View className="flex-1 bg-gray-50">
-          <View className="bg-primary p-6 shadow-lg">
-            <XStack className="items-center space-x-4">
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <XStack style={styles.headerContent}>
               <Avatar
                 size={80}
                 source={require("@/assets/images/girl-user.png")}
-                className="border-2 border-white"
+                style={styles.avatar}
               />
-              <YStack className="flex-1">
-                <Text className="text-2xl font-bold text-white capitalize">
+              <YStack style={styles.flex1}>
+                <Text style={styles.userName}>
                   {credentials?.name || "Guest User"}
                 </Text>
-                <Text className="text-base text-white/80 mt-1">
-                  Customer Account
-                </Text>
+                <Text style={styles.accountType}>Customer Account</Text>
               </YStack>
             </XStack>
           </View>
 
-          <View className="p-2">
-            <View className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200">
-              <Text className="text-xl font-bold text-gray-800 mb-4">
-                My Orders
-              </Text>
+          <View style={styles.content}>
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>My Orders</Text>
               <FlashList
                 data={OrderNavigationDataset}
                 estimatedItemSize={500}
@@ -88,22 +84,20 @@ const RootScreen = () => {
               />
             </View>
 
-            <View className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200 min-h-[200px]">
-              <Text className="text-xl font-bold text-gray-800 mb-4">
-                Account Settings
-              </Text>
+            <View style={[styles.card, styles.accountCard]}>
+              <Text style={styles.cardTitle}>Account Settings</Text>
               <FlashList
                 data={AccountNavivationDataset}
                 estimatedItemSize={200}
-                ItemSeparatorComponent={() => <View className="h-2" />}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
                 renderItem={({ item }) => (
                   <Button
-                    className="bg-gray-100 flex-row justify-between items-center rounded-lg"
+                    style={styles.settingsButton}
                     onPress={() => router.push(item.path)}
                   >
-                    <XStack className="items-center space-x-3">
+                    <XStack style={styles.settingsButtonContent}>
                       <UserIcon color="#F4891F" size={20} />
-                      <Text className="text-base font-semibold text-gray-800">
+                      <Text style={styles.settingsButtonText}>
                         {item.title}
                       </Text>
                     </XStack>
@@ -115,14 +109,16 @@ const RootScreen = () => {
 
             <Button
               disabled={isPending}
-              className="bg-white border border-red-500 mt-8  rounded-lg"
+              style={styles.logoutButton}
               onPress={handleLogout}
             >
-              <XStack className="items-center justify-center space-x-2">
+              <XStack style={styles.logoutContent}>
                 <LogOut color="#EF4444" size={20} />
                 <Text
-                  className="text-base font-semibold"
-                  style={{ color: isPending ? "#6B7280" : "#EF4444" }}
+                  style={[
+                    styles.logoutText,
+                    isPending && styles.logoutTextDisabled,
+                  ]}
                 >
                   {isPending ? "Processing..." : "Logout"}
                 </Text>
@@ -134,5 +130,117 @@ const RootScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  headerRight: {
+    columnGap: 16,
+    paddingHorizontal: 16,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
+  header: {
+    backgroundColor: "#f4891f",
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  headerContent: {
+    alignItems: "center",
+    columnGap: 16,
+  },
+  avatar: {
+    borderWidth: 2,
+    borderColor: "white",
+  },
+  flex1: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    textTransform: "capitalize",
+  },
+  accountType: {
+    fontSize: 16,
+    color: "rgba(255,255,255,0.8)",
+    marginTop: 4,
+  },
+  content: {
+    padding: 8,
+  },
+  card: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  accountCard: {
+    minHeight: 200,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1f2937",
+    marginBottom: 16,
+  },
+  separator: {
+    height: 8,
+  },
+  settingsButton: {
+    backgroundColor: "#f3f4f6",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  settingsButtonContent: {
+    alignItems: "center",
+    columnGap: 12,
+  },
+  settingsButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1f2937",
+  },
+  logoutButton: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#ef4444",
+    marginTop: 32,
+    borderRadius: 8,
+  },
+  logoutContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    columnGap: 8,
+  },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#ef4444",
+  },
+  logoutTextDisabled: {
+    color: "#6B7280",
+  },
+});
 
 export default RootScreen;

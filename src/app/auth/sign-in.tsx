@@ -1,6 +1,6 @@
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import React from "react";
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, Stack } from "expo-router";
 import { FormProvider } from "react-hook-form";
 import InputField from "@/components/form/InputField";
 import Button from "@/components/ui/Button";
@@ -15,22 +15,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // Components
 const Logo = () => (
   <YStack style={styles.logoContainer}>
-    {/* <Image
-      source={require("@/assets/images/delivery.png")}
-      style={styles.logoImage}
-      resizeMode="contain"
-    /> */}
-    <YStack className="items-center mt-4">
-      <Text
-        className="text-4xl font-bold text-primary"
-        style={[styles.boldPoppins]}
-      >
+    <YStack style={styles.logoInnerContainer}>
+      <Text style={[styles.logoTitle, styles.boldPoppins]}>
         J&B Food Delivery
       </Text>
-      <Text
-        className="text-base text-gray-600 mt-2"
-        style={[styles.regularPoppins]}
-      >
+      <Text style={[styles.logoSubtitle, styles.regularPoppins]}>
         Fast & Reliable Food Delivery
       </Text>
     </YStack>
@@ -141,6 +130,20 @@ const styles = StyleSheet.create({
   logoContainer: {
     marginBottom: 48,
     alignItems: "center",
+  },
+  logoInnerContainer: {
+    alignItems: "center",
+    marginTop: 16,
+  },
+  logoTitle: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#F4891F",
+  },
+  logoSubtitle: {
+    fontSize: 16,
+    color: "#666666",
+    marginTop: 8,
   },
   logoText: {
     fontSize: 48,

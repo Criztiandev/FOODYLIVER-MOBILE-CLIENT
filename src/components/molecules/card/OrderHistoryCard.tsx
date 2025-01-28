@@ -72,7 +72,7 @@ const OrderHistoryCard = ({
                 <Truck color="#F4891F" size={20} />
                 <Text className="text-base text-gray-600">Delivery Fee</Text>
               </XStack>
-              <Text className="text-base font-semibold text-gray-800">
+              <Text className="text-base font-semibold text-primary">
                 ₱ {orderDetails?.delivery_fee}
               </Text>
             </XStack>
@@ -97,7 +97,7 @@ const OrderHistoryCard = ({
                 <Text className="text-base text-gray-600">Sub Total</Text>
               </XStack>
               <Text className="text-base font-semibold text-primary">
-                ₱ {orderDetails?.total_amount}
+                ₱ {orderDetails?.total_amount - orderDetails?.delivery_fee}
               </Text>
             </XStack>
           )}
@@ -109,7 +109,7 @@ const OrderHistoryCard = ({
                 <Text className="text-base text-gray-600">Total Amount</Text>
               </XStack>
               <Text className="text-base font-semibold text-primary">
-                ₱ {orderDetails?.totalAmount}
+                ₱ {orderDetails?.totalAmount - orderDetails?.delivery_fee}
               </Text>
             </XStack>
           )}

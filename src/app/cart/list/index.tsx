@@ -14,7 +14,7 @@ import { User } from "@/interface/user.interface";
 const SHIPPING_FEE = 50;
 
 const RootScreen = () => {
-  const [credentials, setCredentials] = useState<User | any>([]);
+  const [credentials, setCredentials] = useState<User | null>(null);
   const { items, calculateSubtotal } = useCartStore();
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
@@ -30,7 +30,7 @@ const RootScreen = () => {
     (async () => {
       const credentials = await getItem("user");
       if (credentials) {
-        setCredentials(credentials);
+        setCredentials(credentials as User);
       }
     })();
   }, []);
@@ -40,14 +40,12 @@ const RootScreen = () => {
     label: string,
     value: number
   ) => (
-    <View className="flex-row justify-between items-center">
-      <View className="flex-row items-center space-x-2">
+    <View style={styles.checkoutItem}>
+      <View style={styles.checkoutItemLeft}>
         {icon}
-        <Text className="text-base font-semibold text-gray-600">{label}</Text>
+        <Text style={styles.checkoutItemLabel}>{label}</Text>
       </View>
-      <Text className="text-base font-semibold text-gray-600">
-        ₱{value.toFixed(2)}
-      </Text>
+      <Text style={styles.checkoutItemValue}>₱{value.toFixed(2)}</Text>
     </View>
   );
 
@@ -61,40 +59,37 @@ const RootScreen = () => {
   }
 
   return (
-    <View className="flex-1">
+    <View style={styles.container}>
       <Stack.Screen options={stackScreenOptions as any} />
 
-      <SafeAreaView className="flex-1 bg-white">
-        {/* User Profile Header */}
-        <View className="bg-primary p-4 flex-row items-center space-x-4">
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.profileHeader}>
           <Avatar
             size={64}
             source={require("@/assets/images/girl-user.png")}
-            className="border-2 border-white"
+            style={styles.avatar}
           />
-          <View className="flex-1">
-            <Text className="text-xl font-bold text-white capitalize">
-              {credentials?.name || "Yen Timmango"}
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>
+              {credentials?.name ?? "Yen Timmango"}
             </Text>
-            <Text className="text-base text-white/70">
-              {credentials?.address || "Block 56, Lot 14, Villa Luisa North"}
+            <Text style={styles.profileAddress}>
+              {credentials?.address ?? "Block 56, Lot 14, Villa Luisa North"}
             </Text>
           </View>
         </View>
 
-        {/* Scrollable Content */}
         <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingBottom: 200 }}
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
         >
-          <View className="mt-2">
+          <View style={styles.cartContent}>
             <CartSelectedProducts />
           </View>
         </ScrollView>
 
-        {/* Checkout Section */}
-        <SafeAreaView className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
-          <View className="space-y-2 mb-2">
+        <SafeAreaView style={styles.checkoutContainer}>
+          <View style={styles.checkoutSummary}>
             {renderCheckoutItem(
               <Truck color="black" size={18} />,
               "Shipping Fee",
@@ -113,12 +108,12 @@ const RootScreen = () => {
           </View>
 
           <Button
-            className="bg-primary py-3"
+            style={styles.checkoutButton}
             onPress={() => router.push("/order/payment")}
           >
-            <View className="flex-row items-center justify-center space-x-2">
+            <View style={styles.checkoutButtonContent}>
               <ShoppingBag color="white" size={18} />
-              <Text className="text-lg font-semibold text-white">Checkout</Text>
+              <Text style={styles.checkoutButtonText}>Checkout</Text>
             </View>
           </Button>
         </SafeAreaView>
@@ -126,6 +121,106 @@ const RootScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  profileHeader: {
+    backgroundColor: "#f4891f",
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  avatar: {
+    borderWidth: 2,
+    borderColor: "white",
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    textTransform: "capitalize",
+  },
+  profileAddress: {
+    fontSize: 16,
+    color: "rgba(255, 255, 255, 0.7)",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    paddingBottom: 200,
+  },
+  cartContent: {
+    marginTop: 8,
+  },
+  checkoutContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "white",
+    borderTopWidth: 1,
+    borderTopColor: "#e5e7eb",
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  checkoutSummary: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  checkoutItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  checkoutItemLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  checkoutItemLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#4b5563",
+  },
+  checkoutItemValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#4b5563",
+  },
+  checkoutButton: {
+    backgroundColor: "#f4891f",
+    paddingVertical: 12,
+  },
+  checkoutButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  checkoutButtonText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "white",
+  },
+});
 
 const stackScreenOptions = {
   headerLeft: () => <BackButton />,

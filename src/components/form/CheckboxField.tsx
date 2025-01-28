@@ -1,7 +1,6 @@
-import { View, Text } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import React, { FC } from "react";
 import { useFormContext, Controller } from "react-hook-form";
-import { cn } from "@/lib/utils";
 import BaseCheckbox, { CheckboxProps } from "@/components/ui/Checkbox";
 
 interface Props extends CheckboxProps {
@@ -28,9 +27,17 @@ const CheckboxField: FC<Props> = ({ className, ...props }) => {
           />
         )}
       />
-      {errors[props.name] && <Text>This is required.</Text>}
+      {errors[props.name] && (
+        <Text style={styles.errorText}>This is required.</Text>
+      )}
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  errorText: {
+    color: "#ef4444",
+  },
+});
 
 export default CheckboxField;
