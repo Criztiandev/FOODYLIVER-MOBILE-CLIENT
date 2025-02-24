@@ -12,8 +12,6 @@ export const useFetchOrderByTransactionID = (
         `/order/customer/${customerID}/${transactionID}`
       );
 
-      console.log(result.data);
-
       return result.data;
     },
   });

@@ -25,37 +25,18 @@ const useRegister = ({ defaultValues, steps }: Props) => {
     defaultValues,
     resolver: zodResolver(steps[multiform.currentStep].validation),
   });
-  // Mutation
+
   const mutation = useMutation({
     mutationFn: async (value: any) => {
-      try {
-        const result = await PrivateAxios.post("/register", value);
-
-        console.log(result);
-        return result.data;
-      } catch (e) {
-        return e;
-      }
+      const result = await PrivateAxios.post("/register", value);
+      return result.data;
     },
     mutationKey: ["register-mutation"],
 
     onSuccess: (data) => {
-      if (data instanceof AxiosError) {
-        console.log(data.response);
-        const { message } = data;
-
-        Toast.show({
-          type: "error",
-          text1: message,
-        });
-
-        return;
-      }
-
-      const { message } = data;
       Toast.show({
         type: "success",
-        text1: message,
+        text1: data.message || "Registration successful",
       });
 
       form.reset();
@@ -63,11 +44,18 @@ const useRegister = ({ defaultValues, steps }: Props) => {
     },
 
     onError: (error) => {
-      console.log(error);
-      Toast.show({
-        type: "error",
-        text1: "Something went wrong",
-      });
+      if (error instanceof AxiosError) {
+        const message = error.response?.data?.message || "Registration failed";
+        Toast.show({
+          type: "error",
+          text1: message,
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+        });
+      }
     },
   });
 

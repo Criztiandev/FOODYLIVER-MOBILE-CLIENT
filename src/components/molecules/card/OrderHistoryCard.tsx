@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 import Button from "@/components/ui/Button";
 import useFetchOrderByTransactionID from "@/hooks/order/useFetchOrderByTransactionID";
 import { ReceiptText, Truck, Coins, Wallet } from "lucide-react-native";
-import useAccountStore from "@/state/useAccountStore";
 
 const OrderHistoryCard = ({
   customer_id,
@@ -15,8 +14,6 @@ const OrderHistoryCard = ({
   status,
   order_status,
 }: any) => {
-  const { credentials } = useAccountStore();
-
   const { isLoading, data: result } = useFetchOrderByTransactionID(
     customer_id,
     transaction_id
@@ -74,18 +71,21 @@ const OrderHistoryCard = ({
             </XStack>
             <Text style={styles.value}>{orderDetails?.customer?.name}</Text>
           </XStack>
+
           <XStack style={styles.row}>
             <Text style={styles.label}>Ordered At</Text>
             <Text style={styles.value}>{assignedDate}</Text>
           </XStack>
 
-          {orderDetails?.delivery_fee && (
+          {orderDetails?.delivery_fee > 0 && (
             <XStack style={styles.row}>
               <XStack style={styles.iconRow}>
                 <Truck color="#F4891F" size={20} />
                 <Text style={styles.label}>Delivery Fee</Text>
               </XStack>
-              <Text style={styles.value}>₱ {orderDetails?.delivery_fee}</Text>
+              <Text style={[styles.value, styles.methodText]}>
+                {orderDetails?.delivery_fee}
+              </Text>
             </XStack>
           )}
 
@@ -101,17 +101,18 @@ const OrderHistoryCard = ({
             </XStack>
           )}
 
-          {orderDetails?.total_amount && (
-            <XStack style={styles.row}>
-              <XStack style={styles.iconRow}>
-                <Coins color="#F4891F" size={20} />
-                <Text style={styles.label}>Sub Total</Text>
+          {orderDetails?.total_amount &&
+            orderDetails.payment_method === "COD" && (
+              <XStack style={styles.row}>
+                <XStack style={styles.iconRow}>
+                  <Coins color="#F4891F" size={20} />
+                  <Text style={styles.label}>Sub Total</Text>
+                </XStack>
+                <Text style={styles.value}>
+                  ₱ {orderDetails?.total_amount - orderDetails?.delivery_fee}
+                </Text>
               </XStack>
-              <Text style={styles.value}>
-                ₱ {orderDetails?.total_amount - orderDetails?.delivery_fee}
-              </Text>
-            </XStack>
-          )}
+            )}
 
           {orderDetails?.totalAmount && (
             <XStack style={styles.row}>

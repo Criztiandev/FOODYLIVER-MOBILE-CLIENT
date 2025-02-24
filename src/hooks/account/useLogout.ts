@@ -10,23 +10,31 @@ const useLogout = () => {
   const { removeItem } = useLocalStorage();
   const queryClient = useQueryClient();
   const { clearCart } = useCartStore();
+
   return useMutate({
     mutationKey: ["POST /logout"],
     mutationFn: async () => {
-      return true;
-    },
-    onSuccess: (data) => {
-      removeItem("user");
-      removeItem("accessToken");
+      try {
+        // Clear all local storage items first
+        await Promise.all([removeItem("user"), removeItem("accessToken")]);
 
-      clearCart();
-      router.dismissAll();
-      queryClient.removeQueries();
+        // Clear application state
+        clearCart();
+        queryClient.clear();
+
+        // Navigate after all cleanup is done
+        router.replace("/auth/sign-in");
+
+        return true;
+      } catch (error) {
+        console.error("Logout error:", error);
+        throw error;
+      }
+    },
+    onError: (error) => {
+      console.error("Logout failed:", error);
+      // Still try to redirect to login on error
       router.replace("/auth/sign-in");
-    },
-
-    onError: (e) => {
-      console.log(e);
     },
   });
 };

@@ -27,26 +27,38 @@ const RootScreen: React.FC = () => {
     const credentials = (await getCredentials()) as User;
     const currentDate = new Date().toISOString().split("T")[0]; // Format as YYYY-MM-DD
 
-    return items.map((product) => ({
-      item_id: product.id,
-      driver_id: DRIVER_ID,
-      customer_id: credentials.user_id,
-      transaction_id: null,
-      delivery_fee: DELIVERY_FEE,
-      total_amount: product.price,
-      quantity: product.quantity,
-      delivery_date: currentDate,
-      delivery_time: DEFAULT_DELIVERY_TIME,
-      is_order_accepted_by_driver: false,
-      status: "PENDING",
-    }));
+    return items.map((product) => {
+      return {
+        item_id: product.id,
+        driver_id: DRIVER_ID,
+        customer_id: credentials.user_id,
+        transaction_id: null,
+        delivery_fee: DELIVERY_FEE,
+        total_amount: product.price,
+        quantity: product.quantity,
+        delivery_date: currentDate,
+        delivery_time: DEFAULT_DELIVERY_TIME,
+        is_order_accepted_by_driver: false,
+        status: "PENDING",
+      };
+    });
   };
 
   const createOrderPayload = useCallback(
     async (transactionID: string) => {
       const basePayload = await createBaseOrderPayload();
+
+      // combine all order price
+      const calculatedOverAllTotal = basePayload.reduce(
+        (acc, curr) => acc + curr.total_amount * curr.quantity,
+        0
+      );
+      console.log("Calculated Over All Total");
+      console.log(calculatedOverAllTotal);
+
       const ordersWithPaymentInfo = basePayload.map((order) => ({
         ...order,
+        total_amount: calculatedOverAllTotal,
         payment_method: "GCASH",
         order_type: "HOME DELIVERY",
       }));
@@ -67,8 +79,6 @@ const RootScreen: React.FC = () => {
   );
 
   const handleNavigationStateChange = async (navState: WebViewNavigation) => {
-    console.log("Current URL:", navState.url);
-
     // Check for both success and successful in the URL
     const isSuccess =
       navState.url.toLowerCase().includes("success") ||
@@ -92,6 +102,12 @@ const RootScreen: React.FC = () => {
         }
 
         const transformedPayload = await createOrderPayload(transactionID);
+
+        console.log("\n\n");
+        console.log("Transformed Payload");
+        console.log(transformedPayload);
+        console.log("\n\n");
+
         mutate(transformedPayload as any);
 
         Toast.show({
@@ -102,9 +118,9 @@ const RootScreen: React.FC = () => {
         });
 
         // Navigate back to home after successful payment
-        setTimeout(() => {
-          router.replace("/user/home");
-        }, 2000);
+        // setTimeout(() => {
+        //   router.replace("/user/home");
+        // }, 2000);
       } catch (error) {
         console.error("Error processing payment:", error);
         Toast.show({
@@ -124,7 +140,7 @@ const RootScreen: React.FC = () => {
         text2: "Please try again",
         position: "bottom",
       });
-      router.back();
+      // router.back();
     }
   };
 
@@ -143,8 +159,6 @@ const RootScreen: React.FC = () => {
     if (!url) return "";
     return decodeURIComponent(String(url));
   }, [url]);
-
-  console.log(decodedUrl);
 
   if (isPending) {
     return <LoadingScreen />;

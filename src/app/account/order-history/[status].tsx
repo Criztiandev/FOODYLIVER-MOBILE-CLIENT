@@ -75,8 +75,6 @@ const RootScreen = () => {
     return <ErrorScreen />;
   }
 
-  console.log(credentials);
-
   return (
     <>
       <Stack.Screen
@@ -95,7 +93,7 @@ const RootScreen = () => {
         <View style={styles.container}>
           {credentials.length > 0 ? (
             <FlashList
-              data={credentials}
+              data={credentials.reverse()}
               estimatedItemSize={5000}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

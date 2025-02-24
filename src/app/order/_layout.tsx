@@ -9,6 +9,7 @@ const RootLayout = () => {
       <Stack.Screen name="delivery" />
       <Stack.Screen name="track" />
       <Stack.Screen name="forced" />
+      <Stack.Screen name="rate" />
     </Stack>
   );
 };

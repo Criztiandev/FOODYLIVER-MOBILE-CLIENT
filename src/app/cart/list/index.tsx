@@ -1,56 +1,107 @@
-import BackButton from "@/components/atoms/button/BackButton";
-import useCartStore from "@/state/useCartStore";
 import { router, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { SafeAreaView, ScrollView, Text, View, StyleSheet } from "react-native";
+import { Coins, ShoppingBag, Wallet } from "lucide-react-native";
+
+import BackButton from "@/components/atoms/button/BackButton";
+import Button from "@/components/ui/Button";
+import Avatar from "@/components/ui/Avatar";
 import CartEmpty from "./components/CartEmpty";
 import CartSelectedProducts from "./components/CartSelectedProduct";
-import Button from "@/components/ui/Button";
-import { Coins, ShoppingBag, Truck, Wallet } from "lucide-react-native";
-import Avatar from "@/components/ui/Avatar";
+import useCartStore from "@/state/useCartStore";
 import useLocalStorage from "@/hooks/utils/useLocalStorage";
 import { User } from "@/interface/user.interface";
 
-const RootScreen = () => {
-  const [credentials, setCredentials] = useState<User | null>(null);
+// Separate components for better organization
+const ProfileHeader: React.FC<{ user: User | null }> = ({ user }) => (
+  <View style={styles.profileHeader}>
+    <Avatar
+      size={64}
+      source={require("@/assets/images/girl-user.png")}
+      style={styles.avatar}
+    />
+    <View style={styles.profileInfo}>
+      <Text style={styles.profileName}>{user?.name ?? "Yen Timmango"}</Text>
+      <Text style={styles.profileAddress}>
+        {user?.address ?? "Block 56, Lot 14, Villa Luisa North"}
+      </Text>
+    </View>
+  </View>
+);
+
+const CheckoutItem: React.FC<{
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+}> = ({ icon, label, value }) => (
+  <View style={styles.checkoutItem}>
+    <View style={styles.checkoutItemLeft}>
+      {icon}
+      <Text style={styles.checkoutItemLabel}>{label}</Text>
+    </View>
+    <Text style={styles.checkoutItemValue}>₱{value.toFixed(2)}</Text>
+  </View>
+);
+
+const CheckoutButton: React.FC = () => (
+  <Button
+    style={styles.checkoutButton}
+    onPress={() => router.push("/order/payment")}
+  >
+    <View style={styles.checkoutButtonContent}>
+      <ShoppingBag color="white" size={18} />
+      <Text style={styles.checkoutButtonText}>Checkout</Text>
+    </View>
+  </Button>
+);
+
+const stackScreenOptions = {
+  headerLeft: () => <BackButton />,
+  title: "My Cart",
+  headerTitleStyle: { color: "white", fontSize: 18, fontWeight: "600" },
+  headerStyle: {
+    backgroundColor: "#f4891f",
+  },
+  headerTitleAlign: "center",
+} as const;
+
+const CartScreen: React.FC = () => {
   const { items, calculateSubtotal } = useCartStore();
-  const [total, setTotal] = useState(0);
-  const [subtotal, setSubtotal] = useState(0);
   const { getItem } = useLocalStorage();
 
-  useEffect(() => {
+  // Use hooks for state management
+  const [user, setUser] = React.useState<User | null>(null);
+
+  // Memoize calculated values
+  const { subtotal, total } = useMemo(() => {
     const currentSubtotal = calculateSubtotal();
-    setSubtotal(currentSubtotal);
-    setTotal(currentSubtotal);
+    return {
+      subtotal: currentSubtotal,
+      total: currentSubtotal, // Add delivery fee or other charges here if needed
+    };
   }, [items, calculateSubtotal]);
 
+  // Fetch user data
   useEffect(() => {
-    (async () => {
-      const credentials = await getItem("user");
-      if (credentials) {
-        setCredentials(credentials as User);
+    const fetchUser = async () => {
+      try {
+        const userData = await getItem("user");
+        if (userData) {
+          setUser(userData as User);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
       }
-    })();
-  }, []);
+    };
 
-  const renderCheckoutItem = (
-    icon: React.ReactNode,
-    label: string,
-    value: number
-  ) => (
-    <View style={styles.checkoutItem}>
-      <View style={styles.checkoutItemLeft}>
-        {icon}
-        <Text style={styles.checkoutItemLabel}>{label}</Text>
-      </View>
-      <Text style={styles.checkoutItemValue}>₱{value.toFixed(2)}</Text>
-    </View>
-  );
+    fetchUser();
+  }, [getItem]);
 
+  // Empty cart view
   if (!items?.length) {
     return (
       <>
-        <Stack.Screen options={stackScreenOptions as any} />
+        <Stack.Screen options={stackScreenOptions} />
         <CartEmpty />
       </>
     );
@@ -58,28 +109,15 @@ const RootScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={stackScreenOptions as any} />
+      <Stack.Screen options={stackScreenOptions} />
 
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.profileHeader}>
-          <Avatar
-            size={64}
-            source={require("@/assets/images/girl-user.png")}
-            style={styles.avatar}
-          />
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>
-              {credentials?.name ?? "Yen Timmango"}
-            </Text>
-            <Text style={styles.profileAddress}>
-              {credentials?.address ?? "Block 56, Lot 14, Villa Luisa North"}
-            </Text>
-          </View>
-        </View>
+        <ProfileHeader user={user} />
 
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.cartContent}>
             <CartSelectedProducts />
@@ -88,27 +126,19 @@ const RootScreen = () => {
 
         <SafeAreaView style={styles.checkoutContainer}>
           <View style={styles.checkoutSummary}>
-            {renderCheckoutItem(
-              <Coins color="black" size={18} />,
-              "Sub Total",
-              subtotal
-            )}
-            {renderCheckoutItem(
-              <Wallet color="black" size={18} />,
-              "Total",
-              total
-            )}
+            <CheckoutItem
+              icon={<Coins color="black" size={18} />}
+              label="Sub Total"
+              value={subtotal}
+            />
+            <CheckoutItem
+              icon={<Wallet color="black" size={18} />}
+              label="Total"
+              value={total}
+            />
           </View>
 
-          <Button
-            style={styles.checkoutButton}
-            onPress={() => router.push("/order/payment")}
-          >
-            <View style={styles.checkoutButtonContent}>
-              <ShoppingBag color="white" size={18} />
-              <Text style={styles.checkoutButtonText}>Checkout</Text>
-            </View>
-          </Button>
+          <CheckoutButton />
         </SafeAreaView>
       </SafeAreaView>
     </View>
@@ -215,14 +245,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const stackScreenOptions = {
-  headerLeft: () => <BackButton />,
-  title: "My Cart",
-  headerTitleStyle: { color: "white", fontSize: 18, fontWeight: "600" },
-  headerStyle: {
-    backgroundColor: "#f4891f",
-  },
-  headerTitleAlign: "center",
-};
-
-export default RootScreen;
+export default CartScreen;

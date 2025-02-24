@@ -1,5 +1,12 @@
-import React, { useMemo } from "react";
-import { Text, View, Alert, StyleSheet, ScrollView } from "react-native";
+import React, { useMemo, useState } from "react";
+import {
+  Text,
+  View,
+  Alert,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import * as Linking from "expo-linking";
 import {
@@ -23,6 +30,9 @@ import BaseLayout from "@/layout/BaseLayout";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import ErrorScreen from "@/layout/screen/ErrorScreen";
 import { useFetchOrderDetailsList } from "@/hooks/delivery/useFetchOrderDetailsList";
+import InputField from "@/components/form/InputField";
+import { FormProvider, useForm } from "react-hook-form";
+import useRateOrder from "@/hooks/order/useRateOrder";
 
 // Types
 interface OrderItem {
@@ -46,7 +56,42 @@ interface RiderInfoProps {
   address: string;
 }
 
+interface RatingProps {
+  maxRating: number;
+  onRatingChange: (rating: number) => void;
+}
+
 // Components
+const StarRating: React.FC<RatingProps> = ({
+  maxRating = 5,
+  onRatingChange,
+}) => {
+  const [rating, setRating] = useState(0);
+
+  const handleRating = (selectedRating: number) => {
+    setRating(selectedRating);
+    onRatingChange(selectedRating);
+  };
+
+  return (
+    <XStack style={styles.ratingContainer}>
+      {[...Array(maxRating)].map((_, index) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() => handleRating(index + 1)}
+          style={styles.starButton}
+        >
+          <Star
+            size={40}
+            color={index < rating ? "#F4891F" : "#D1D5DB"}
+            fill={index < rating ? "#F4891F" : "none"}
+          />
+        </TouchableOpacity>
+      ))}
+    </XStack>
+  );
+};
+
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   orderType,
   total_amount,
@@ -95,36 +140,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   );
 };
 
-const OrderCard: React.FC<OrderItem> = ({
-  name,
-  description,
-  price,
-  thumbnail,
-}) => {
-  return (
-    <XStack style={styles.orderCard}>
-      <Image
-        source={{
-          uri: thumbnail
-            ? `https://jandbfoodapp.site/storage/${thumbnail}`
-            : "https://placehold.co/600x400",
-        }}
-        style={styles.orderThumbnail}
-        contentFit="cover"
-      />
-      <YStack style={styles.orderDetails}>
-        <Text style={styles.orderName}>{name}</Text>
-        {!!description && description !== "." && (
-          <Text style={styles.orderDescription} numberOfLines={2}>
-            {description}
-          </Text>
-        )}
-        <Text style={styles.orderPrice}>₱ {price}</Text>
-      </YStack>
-    </XStack>
-  );
-};
-
 const RiderInfo: React.FC<RiderInfoProps> = ({
   name,
   phone,
@@ -149,47 +164,41 @@ const RiderInfo: React.FC<RiderInfoProps> = ({
   </View>
 );
 
-const DeliveryStatus: React.FC<{ status: string }> = ({ status }) => {
-  const getStatusColor = (status: string) => {
-    switch (status?.toUpperCase()) {
-      case "COMPLETED":
-        return "#22C55E";
-      case "PENDING":
-        return "#F4891F";
-      case "CANCELLED":
-        return "#EF4444";
-      default:
-        return "#9CA3AF";
-    }
-  };
-
-  return (
-    <View style={styles.statusContainer}>
-      <XStack style={styles.statusContent}>
-        <XStack style={styles.statusLeft}>
-          <CheckCircle2 color={getStatusColor(status)} size={24} />
-          <YStack>
-            <Text style={styles.statusTitle}>Order Status</Text>
-            <Text
-              style={[styles.statusText, { color: getStatusColor(status) }]}
-            >
-              {status}
-            </Text>
-          </YStack>
-        </XStack>
-        <Truck color="#F4891F" size={24} />
-      </XStack>
-    </View>
-  );
-};
-
 const RootScreen = () => {
   const { transaction_id } = useLocalSearchParams();
   const router = useRouter();
+  const methods = useForm({
+    defaultValues: {
+      rating: 0,
+      comment: "",
+    },
+  });
 
   const { data, isLoading, isError, error } = useFetchOrderDetailsList(
     transaction_id as string
   );
+  const { mutate: rateOrder, isPending } = useRateOrder();
+
+  const handleRatingSubmit = (rating: number) => {
+    methods.setValue("rating", rating);
+  };
+
+  const onSubmit = methods.handleSubmit((data) => {
+    if (!data.rating) {
+      Alert.alert("Error", "Please select a rating first!");
+      return;
+    }
+    Alert.alert(
+      "Success",
+      `Thank you for your rating!\nRating: ${data.rating}\nComment: ${data.comment}`
+    );
+    rateOrder({
+      transaction_id: transaction_id as string,
+      rating: data.rating,
+      comment: data.comment,
+    });
+    // router.push("/");
+  });
 
   if (isLoading) return <LoadingScreen />;
   if (isError) {
@@ -201,42 +210,12 @@ const RootScreen = () => {
     (items: any) => items.transaction_id === transaction_id
   );
 
-  const selectedMenu = data[0].map((item: any) => item.menu_item);
-
-  const handleCallRider = async () => {
-    const phoneNumber = selectedOrderDetails?.rider?.phone_number;
-    if (!phoneNumber) {
-      Alert.alert("Error", "Rider phone number not available");
-      return;
-    }
-
-    try {
-      await Linking.openURL(`tel:${phoneNumber}`);
-    } catch (error) {
-      Alert.alert(
-        "Error",
-        "Unable to make phone call. Please try again later."
-      );
-    }
-  };
-
-  const handleRateOrder = async () => {
-    // if (selectedOrderDetails?.order?.status !== "COMPLETED") {
-    //   Alert.alert(
-    //     "Cannot Rate Yet",
-    //     "You can only rate orders that have been completed"
-    //   );
-    //   return;
-    // }
-    router.push(`/order/rate?transaction_id=${transaction_id}`);
-  };
-
   return (
     <>
       <Stack.Screen
         options={{
           headerLeft: () => <HomeButton />,
-          title: "Delivery Details",
+          title: "Rate Order",
           headerTitleStyle: styles.headerTitle,
           headerStyle: styles.header,
           headerTitleAlign: "center",
@@ -259,88 +238,43 @@ const RootScreen = () => {
           )}
 
           <View style={styles.contentContainer}>
-            <View style={styles.imageContainer}>
-              <Image
-                source={require("@/assets/images/order-delivered.png")}
-                style={styles.deliveryImage}
-                contentFit="cover"
-              />
-              <View style={styles.successMessageContainer}>
-                <Text style={styles.successMessage}>
-                  Your order has been placed!
-                </Text>
-              </View>
-            </View>
-
-            <DeliveryStatus status={selectedOrderDetails?.order?.status} />
-
-            <View style={styles.summaryContainer}>
-              <XStack style={styles.summaryHeader}>
-                <ReceiptText color="#F4891F" size={24} />
-                <Text style={styles.summaryTitle}>Order Details</Text>
-              </XStack>
-              {selectedMenu.map((item: OrderItem) => (
-                <OrderCard key={item.name} {...item} />
-              ))}
-            </View>
-
-            <OrderSummary
-              orderType={selectedOrderDetails?.order?.order_type}
-              delivery_fee={
-                Number(selectedOrderDetails?.order?.delivery_fee) || 0
-              }
-              total_amount={
-                Number(selectedOrderDetails?.order?.total_amount) || 0
-              }
-            />
-
-            {selectedOrderDetails?.rider &&
-              selectedOrderDetails?.status === "ONGOING" && (
-                <View style={styles.buttonContainer}>
-                  <Button
-                    onPress={() =>
-                      router.replace(`/order/track/${transaction_id}`)
-                    }
-                    style={styles.trackButton}
-                    accessibilityLabel="Track Order"
-                  >
-                    <XStack style={styles.buttonContent}>
-                      <MapPin color="white" size={24} />
-                      <Text style={styles.buttonText}>Track Order</Text>
-                    </XStack>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    style={styles.callButton}
-                    onPress={handleCallRider}
-                    accessibilityLabel="Call Rider"
-                  >
-                    <XStack style={styles.buttonContent}>
-                      <Phone color="#F4891F" size={24} />
-                      <Text style={styles.callButtonText}>Call Rider</Text>
-                    </XStack>
-                  </Button>
-                </View>
-              )}
-
             <View style={styles.rateContainer}>
               <Text style={styles.rateTitle}>How was your order?</Text>
               <Text style={styles.rateSubtitle}>
                 Your feedback helps us improve our service
               </Text>
 
-              <Button
-                variant="outline"
-                style={[styles.callButton, styles.rateButton]}
-                onPress={handleRateOrder}
-                accessibilityLabel="Rate Order"
-              >
-                <XStack style={styles.buttonContent}>
-                  <Star color="#F4891F" size={24} />
-                  <Text style={styles.callButtonText}>Rate Order</Text>
-                </XStack>
-              </Button>
+              <FormProvider {...methods}>
+                <StarRating maxRating={5} onRatingChange={handleRatingSubmit} />
+
+                <InputField
+                  label="Comment"
+                  name="comment"
+                  placeholder="Write your comment here"
+                  multiline={true}
+                  numberOfLines={4}
+                />
+
+                <Button
+                  onPress={onSubmit}
+                  disabled={isPending}
+                  style={[
+                    styles.skipButton,
+                    { backgroundColor: "#F4891F", marginBottom: 12 },
+                  ]}
+                >
+                  <Text style={[styles.skipButtonText, { color: "white" }]}>
+                    Submit Rating
+                  </Text>
+                </Button>
+
+                <Button
+                  onPress={() => router.push("/")}
+                  style={styles.skipButton}
+                >
+                  <Text style={styles.skipButtonText}>Skip Rating</Text>
+                </Button>
+              </FormProvider>
             </View>
           </View>
         </ScrollView>
@@ -365,6 +299,49 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
     flex: 1,
+  },
+  rateContainer: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  rateTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#1f2937",
+    marginBottom: 8,
+  },
+  rateSubtitle: {
+    fontSize: 16,
+    color: "#6b7280",
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  ratingContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+    marginBottom: 24,
+  },
+  starButton: {
+    padding: 4,
+  },
+  skipButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    backgroundColor: "#f3f4f6",
+  },
+  skipButtonText: {
+    color: "#6b7280",
+    fontSize: 16,
+    fontWeight: "600",
   },
   summaryContainer: {
     backgroundColor: "white",
@@ -586,9 +563,6 @@ const styles = StyleSheet.create({
     borderColor: "#e5e7eb",
     borderRadius: 12,
   },
-  rateButton: {
-    marginTop: 16,
-  },
   buttonContent: {
     alignItems: "center",
     justifyContent: "center",
@@ -608,32 +582,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: "#1f2937",
-  },
-  rateContainer: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
-    alignItems: "center",
-    marginTop: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-  },
-  rateTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#1f2937",
-    marginBottom: 8,
-  },
-  rateSubtitle: {
-    fontSize: 16,
-    color: "#6b7280",
-    textAlign: "center",
-    marginBottom: 20,
   },
 });
 

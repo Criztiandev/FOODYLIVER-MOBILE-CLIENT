@@ -160,6 +160,9 @@ const PaymentScreen = () => {
     const currentDate = new Date();
     const localDate = currentDate.toISOString().split("T")[0];
 
+    const gcashCalculatedTotal =
+      (calculateSubtotal() * 1000) / calculateSubtotal();
+
     return items.map(
       (product): OrderPayload => ({
         item_id: product.id ?? "",
@@ -170,9 +173,9 @@ const PaymentScreen = () => {
           selectedPaymentMethod === "COD" ? PAYMENT_CONSTANTS.DELIVERY_FEE : 0,
         total_amount:
           selectedPaymentMethod === "gcash"
-            ? calculateSubtotal() / 10 / 2
+            ? gcashCalculatedTotal
             : calculateSubtotal(),
-        quantity: selectedPaymentMethod === "gcash" ? 1 : product.quantity,
+        quantity: product.quantity,
         delivery_date: localDate,
         delivery_time: PAYMENT_CONSTANTS.DEFAULT_DELIVERY_TIME,
         is_order_accepted_by_driver: false,
@@ -194,6 +197,7 @@ const PaymentScreen = () => {
         order_type: "COD",
         payment_method: "GCASH",
       }));
+
       gcashMutate(gcashPayload);
       return;
     }

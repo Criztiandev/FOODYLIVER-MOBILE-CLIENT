@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import React from "react";
 
-const RootLayout = () => {
+const _layout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" />
@@ -9,4 +9,4 @@ const RootLayout = () => {
   );
 };
 
-export default RootLayout;
+export default _layout;

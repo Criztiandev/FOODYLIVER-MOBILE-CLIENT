@@ -66,8 +66,13 @@ export const useGCashMutation = (getCredentials: () => Promise<User>) => {
       const transformedPayload = values.map((items) => ({
         item_id: String(items.item_id),
         quantity: items.quantity,
-        price: Math.floor(Number(items.total_amount) * 1000),
+        price: items.total_amount,
       }));
+
+      console.log("\n\n");
+      console.log("Response");
+      console.log(transformedPayload);
+      console.log("\n\n");
 
       const finalPayload = {
         name: credentials.name,

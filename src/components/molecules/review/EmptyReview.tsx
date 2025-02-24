@@ -20,8 +20,8 @@ const EmptyReview = () => {
 
   const generateRandomMessage = () => {
     const messages = [
-      "Awaiting your thoughts to light up this space ✨",
-      "Your review could be the first star in our sky 🌟",
+      "Awaiting your order to light up this space ✨",
+      "Your order could be the first star in our sky 🌟",
       "Share your experience and inspire others 💫",
       "Be the trendsetter - write the first review! 🎯",
     ];
@@ -36,17 +36,11 @@ const EmptyReview = () => {
         source={require("@/assets/images/Girl-magnify.png")}
       />
       <YStack style={styles.content}>
-        <Text style={styles.title}>No Reviews Yet</Text>
+        <Text style={styles.title}>No Order yet Yet</Text>
         <Text style={styles.message}>{generateRandomMessage()}</Text>
         <Text style={styles.subtitle}>
-          Your feedback helps others make better choices
+          Your order helps others make better choices
         </Text>
-        <Button style={styles.button} onPress={() => router.back()}>
-          <View style={styles.buttonContent}>
-            <MessageCircle color="#F4891F" size={20} />
-            <Text style={styles.buttonText}>Write a Review</Text>
-          </View>
-        </Button>
       </YStack>
     </Animated.View>
   );
@@ -104,7 +98,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#F4891F",
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "600",
   },
 });
