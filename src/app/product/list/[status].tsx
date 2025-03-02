@@ -1,10 +1,9 @@
 import { View } from "react-native";
 import React from "react";
 import BaseLayout from "@/layout/BaseLayout";
-import { Href, Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import BackButton from "@/components/atoms/button/BackButton";
-import useCartStore from "@/state/useCartStore";
 import { ProductItem } from "@/interface/product.interface";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import { useFetchCategoryList } from "@/hooks/product/query";
@@ -15,8 +14,6 @@ import { StyleSheet } from "react-native";
 
 const RootScreen = () => {
   const { status } = useLocalSearchParams();
-  const { addProduct } = useCartStore();
-  const router = useRouter();
 
   const {
     isLoading,
@@ -53,7 +50,7 @@ const RootScreen = () => {
                 estimatedItemSize={5000}
                 numColumns={2}
                 renderItem={({ item }: { item: ProductItem }) => (
-                  <ProductCard {...item} />
+                  <ProductCard status={status as string} {...item} />
                 )}
               />
             ) : (

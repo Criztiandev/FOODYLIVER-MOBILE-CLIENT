@@ -11,6 +11,7 @@ export interface ProductItem {
   addons: any;
   stocks: number;
   is_available: boolean;
+  status?: string;
   quantity: number;
 }
 

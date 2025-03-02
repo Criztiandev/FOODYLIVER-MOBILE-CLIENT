@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, View, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet, Text } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 import XStack from "@/components/stacks/XStack";
 import YStack from "@/components/stacks/YStack";
@@ -11,8 +11,12 @@ import CartButton from "@/components/atoms/button/CartButton";
 import LoadingScreen from "@/layout/screen/LoadingScreen";
 import ErrorScreen from "@/layout/screen/ErrorScreen";
 import BaseLayout from "@/layout/BaseLayout";
-import { useFetchProductById } from "@/hooks/product/query";
+import {
+  useFetchCategoryList,
+  useFetchProductById,
+} from "@/hooks/product/query";
 import useCartStore from "@/state/useCartStore";
+import AddonsCard from "@/components/molecules/card/AddonsCard";
 
 interface ProductDetailScreenProps {
   maxQuantity?: number;
@@ -21,10 +25,19 @@ interface ProductDetailScreenProps {
 const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   maxQuantity = 99,
 }) => {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, status } = useLocalSearchParams<{ id: string; status: string }>();
+  console.log(useLocalSearchParams());
   const { items } = useCartStore();
   const { isLoading, isError, data: result } = useFetchProductById(id);
   const [currentQuantity, setCurrentQuantity] = useState(1);
+  const {
+    isLoading: isLoadingCategory,
+    isError: isErrorCategory,
+    data: resultCategory,
+    error: errorCategory,
+  } = useFetchCategoryList("5");
+
+  console.log(status);
 
   const selectedProduct = items.find((item) => item.id === id);
 
@@ -40,8 +53,8 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
     }
   };
 
-  if (isLoading) return <LoadingScreen />;
-  if (isError) return <ErrorScreen />;
+  if (isLoading || isLoadingCategory) return <LoadingScreen />;
+  if (isError || isErrorCategory) return <ErrorScreen />;
 
   return (
     <>
@@ -70,11 +83,16 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
             {result?.data && <ProductHero {...result.data} />}
 
             <ProductQuantity
-              quantity={selectedProduct?.quantity || currentQuantity}
+              quantity={currentQuantity}
               onIncrement={handleIncrement}
               onDecrement={handleDecrement}
             />
           </YStack>
+
+          {/* Replace static category container with the CategoryCard component */}
+          {status !== "5" && (
+            <AddonsCard categories={resultCategory} title="Addons" />
+          )}
         </ScrollView>
 
         <View style={styles.footer}>

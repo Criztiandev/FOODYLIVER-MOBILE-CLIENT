@@ -18,7 +18,11 @@ const ProductCard = (props: ProductItem) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => router.navigate(`/product/details/${props.id}` as Href)}
+      onPress={() =>
+        router.navigate(
+          `/product/details/${props.id}?status=${props.status}` as Href
+        )
+      }
     >
       <View style={styles.priceContainer}>
         <Text style={styles.price}>₱ {props.price}</Text>

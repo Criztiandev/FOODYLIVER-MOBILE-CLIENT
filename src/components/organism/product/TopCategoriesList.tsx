@@ -61,9 +61,7 @@ const TopCategoriesList = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerWrapper}>
-        <CategoryHeader />
-      </View>
+      <View style={styles.headerWrapper}></View>
 
       {result?.data?.length > 0 ? (
         <View>
