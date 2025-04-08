@@ -20,7 +20,7 @@ const ProductCard = (props: ProductItem) => {
       style={styles.container}
       onPress={() =>
         router.navigate(
-          `/product/details/${props.id}?status=${props.status}` as Href
+          `/product/details/${props.id}?status=${props.category_id}` as Href
         )
       }
     >

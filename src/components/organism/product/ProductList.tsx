@@ -28,6 +28,7 @@ const CategoryHeader: React.FC<{
 const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("All Products");
   const { isLoading, isError, data: result } = useFetchProductList();
+
   const categories = [{ title: "All Products" }];
 
   const limitedProducts = result?.data?.slice(0, PRODUCTS_PER_PAGE);

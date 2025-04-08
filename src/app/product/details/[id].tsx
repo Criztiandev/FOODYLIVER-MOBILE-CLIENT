@@ -15,31 +15,25 @@ import {
   useFetchCategoryList,
   useFetchProductById,
 } from "@/hooks/product/query";
-import useCartStore from "@/state/useCartStore";
 import AddonsCard from "@/components/molecules/card/AddonsCard";
 
 interface ProductDetailScreenProps {
   maxQuantity?: number;
 }
 
+const SIDE_CATEGORY_ID = "4";
+
 const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   maxQuantity = 99,
 }) => {
   const { id, status } = useLocalSearchParams<{ id: string; status: string }>();
-  console.log(useLocalSearchParams());
-  const { items } = useCartStore();
   const { isLoading, isError, data: result } = useFetchProductById(id);
   const [currentQuantity, setCurrentQuantity] = useState(1);
   const {
     isLoading: isLoadingCategory,
     isError: isErrorCategory,
     data: resultCategory,
-    error: errorCategory,
-  } = useFetchCategoryList("5");
-
-  console.log(status);
-
-  const selectedProduct = items.find((item) => item.id === id);
+  } = useFetchCategoryList(SIDE_CATEGORY_ID);
 
   const handleIncrement = () => {
     if (currentQuantity < maxQuantity) {
@@ -52,6 +46,10 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
       setCurrentQuantity((prev) => prev - 1);
     }
   };
+
+  const isSideCategory =
+    Number(status) !== Number(SIDE_CATEGORY_ID) ||
+    Number(result?.data?.category_id) !== Number(SIDE_CATEGORY_ID);
 
   if (isLoading || isLoadingCategory) return <LoadingScreen />;
   if (isError || isErrorCategory) return <ErrorScreen />;
@@ -90,7 +88,7 @@ const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           </YStack>
 
           {/* Replace static category container with the CategoryCard component */}
-          {status !== "5" && (
+          {isSideCategory && (
             <AddonsCard categories={resultCategory} title="Addons" />
           )}
         </ScrollView>

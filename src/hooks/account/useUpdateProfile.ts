@@ -29,8 +29,6 @@ const useUpdateProfile = () => {
         console.log(error.response?.data);
       }
 
-      console.log(error);
-
       Toast.show({
         type: "error",
         text1: "Something went wrong",

@@ -53,8 +53,6 @@ const RootScreen: React.FC = () => {
         (acc, curr) => acc + curr.total_amount * curr.quantity,
         0
       );
-      console.log("Calculated Over All Total");
-      console.log(calculatedOverAllTotal);
 
       const ordersWithPaymentInfo = basePayload.map((order) => ({
         ...order,
@@ -103,11 +101,6 @@ const RootScreen: React.FC = () => {
 
         const transformedPayload = await createOrderPayload(transactionID);
 
-        console.log("\n\n");
-        console.log("Transformed Payload");
-        console.log(transformedPayload);
-        console.log("\n\n");
-
         mutate(transformedPayload as any);
 
         Toast.show({
@@ -116,11 +109,6 @@ const RootScreen: React.FC = () => {
           text2: "Your order has been placed",
           position: "bottom",
         });
-
-        // Navigate back to home after successful payment
-        // setTimeout(() => {
-        //   router.replace("/user/home");
-        // }, 2000);
       } catch (error) {
         console.error("Error processing payment:", error);
         Toast.show({
