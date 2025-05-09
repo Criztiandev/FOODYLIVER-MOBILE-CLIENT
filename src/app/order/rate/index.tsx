@@ -8,18 +8,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import * as Linking from "expo-linking";
 import {
   Coins,
-  MapPin,
   Phone,
   ReceiptText,
   Truck,
   Wallet,
-  CheckCircle2,
   Star,
 } from "lucide-react-native";
-import { Image } from "expo-image";
 
 import HomeButton from "@/components/atoms/button/HomeButton";
 import XStack from "@/components/stacks/XStack";

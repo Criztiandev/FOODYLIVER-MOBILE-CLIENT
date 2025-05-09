@@ -18,15 +18,19 @@ const useRateOrder = () => {
     mutationKey: ["/POST /order-reviews"],
     mutationFn: async (data: RatingData) => {
       const credentials = await getCredentials();
+
       const payload = {
         ...data,
         customer_id: (credentials as any)?.user_id,
       };
+
       const result = await PrivateAxios.post(`order-reviews`, payload);
       return result.data;
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+
         Toast.show({
           type: "error",
           text1: error.response?.data?.message || "Failed to submit rating",
